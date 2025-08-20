@@ -1,0 +1,119 @@
+[
+  {
+    "eventName": "Summer Music Fest",
+    "monthNumber": 8,
+    "day": 15,
+    "year": 2025,
+    "time": "7:00 PM",
+    "location": "The Grand Arena, London",
+    "ticketPrice": 25
+  },
+  {
+    "eventName": "Jazz Night",
+    "monthNumber": 9,
+    "day": 5,
+    "year": 2025,
+    "time": "8:30 PM",
+    "location": "Blue Note Club, Manchester",
+    "ticketPrice": 18
+  },
+  {
+    "eventName": "Open Mic Evening",
+    "monthNumber": 10,
+    "day": 12,
+    "year": 2025,
+    "time": "6:00 PM",
+    "location": "The Acoustic Lounge, Bristol",
+    "ticketPrice": 0
+  },
+  {
+    "eventName": "Rock Legends Reunion",
+    "monthNumber": 11,
+    "day": 2,
+    "year": 2025,
+    "time": "9:00 PM",
+    "location": "O2 Arena, London",
+    "ticketPrice": 40
+  },
+  {
+    "eventName": "Folk & Friends",
+    "monthNumber": 8,
+    "day": 22,
+    "year": 2025,
+    "time": "5:00 PM",
+    "location": "Green Park, Liverpool",
+    "ticketPrice": 10
+  },
+  {
+    "eventName": "Indie Vibes",
+    "monthNumber": 9,
+    "day": 18,
+    "year": 2025,
+    "time": "8:00 PM",
+    "location": "The Indie Club, Leeds",
+    "ticketPrice": 15
+  },
+  {
+    "eventName": "Classical Evening",
+    "monthNumber": 10,
+    "day": 25,
+    "year": 2025,
+    "time": "7:30 PM",
+    "location": "Royal Concert Hall, Glasgow",
+    "ticketPrice": 30
+  },
+  {
+    "eventName": "Pop Party",
+    "monthNumber": 8,
+    "day": 29,
+    "year": 2025,
+    "time": "6:00 PM",
+    "location": "City Square, Birmingham",
+    "ticketPrice": 20
+  },
+  {
+    "eventName": "Acoustic Sessions",
+    "monthNumber": 9,
+    "day": 10,
+    "year": 2025,
+    "time": "7:00 PM",
+    "location": "The Coffee House, Oxford",
+    "ticketPrice": 8
+  },
+  {
+    "eventName": "Electronic Beats",
+    "monthNumber": 10,
+    "day": 3,
+    "year": 2025,
+    "time": "10:00 PM",
+    "location": "Warehouse 21, Sheffield",
+    "ticketPrice": 22
+  },
+  {
+    "eventName": "Soulful Sunday",
+    "monthNumber": 11,
+    "day": 9,
+    "year": 2025,
+    "time": "4:00 PM",
+    "location": "Soul Kitchen, Newcastle",
+    "ticketPrice": 12
+  },
+  {
+    "eventName": "Reggae Night",
+    "monthNumber": 8,
+    "day": 31,
+    "year": 2025,
+    "time": "9:00 PM",
+    "location": "Beach Bar, Brighton",
+    "ticketPrice": 16
+  },
+  {
+    "eventName": "Holiday Gala",
+    "monthNumber": 12,
+    "day": 20,
+    "year": 2025,
+    "time": "7:00 PM",
+    "location": "Town Hall, Cambridge",
+    "ticketPrice": 35
+  }
+]
