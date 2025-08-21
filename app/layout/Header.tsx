@@ -4,47 +4,54 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { splitWordsAndCapitalize } from "@/lib/utils";
 import Socials from "@/components/Socials";
-export default function Header({
-    title = "Your Name Here",
-    links = ["home", "about", "music", "events", "gallery", "booking", "contact"]
-}: {
-    title?: string, links?: string[],
-}) {
-    const [activeLink, setActiveLink] = useState('');
+import Image from "next/image";
+import { useHeaderContext } from "../contexts/HeaderContext";
+export default function Header() {
+    const title = "DMAC on the Sax"
+    const links = ["home", "about", "events", "gallery", "booking", "faq", "contact"]
+    const HeaderContext = useHeaderContext()
     let currentPath
 
     const handleClick = (link: string) => {
-        setActiveLink(link);
+        HeaderContext.dispatch({ type: "SET_ACTIVE_LINK", payload: link })
     };
 
     useEffect(() => {
         currentPath = window.location.pathname;
-        setActiveLink(currentPath);
+        HeaderContext.dispatch({ type: "SET_ACTIVE_LINK", payload: currentPath })
 
         if (currentPath === "/") {
-            setActiveLink("home");
+            HeaderContext.dispatch({ type: "SET_ACTIVE_LINK", payload: 'home' })
         }
-
     }, []);
 
     const socials = {
-        facebook: "https://www.facebook.com/",
-        instagram: "https://www.instagram.com/",
-        youtube: "https://www.youtube.com/",
-        spotify: "https://open.spotify.com/"
+        facebook: `https://www.facebook.com/dmaconthesax`,
+        instagram: `https://www.instagram.com/dmaconthesax`,
+        youtube: `https://www.youtube.com/@dmcdaniel9}`,
+        spotify: ''
     }
 
     return (
-        <header className={`flex flex-col items-center justify-center gap-4 p-4 ${activeLink === "home" ? "h-[85vh]" : "h-[40vh]"} mb-4 z-50 transition-all duration-300 ease-in-out`}>
+        <header className={`flex flex-col items-center justify-center gap-4 w-full ${HeaderContext.state.activeLink === "home" ? "h-[85vh]" : "h-[50vh]"} mb-4 z-50 transition-all duration-300 ease-in-out`}>
             <Socials socials={socials} color="white" size="40" gap={28} />
-            <h1 className="text-6xl text-white my-4">{title}</h1>
+            {/* {image !== undefined ? <Image className="my-4" src={image} width={100} height={100} alt="Logo" /> : <h1 className="text-6xl my-4 font-bold text-white">{title}</h1>} */}
+            <div className="relative inline-block w-2xl h-auto transition-all duration-200 ease-in-out hover:scale-101">
+                <Image className="my-8 w-full" src="/logo_white.svg" width={100} height={100} alt="DMAC on the Sax Logo" />
+                <Image
+                    className="my-8 absolute inset-0 w-full h-2xl transition-all duration-1000 ease-in-out mask-animation"
+                    src="/logo_colored.svg"
+                    width={100}
+                    height={100}
+                    alt="DMAC on the Sax Logo"
+                />
+            </div>
             <nav className="flex flex-row space-x-6">
                 {/* Prefetched when the link is hovered or enters the viewport */}
                 {links.map((link) => (
-                    <Link key={link} href={`/${link}`} onClick={() => handleClick(link)} className={`text-lg text-white cursor-pointer hover:underline font-semibold ${activeLink === link ? "underline" : ""}`}>{splitWordsAndCapitalize(link)}</Link>
+                    <Link key={link} href={`/${link}`} onClick={() => handleClick(link)} className={`text-xl text-white cursor-pointer hover:underline font-semibold ${HeaderContext.state.activeLink === link ? "underline" : ""} `}>{link !== "faq" ? splitWordsAndCapitalize(link) : "FAQ"}</Link>
                 ))}
             </nav>
-            {/* <Overlay height={"85vh"} opacity={50} colorWeight={400} /> */}
         </header>
     )
 }

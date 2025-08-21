@@ -1,23 +1,27 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Playfair_Display, Lato } from "next/font/google";
 import Header from "@/app/layout/Header";
 import VideoBackground from "@/components/VideoBackground";
 import "./globals.css";
 import Head from "next/head";
+import { HeaderProvider } from "./contexts/HeaderContext";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const lato = Lato({
+  weight: ["400", "700"],
+  variable: "--font-body",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const playfairDisplay = Playfair_Display({
+  variable: "--font-heading",
   subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "Next.js Musician Website Template",
-  description: "Created by Devin McDaniel",
+  title: "DMAC on the Sax - Private Saxophonist",
+  description: "DMAC on the Sax is a professional saxophonist and music educator. He is a highly skilled musician who brings his passion for music to life in the studio and in the classroom.",
+
 };
 
 
@@ -27,23 +31,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="preconnect" href="https://youtube.com" />
-      </Head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-foreground flex flex-col min-h-screen`}
-      >
-        <VideoBackground />
-        <Header />
-        {children}
-        <footer className="flex items-center justify-center h-12 shrink-0">
-          <p className="text-sm text-muted-foreground">
-            Devin McDaniel Music - 2025
-          </p>
-        </footer>
-      </body>
-    </html>
+    <HeaderProvider>
+      <html lang="en">
+        <Head>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link rel="preconnect" href="https://youtube.com" />
+        </Head>
+        <body
+          className={`${lato.variable}  antialiased bg-foreground flex flex-col min-h-screen`}
+        >
+          <VideoBackground />
+          <Header />
+          {children}
+          <footer className="flex items-center justify-center h-12 shrink-0 bg-gray-950">
+            <p className="text-sm text-muted-foreground">
+              Devin McDaniel Music - 2025 - Website by Devin McDaniel
+            </p>
+          </footer>
+        </body>
+      </html>
+    </HeaderProvider>
   );
 }

@@ -1,19 +1,48 @@
+'use client'
 import Announcement from "@/components/Announcement";
 import Video from "@/components/Video";
 import EventList from "@/components/EventList";
 import CallToAction from "@/components/CallToAction";
 import Footer from "./layout/Footer";
-
+import { useHeaderContext } from "./contexts/HeaderContext";
 
 
 export default function Home() {
+  const HeaderContext = useHeaderContext()
+
+  const handleNavChange = (route: string) => {
+    HeaderContext.dispatch({ type: "SET_ACTIVE_LINK", payload: route })
+  }
+
   return (
-    <main className="font-sans grow shrink-0 basis-auto">
-      <Announcement >
-        <Video src="https://www.youtube.com/embed/fhosZ_-6D40?si=kQ9QEpt6ZAfULdRk" width="100%" height="800px" />
+    <main className="grow shrink-0 basis-auto">
+      <Announcement
+        text="Welcome to the new website for DMAC on the Sax 👇🏾"
+        textColor="text-white"
+        bgColor="bg-[#02ACAC]"
+      >
+        <h1 className="font-heading font-bold">Now Booking for 2026</h1>
       </Announcement>
       <EventList />
-      <CallToAction />
+      <CallToAction
+        title="DMAC on the Sax plays"
+        subtitle="Booking for 2026"
+        body="No matter what type of event, DMAC on the Sax has the experience and expertise to make your event a success. With over 20 years of worldwide experience from symphonic orchestras to jazz bands to Ibiza festivals, DMAC on the Sax is the perfect choice for any event."
+        handlePrimaryBtnClick={() => handleNavChange('booking')}
+        primaryRoute="booking"
+        primaryBtnText="Book now"
+        enableSecondaryBtn={true}
+        handleSecondaryBtnClick={() => handleNavChange('faq')}
+        secondaryRoute="faq"
+        secondaryBtnText="More info"
+        enableTypewriter={true}
+        typewriterSequence={["Weddings", 1000, "Events", 1000, "Festivals", 1000]}
+        imgSrc="/image1.webp"
+        imgAltText="DMAC on the Sax is a professional saxophonist for your next event"
+        imgClassnames="drop-shadow-2xl transform scale-x-[-1] absolute w-6xl left-[35%] bottom-[-15%]"
+        imgWidth={1152}
+        imgHeight={768}
+      />
       <Footer />
     </main>
   );

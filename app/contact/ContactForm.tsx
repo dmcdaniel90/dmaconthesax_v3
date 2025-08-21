@@ -1,11 +1,11 @@
 'use client'
 
 import DescriptionTextarea from "@/components/DescriptionTextarea";
-import EmailInput from "../../components/EmailInput";
+import EmailInput from "@/components/EmailInput";
 import NameInput from "@/components/NameInput";
-import { Button } from "../../components/ui/button";
-import { Form, FormField } from "../../components/ui/form";
-import { Card, CardContent } from "../../components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Form, FormField } from "@/components/ui/form";
+import { Card, CardContent } from "@/components/ui/card";
 import { Field } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { z } from "zod"

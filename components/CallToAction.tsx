@@ -1,42 +1,97 @@
 'use client'
+import Image from "next/image";
+import Link from "next/link";
 import { TypeAnimation } from "react-type-animation";
 
-export default function CallToAction() {
+type CallToActionProps = {
+    width?: string | number | undefined
+    title: string,
+    subtitle?: string,
+    body?: string,
+    handlePrimaryBtnClick: () => void;
+    handleSecondaryBtnClick?: () => void;
+    enableSecondaryBtn?: boolean;
+    primaryRoute: string;
+    secondaryRoute?: string;
+    primaryBtnText: string;
+    secondaryBtnText?: string;
+    enableTypewriter?: boolean;
+    typewriterSequence?: (string | number)[];
+    imgSrc?: string;
+    imgAltText?: string;
+    imgClassnames?: string;
+    imgWidth?: number
+    imgHeight?: number
+}
+export default function CallToAction({
+    width,
+    title,
+    subtitle,
+    body,
+    handlePrimaryBtnClick,
+    handleSecondaryBtnClick,
+    enableSecondaryBtn,
+    primaryRoute = "",
+    secondaryRoute = "",
+    primaryBtnText = "Primary",
+    secondaryBtnText = "Secondary",
+    enableTypewriter = false,
+    typewriterSequence = [],
+    imgSrc,
+    imgAltText,
+    imgClassnames,
+    imgWidth,
+    imgHeight
+}: CallToActionProps) {
+
+    width = typeof width === "number" ? `${width}px` : width
+
     return (
-        <div className="relative flex flex-col overflow-hidden bg-gradient-to-br from-gray-900/80 to-gray-800/50 p-6 text-white shadow-xl md:flex-row md:items-center md:justify-between px-32 py-48">
+        <div className="relative grid grid-cols-1 overflow-hidden bg-gradient-to-br from-gray-900/80 to-gray-800/50 p-6 text-white shadow-xl md:grid md:grid-cols-3 px-32 py-48" style={{ width: width || "auto" }}>
 
             {/* Content */}
-            <div className="z-10 space-y-3 md:w-3/5">
-                <div className="inline-block rounded-lg bg-gray-500 px-3 py-1 text-xs font-semibold tracking-wider text-white uppercase">
-                    Booking for 2026
-                </div>
-                <h2 className="text-3xl leading-tight font-bold tracking-tight md:text-4xl lg:text-5xl">
-                    Your Name <TypeAnimation className="text-gray-400" sequence={["Weddings", 1000, "Events", 1000, "Festivals", 1000]} repeat={Infinity} />
+            <div className={`z-10 space-y-3 md:col-span-2`}>
+                {
+                    subtitle ?
+                        <div className="inline-block rounded-lg bg-[#F7B478] px-3 py-1 text-xs font-semibold tracking-wider text-black uppercase">{subtitle}</div>
+                        :
+                        null
+                }
+                <h2 className="mb-4 text-3xl leading-tight font-bold tracking-tight md:text-4xl lg:text-5xl font-heading">
+                    {title}
+                    {" "}
+                    {
+                        enableTypewriter ?
+                            <TypeAnimation className="text-gray-400" sequence={typewriterSequence} repeat={Infinity} />
+                            :
+                            null
+                    }
                 </h2>
                 <p className="max-w-xl text-sm text-gray-300 md:text-base">
-                    Enter a description of your product or service here
+                    {body}
                 </p>
-                <div className="flex flex-wrap gap-3 pt-2">
-                    <button className="rounded-md bg-gray-500 px-6 py-2 font-medium transition-all hover:bg-gray-600 cursor-pointer">
-                        Book Now
+                <div className="flex flex-wrap gap-3 pt-2 mt-6">
+                    <button className="rounded-md bg-[#02ACAC] px-6 py-2 font-medium transition-all duration-300 hover:bg-[#005C5C] cursor-pointer">
+                        <Link href={`/${primaryRoute}`} onClick={handlePrimaryBtnClick}>{primaryBtnText}</Link>
                     </button>
-                    <button className="rounded-md border border-white/30 bg-transparent px-6 py-2 font-medium transition-all hover:bg-white/10 cursor-pointer">
-                        View Details
-                    </button>
+                    {
+                        enableSecondaryBtn ?
+                            <button className="rounded-md border border-white/30 bg-transparent px-6 py-2 font-medium transition-all hover:bg-white/10 cursor-pointer">
+                                <Link href={`/${secondaryRoute}`} onClick={handleSecondaryBtnClick}>{secondaryBtnText}</Link>
+                            </button>
+                            :
+                            null
+                    }
                 </div>
             </div>
 
-            {/* Image */}
-            <div className="relative z-10 mt-6 h-60 w-full md:mt-0 md:h-80 md:w-2/5">
-                <div className="absolute -top-4 -right-4 h-60 w-60 rounded-full bg-blue-500/30 blur-xl"></div>
-                <div className="relative h-full w-full">
-                    <img
-                        src="https://placehold.co/400x400/0077ff/ffffff?text=Your Image Here"
-                        alt="Your Image Here"
-                        className="drop-shadow-2xl"
-                    />
-                </div>
-            </div>
+            <Image
+                src={imgSrc || ""}
+                alt={imgAltText || ""}
+                className={`${imgClassnames} col-span-1`}
+                width={imgWidth || 200}
+                height={imgHeight || 200}
+            />
         </div>
     );
 }

@@ -3,12 +3,12 @@ import DescriptionTextarea from "@/components/DescriptionTextarea";
 import EventSelect from "@/components/EventSelect";
 import LocationSelect from "@/components/LocationSelect";
 import NameInput from "@/components/NameInput";
-import EmailInput from "../../components/EmailInput";
+import EmailInput from "@/components/EmailInput";
 import TimePicker from "@/components/TimePicker";
-import { Button } from "../../components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field } from "react-hook-form";
-import { Form, FormField } from "../../components/ui/form";
+import { Form, FormField } from "@/components/ui/form";
 import { useBookingForm, formSchemaType } from "@/hooks/useBookingForm";
 
 export default function BookingForm({ dateString }: { dateString: string }) {

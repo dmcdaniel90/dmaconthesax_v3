@@ -10,11 +10,11 @@ export default function Socials({ socials, color, size, gap }: { socials: { face
         <span className="flex flex-row" style={{ gap: gap }}>
             {
                 Object.entries(socials).map(([key, value]) => (
-                    <Link key={key} className={`transition-all duration-200 ease-in-out hover:brightness-50`} style={{ color: color }} href={value} target="_blank">
-                        {key === "facebook" && <FaFacebook size={size} />}
-                        {key === "instagram" && <FaInstagram size={size} />}
-                        {key === "youtube" && <FaYoutube size={size} />}
-                        {key === "spotify" && <FaSpotify size={size} />}
+                    <Link key={key} className={`transition-all duration-200 ease-in-out hover:scale-110 `} style={{ color: color }} href={value} target="_blank">
+                        {key === "facebook" && <FaFacebook size={size} className="hover:text-[#02ACAC]" />}
+                        {key === "instagram" && <FaInstagram size={size} className="hover:text-[#02ACAC]" />}
+                        {key === "youtube" && <FaYoutube size={size} className="hover:text-[#02ACAC]" />}
+                        {/* {key === "spotify" && <FaSpotify size={size} />} */}
                     </Link>
                 ))
             }

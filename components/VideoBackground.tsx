@@ -1,4 +1,4 @@
-import Overlay from "./Overlay";
+
 const VideoBackground = () => {
     return (
         <div className="inset-0 w-[100%] overflow-hidden -z-50 rounded-lg fixed">
@@ -9,7 +9,7 @@ const VideoBackground = () => {
                 loop
                 muted
                 playsInline
-                className="object-cover w-full opacity-100"
+                className="object-fit w-[100vw] opacity-100 mx-auto relative top-[-50%]"
             >
                 <source src="/background.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
