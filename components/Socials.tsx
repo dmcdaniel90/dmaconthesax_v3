@@ -1,6 +1,6 @@
 'use client'
 import Link from "next/link";
-import { FaFacebook, FaInstagram, FaYoutube, FaSpotify } from "react-icons/fa6";
+import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa6";
 
 
 export default function Socials({ socials, color, size, gap }: { socials: { facebook: string, instagram: string, youtube: string, spotify: string }, color?: string, size?: string, gap?: string | number }) {

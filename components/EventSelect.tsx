@@ -6,10 +6,12 @@ import { Select } from "@/components/ui/select";
 type EventSelectProps = {
     label?: string
     labelClasses?: string
-    field: any;
+    field: any
 }
 
 const defaultLabelStyles = "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2 mt-4"
+
+
 export default function EventSelect({ label = "Event Type", labelClasses = defaultLabelStyles, field }: EventSelectProps) {
 
     return (

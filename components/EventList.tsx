@@ -25,7 +25,7 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
     const paginatedEvents = useMemo(() => {
         const startIndex = (currentPage - 1) * itemsPerPage;
         return Array.prototype.slice.call(events, startIndex, startIndex + itemsPerPage);
-    }, [events, currentPage, itemsPerPage]);
+    }, [currentPage, itemsPerPage]);
 
     const totalPages = Math.ceil(events.length / itemsPerPage);
 

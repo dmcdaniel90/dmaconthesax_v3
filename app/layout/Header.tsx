@@ -1,29 +1,29 @@
 'use client';
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { splitWordsAndCapitalize } from "@/lib/utils";
 import Socials from "@/components/Socials";
 import Image from "next/image";
 import { useHeaderContext } from "../contexts/HeaderContext";
 export default function Header() {
-    const title = "DMAC on the Sax"
+    // const title = "DMAC on the Sax"
     const links = ["home", "about", "events", "gallery", "booking", "faq", "contact"]
     const HeaderContext = useHeaderContext()
-    let currentPath
+
 
     const handleClick = (link: string) => {
         HeaderContext.dispatch({ type: "SET_ACTIVE_LINK", payload: link })
     };
 
     useEffect(() => {
-        currentPath = window.location.pathname;
-        HeaderContext.dispatch({ type: "SET_ACTIVE_LINK", payload: currentPath })
+        const currentPath = window.location.pathname;
 
+        HeaderContext.dispatch({ type: "SET_ACTIVE_LINK", payload: currentPath })
         if (currentPath === "/") {
             HeaderContext.dispatch({ type: "SET_ACTIVE_LINK", payload: 'home' })
         }
-    }, []);
+    });
 
     const socials = {
         facebook: `https://www.facebook.com/dmaconthesax`,

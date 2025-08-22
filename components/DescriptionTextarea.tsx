@@ -7,7 +7,7 @@ const defaultLabelStyles = "text-sm font-medium leading-none peer-disabled:curso
 type DescriptionTextareaProps = {
     label?: string,
     labelClasses?: string,
-    field: any;
+    field: Field;
     placeholder?: string
 }
 export default function DescriptionTextarea({

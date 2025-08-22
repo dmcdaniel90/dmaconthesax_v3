@@ -5,7 +5,6 @@ import { Separator } from "@/components/ui/separator"
 import BookingForm from "@/app/booking/BookingForm"
 import CustomCalendar from "@/components/Calendar"
 import Link from "next/link"
-import FAQ from "@/app/faq/FAQ"
 import { useHeaderContext } from "../contexts/HeaderContext"
 
 export default function Booking() {

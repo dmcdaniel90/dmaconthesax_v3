@@ -1,6 +1,5 @@
 'use client'
 import Announcement from "@/components/Announcement";
-import Video from "@/components/Video";
 import EventList from "@/components/EventList";
 import CallToAction from "@/components/CallToAction";
 import Footer from "./layout/Footer";
@@ -17,11 +16,11 @@ export default function Home() {
   return (
     <main className="grow shrink-0 basis-auto">
       <Announcement
-        text="Welcome to the new website for DMAC on the Sax 👇🏾"
+        text="Welcome to the new website for DMAC on the Sax 🎷"
         textColor="text-white"
         bgColor="bg-[#02ACAC]"
       >
-        <h1 className="font-heading font-bold">Now Booking for 2026</h1>
+        <h1 className="font-heading font-bold text-2xl">Now Booking for 2026</h1>
       </Announcement>
       <EventList />
       <CallToAction

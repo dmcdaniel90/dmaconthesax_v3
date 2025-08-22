@@ -1,22 +1,10 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Lato } from "next/font/google";
+import { lato } from "@/lib/fonts";
 import Header from "@/app/layout/Header";
 import VideoBackground from "@/components/VideoBackground";
 import "./globals.css";
 import Head from "next/head";
 import { HeaderProvider } from "./contexts/HeaderContext";
-
-const lato = Lato({
-  weight: ["400", "700"],
-  variable: "--font-body",
-  subsets: ["latin"],
-});
-
-const playfairDisplay = Playfair_Display({
-  variable: "--font-heading",
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
 
 export const metadata: Metadata = {
   title: "DMAC on the Sax - Private Saxophonist",

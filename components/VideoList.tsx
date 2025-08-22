@@ -1,5 +1,5 @@
 'use client';
-import { Pagination, PaginationContent, PaginationNext, PaginationPrevious, PaginationItem, PaginationLink, PaginationEllipsis } from "@/components/ui/pagination"
+import { Pagination, PaginationContent, PaginationNext, PaginationPrevious, PaginationItem, PaginationLink } from "@/components/ui/pagination"
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import Video from "@/components/Video";

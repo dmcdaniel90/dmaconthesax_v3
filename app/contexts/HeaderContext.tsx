@@ -1,5 +1,5 @@
 'use client'
-import { useContext, createContext, useReducer } from "react";
+import { useContext, createContext, useReducer, PropsWithChildren } from "react";
 
 type HeaderContextType = {
     state: {
@@ -7,14 +7,7 @@ type HeaderContextType = {
     },
     dispatch: (action: { type: string, payload: string }) => void
 }
-const HeaderContext = createContext<HeaderContextType>({
-    state: {
-        activeLink: ''
-    },
-    dispatch: () => {
-        console.warn("Dispatch not implemented")
-    }
-});
+const HeaderContext = createContext<HeaderContextType | null>(null);
 
 const initialState = {
     activeLink: 'home'
@@ -29,7 +22,7 @@ const reducer = (state: { activeLink: string }, action: { type: string, payload:
     }
 };
 
-export const HeaderProvider = ({ children }: any) => {
+export const HeaderProvider = ({ children }: PropsWithChildren) => {
     const [state, dispatch] = useReducer(reducer, initialState);
     return (
         <HeaderContext.Provider value={{ state, dispatch }}>
@@ -39,6 +32,12 @@ export const HeaderProvider = ({ children }: any) => {
 }
 
 export const useHeaderContext = () => {
-    return useContext(HeaderContext)
+    const context = useContext(HeaderContext)
+
+    if (!context) {
+        throw new Error("useHeaderContext must be used within a <HeaderProvider />")
+    }
+
+    return context
 }
 

@@ -2,7 +2,6 @@
 
 import { Accordion } from "@/components/ui/accordion"
 import FAQItem from "@/components/FAQItem"
-import CallToAction from "@/components/CallToAction"
 import { useHeaderContext } from "../contexts/HeaderContext"
 import Announcement from "@/components/Announcement"
 import { Button } from "@/components/ui/button"

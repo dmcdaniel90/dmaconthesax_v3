@@ -1,5 +1,4 @@
 import FAQ from "@/app/faq/FAQ"
-import TextBlock from "@/components/TextBlock"
 
 export default function FAQPage() {
     return (

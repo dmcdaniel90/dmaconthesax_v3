@@ -2,6 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { TypeAnimation } from "react-type-animation";
+import { playfairDisplay } from "@/lib/fonts";
 
 type CallToActionProps = {
     width?: string | number | undefined
@@ -57,7 +58,7 @@ export default function CallToAction({
                         :
                         null
                 }
-                <h2 className="mb-4 text-3xl leading-tight font-bold tracking-tight md:text-4xl lg:text-5xl font-heading">
+                <h2 className={`mb-4 text-3xl leading-tight font-bold tracking-tight md:text-4xl lg:text-5xl ${playfairDisplay.className}`}>
                     {title}
                     {" "}
                     {

@@ -7,7 +7,7 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel"
-import { useState, useMemo, use, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Image from "next/image"
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext } from "@/components/ui/pagination";
 import { useLightbox } from "../hooks/useLightbox";
@@ -38,7 +38,7 @@ export default function PhotoGallery({ images, itemsPerPage = 12, type = "carous
 
     useEffect(() => {
         setImages(paginatedPhotos);
-    }, [paginatedPhotos]);
+    }, [paginatedPhotos, setImages]);
 
     return (
         <div className={`bg-gray-900/50 px-24 py-12`}>
