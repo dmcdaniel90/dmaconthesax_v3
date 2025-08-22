@@ -1,6 +1,6 @@
 import { FormControl, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { Field } from "@/app/booking/BookingForm";
+import type { Field } from "react-hook-form";
 
 type EmailInputProps = {
     label?: string,

@@ -6,7 +6,7 @@
 
 import { FormControl, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import type { Field } from "@/app/booking/BookingForm";
+import { Field } from "react-hook-form";
 
 type DatePickerProps = {
     label?: string
