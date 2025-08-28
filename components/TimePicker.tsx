@@ -11,7 +11,9 @@ type TimePickerProps = {
     step?: number
 }
 
-export default function TimePicker({ label = "Time", labelClasses, field, min = "10:00", max = "23:59", step = 1800 }: TimePickerProps) {
+const defaultLabelStyles = "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2 mt-4"
+
+export default function TimePicker({ label = "Time", labelClasses = defaultLabelStyles, field, min = "10:00", max = "23:59", step = 1800 }: TimePickerProps) {
     return (
         <FormItem className="flex flex-col">
             <FormLabel className={labelClasses} htmlFor="time">{label}</FormLabel>

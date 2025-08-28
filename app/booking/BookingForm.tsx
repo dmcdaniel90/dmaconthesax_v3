@@ -1,3 +1,5 @@
+'use client'
+
 import DatePicker from "@/components/DatePicker";
 import DescriptionTextarea from "@/components/DescriptionTextarea";
 import EventSelect from "@/components/EventSelect";
@@ -7,27 +9,39 @@ import EmailInput from "@/components/EmailInput";
 import TimePicker from "@/components/TimePicker";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field } from "react-hook-form";
+import { ControllerRenderProps, Field } from "react-hook-form";
 import { Form, FormField } from "@/components/ui/form";
 import { useBookingForm, formSchemaType } from "@/hooks/useBookingForm";
+import ConsentBox from "@/components/ConsentBox";
+import { postMessage } from "@/lib/postMessage";
 
-export default function BookingForm({ dateString }: { dateString: string }) {
 
+export default function BookingForm({ date }: { date?: Date }) {
     const { form } = useBookingForm()
 
-    function onSubmit(values: formSchemaType) {
-        console.table(values)
+    const onSubmit = async (data: formSchemaType) => {
+        // const res = await fetch('/booking/api', {
+        //     method: 'POST',
+        //     body: JSON.stringify(data)
+        // })
+
+        // if (res.ok) {
+        //     console.log(res)
+        // }
+
+        const res = await postMessage(data)
+        console.log(res)
     }
 
     return (
-        <Card>
+        <Card className="rounded-l-none rounded-br-lg px-4">
             <CardHeader>
-                <CardTitle className="text-3xl">Request a Quote</CardTitle>
-                <CardDescription>Enter your event details and we will get back to you soon</CardDescription>
+                <CardTitle className="text-4xl my-4">Request a Quote</CardTitle>
+                <CardDescription className="text-lg">Enter your event details and we will get back to you soon</CardDescription>
             </CardHeader>
             <CardContent>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} data-netlify="true">
+                    <form onSubmit={form.handleSubmit(onSubmit)} name="booking-form" className="flex flex-col gap-y-4 max-h-[1000px]">
                         <FormField
                             control={form.control}
                             name="name"
@@ -42,7 +56,7 @@ export default function BookingForm({ dateString }: { dateString: string }) {
                             <FormField
                                 control={form.control}
                                 name="date"
-                                render={({ field }) => <DatePicker field={field as unknown as Field} dateString={dateString} />}
+                                render={({ field }) => <DatePicker field={field as unknown as Field} date={date} />}
                             />
                             <FormField
                                 control={form.control}
@@ -50,6 +64,7 @@ export default function BookingForm({ dateString }: { dateString: string }) {
                                 render={({ field }) => <TimePicker field={field as unknown as Field} />}
                             />
                         </fieldset>
+
                         <fieldset>
                             <FormField
                                 control={form.control}
@@ -69,6 +84,12 @@ export default function BookingForm({ dateString }: { dateString: string }) {
                                     field={field as unknown as Field} />}
                             />
                         </fieldset>
+
+                        <FormField
+                            control={form.control}
+                            name="consent"
+                            render={({ field }) => <ConsentBox field={field as unknown as ControllerRenderProps & Field} />}
+                        />
                         <Button className="mt-8 mb-4 cursor-pointer hover:bg-gray-950/60 w-full" type="submit">Request a Quote</Button>
                     </form>
                 </Form>

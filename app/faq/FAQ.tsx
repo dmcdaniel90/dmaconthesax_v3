@@ -45,7 +45,7 @@ export default function FAQ() {
                     />
                     <FAQItem
                         title="How much do you charge?"
-                        text="Prices start from £150; inquire for more details"
+                        text="I charge a flat fee for my services. Please contact for more details"
                         value="faq-6"
                     />
                     <FAQItem

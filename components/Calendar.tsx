@@ -3,7 +3,7 @@ import React from 'react';
 import { useCalendar } from 'use-fullcalendar';
 
 type CalendarProps = {
-    setDate: (dateString: string) => void
+    setDate: (date: Date) => void
 }
 
 const mockEvents = {
@@ -61,7 +61,8 @@ export default function CustomCalendar(props: CalendarProps) {
         },
         functions: {
             handleDateClick: (info) => {
-                setDate(info.dateStr as string)
+                const date = new Date(info.dateStr)
+                setDate(date)
             }
         }
 

@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 const formSchema = z.object({
     name: z.string().min(2, { message: "Name must be at least 2 characters long" }),
-    email: z.email(),
+    email: z.email().includes("@", { message: "Invalid email address" }),
     message: z.string().min(20, { message: "Message must be at least 20 characters long" }),
 })
 

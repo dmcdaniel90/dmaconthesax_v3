@@ -12,7 +12,7 @@ type DatePickerProps = {
     label?: string
     labelClasses?: string
     field: Field
-    dateString?: string
+    date?: Date
 }
 
 const defaultLabelStyles = "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2 mt-4"
@@ -21,7 +21,6 @@ export default function DatePicker({
     label = "Date",
     labelClasses = defaultLabelStyles,
     field,
-    dateString = new Date().toLocaleDateString("en-GB")
 }: DatePickerProps) {
 
     return (
@@ -33,7 +32,6 @@ export default function DatePicker({
                     name="date"
                     className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
                     {...field}
-                    value={dateString}
                 />
             </FormControl>
             <FormMessage />

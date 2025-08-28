@@ -8,7 +8,8 @@ type LocationSelectProps = {
     field: any;
 }
 
-export default function LocationSelect({ label, labelClasses, field }: LocationSelectProps) {
+const defaultLabelStyles = "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2 mt-4"
+export default function LocationSelect({ label = "Location", labelClasses = defaultLabelStyles, field }: LocationSelectProps) {
 
     return (
         <FormItem>
