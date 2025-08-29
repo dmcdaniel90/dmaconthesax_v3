@@ -25,7 +25,7 @@ const formSchema = z.object({
 type formSchemaType = z.infer<typeof formSchema>
 
 export default function ContactForm() {
-    const [isSuccess, setIsSuccess] = useState(false)
+    const [, setIsSuccess] = useState(false)
     const form = useForm<formSchemaType>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -38,7 +38,7 @@ export default function ContactForm() {
         }
     })
 
-    const { register, control, handleSubmit, formState: { isSubmitting, isSubmitSuccessful } } = form
+    const { register, control, handleSubmit, formState: { isSubmitting } } = form
 
     const onSubmit = async (data: formSchemaType) => {
 
@@ -60,7 +60,7 @@ export default function ContactForm() {
         <Card>
             <CardContent>
                 <Form {...form}>
-                    <form onSubmit={handleSubmit(onSubmit)} data-netlify="true">
+                    <form onSubmit={handleSubmit(onSubmit)}>
                         {/* Hidden fields */}
                         <FormField
                             render={() => <input type="checkbox" className="hidden" style={{ display: 'none' }} id="" {...register("botcheck")} />}
