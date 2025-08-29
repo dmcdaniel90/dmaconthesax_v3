@@ -14,7 +14,7 @@ export const formSchema = z.object({
     eventType: z.string().optional(),
     message: z.string().min(20, { message: "Description of your event must be at least 20 characters long" }),
     consent: z.boolean({ message: "You must consent to our privacy policy to submit this form" }),
-    bot_check: z.boolean(),
+    botcheck: z.boolean(),
     cc_email: z.string().optional()
 })
 
@@ -35,7 +35,7 @@ export function useBookingForm() {
             eventType: "",
             message: "",
             consent: undefined,
-            bot_check: undefined
+            botcheck: undefined
         }
     })
 

@@ -36,10 +36,10 @@ export default function DefaultStateBookingForm({ onSubmit, form }: DefaultState
                     name="from_name"
                 />
                 <FormField
-                    render={() => <input type="checkbox" className="hidden" style={{ display: 'none' }} id="" {...register("bot_check")} />} name="botcheck"
+                    render={() => <input type="checkbox" className="hidden" style={{ display: 'none' }} id="" {...register("botcheck")} />} name="botcheck"
                 />
                 <FormField
-                    render={() => <input type="hidden" {...register("cc_email")} value={"contact@devinmcdaniel.com"} />} name="ccemail"
+                    render={() => <input type="hidden" {...register("cc_email")} value={"dmcdaniel9@gmail.com"} />} name="ccemail"
                 />
 
                 {/* Begin Form */}

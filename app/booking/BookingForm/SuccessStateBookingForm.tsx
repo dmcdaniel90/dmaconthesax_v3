@@ -16,7 +16,7 @@ export default function SuccessStateBookingForm({ form }: Props) {
             <svg
                 width="100"
                 height="100"
-                className="text-green-300"
+                className="text-green-600"
                 viewBox="0 0 100 100"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg">
@@ -26,7 +26,7 @@ export default function SuccessStateBookingForm({ form }: Props) {
                     strokeWidth="3"
                 />
             </svg>
-            <h3 className="py-5 text-2xl text-green-500">Success</h3>
+            <h3 className="py-5 text-2xl text-green-700">Success</h3>
             <p className="text-gray-500 md:px-3">Thanks for your request! We will get back to you soon with availability and a quote.</p>
             <Button
                 className="mt-8 mb-4 cursor-pointer hover:bg-gray-950/60 w-full"

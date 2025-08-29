@@ -2,7 +2,7 @@
 
 import z from "zod"
 
-const formSchema = z.object({
+const bookingFormSchema = z.object({
     from_name: z.string(),
     subject: z.string(),
     name: z.string().min(2, { message: "Name must be at least 2 characters long" }),
@@ -13,23 +13,66 @@ const formSchema = z.object({
     eventType: z.string().optional(),
     message: z.string().min(20, { message: "Description of your event must be at least 20 characters long" }),
     consent: z.boolean({ message: "You must consent to our privacy policy to submit this form" }),
-    bot_check: z.boolean(),
+    botcheck: z.boolean(),
     cc_email: z.string().optional()
 })
 
-type formSchemaType = z.infer<typeof formSchema>
-export async function postMessage(data: formSchemaType) {
-    let returnData;
-    const validatedData = formSchema.safeParse(data)
+const contactFormSchema = z.object({
+    from_name: z.string(),
+    subject: z.string(),
+    name: z.string().min(2, { message: "Name must be at least 2 characters long" }),
+    email: z.email().includes("@", { message: "Invalid email address" }),
+    message: z.string().min(20, { message: "Message must be at least 20 characters long" }),
+    botcheck: z.boolean()
+})
+
+type bookingFormSchemaType = z.infer<typeof bookingFormSchema>
+type contactFormSchemaType = z.infer<typeof contactFormSchema>
+
+async function callN8NWorkflow(formData: bookingFormSchemaType | contactFormSchemaType) {
+
+    await fetch("https://n8n.devsdev.space/webhook/2f09ffd7-680d-46be-a408-6c0b1048d4fc", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+        },
+        body: JSON.stringify({
+            access_key: "aa34ec7c-8d5b-4457-b1a1-0971e28a0e9b",
+            ...formData
+        })
+    }).then(async (response) => {
+        if (response.status !== 200) {
+            throw new Error("Failed to call N8N workflow")
+        }
+    }).catch((error) => {
+        console.log(error)
+    })
+
+    return {
+        success: true
+    }
+}
+
+export async function postMessage(formData: bookingFormSchemaType | contactFormSchemaType, type: 'booking' | 'contact') {
+    let validatedData;
+
+    if (type === "booking") {
+        validatedData = bookingFormSchema.safeParse(formData)
+    } else {
+        validatedData = contactFormSchema.safeParse(formData)
+    }
+
     if (!validatedData.success) {
         console.log("Error: ", validatedData.error.issues)
         return {
             success: false,
             error: validatedData.error.issues
         }
+    }
 
-    } else {
-        await fetch("https://api.web3forms.com/submit", {
+    try {
+        const response = await fetch("https://api.web3forms.com/submit", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -37,38 +80,36 @@ export async function postMessage(data: formSchemaType) {
             },
             body: JSON.stringify({
                 access_key: "aa34ec7c-8d5b-4457-b1a1-0971e28a0e9b",
-                subject: validatedData.data.subject,
-                from_name: validatedData.data.from_name,
-                name: validatedData.data.name,
-                email: validatedData.data.email,
-                date: validatedData.data.date,
-                time: validatedData.data.time,
-                location: validatedData.data.location,
-                eventType: validatedData.data.eventType,
-                message: validatedData.data.message,
-                consent: validatedData.data.consent,
-                bot_check: validatedData.data.bot_check,
-                cc_email: validatedData.data.cc_email
+                ...validatedData.data
             })
-        })
-            .then(async (response) => {
-                const data = await response.json()
-                if (response.status !== 200) {
-                    throw (
-                        data.error ||
-                        new Error(`Request failed with status ${response.status}`)
-                    )
-                }
-                returnData = data
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+        });
+
+        // Try to parse JSON only if there is content
+        let data = null;
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            data = await response.json();
+        }
+
+        if (data && data.error) {
+            return {
+                success: false,
+                error: data.error
+            };
+        }
+
+        // Fire and forget
+        callN8NWorkflow(formData);
 
         return {
             success: true,
-            error: null,
-            data: returnData as any
-        }
+            error: null
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : error
+        };
     }
 }

@@ -12,19 +12,19 @@ export default function BookingForm() {
     const { formState: { isSubmitSuccessful } } = form
 
     const onSubmit = async (data: formSchemaType) => {
-        console.log(`Submitting data: ${JSON.stringify(data)}`)
 
-        await postMessage(data)
-            .then(res => {
-                if (res.success) {
-                    setIsSuccess(true)
-                } else {
-                    setIsSuccess(false)
-                }
-            }).catch(err => {
-                setIsSuccess(false)
-                console.error(err)
-            })
+        try {
+            const res = await postMessage(data, "booking")
+
+            if (res) {
+                setIsSuccess(true)
+            } else {
+                throw new Error("Error in await postMessage 'BookingForm.tsx:22'")
+            }
+        } catch (error) {
+            setIsSuccess(false)
+            console.error(error)
+        }
     }
 
 
