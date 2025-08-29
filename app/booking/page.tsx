@@ -1,7 +1,7 @@
 'use client'
 
 import { forwardRef } from "react"
-import BookingForm from "@/app/booking/BookingForm"
+import BookingForm from "@/app/booking/BookingForm/BookingForm"
 import Link from "next/link"
 import { useHeaderContext } from "../contexts/HeaderContext"
 import Image from "next/image"
