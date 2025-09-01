@@ -9,7 +9,7 @@ type EmailInputProps = {
     required?: boolean
 }
 
-const defaultLabelStyles = "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2 mt-4"
+const defaultLabelStyles = "text-sm sm:text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2 mt-4"
 
 export default function EmailInput({ label = "Email", labelClasses = defaultLabelStyles, field, required = false }: EmailInputProps) {
     return (
@@ -17,7 +17,7 @@ export default function EmailInput({ label = "Email", labelClasses = defaultLabe
             <FormLabel className={labelClasses} htmlFor="email">{label}</FormLabel>
             <FormControl>
                 {
-                    required ? <Input id="email" type="email" {...field} /> : <Input id="email" type="email" {...field} />
+                    required ? <Input id="email" type="email" className="h-10 sm:h-11 md:h-12 text-sm sm:text-base" {...field} /> : <Input id="email" type="email" className="h-10 sm:h-11 md:h-12 text-sm sm:text-base" {...field} />
                 }
             </FormControl>
             <FormMessage />

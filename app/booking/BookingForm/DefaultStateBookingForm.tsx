@@ -53,7 +53,7 @@ export default function DefaultStateBookingForm({ onSubmit, form }: DefaultState
                     name="email"
                     render={({ field }) => <EmailInput field={field as unknown as Field} />}
                 />
-                <fieldset className="grid grid-cols-2 gap-4">
+                <fieldset className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <FormField
                         control={control}
                         name="date"
@@ -91,7 +91,7 @@ export default function DefaultStateBookingForm({ onSubmit, form }: DefaultState
                     name="consent"
                     render={({ field }) => <ConsentBox field={field as unknown as ControllerRenderProps & Field} />}
                 />
-                <Button className="mt-8 mb-4 cursor-pointer hover:bg-gray-950/60 w-full" type="submit">
+                <Button className="mt-6 sm:mt-8 mb-2 sm:mb-4 cursor-pointer hover:bg-gray-950/60 w-full" type="submit">
                     {isSubmitting ? (
                         <svg
                             className="w-5 h-5 mx-auto text-white animate-spin"

@@ -15,7 +15,7 @@ type DatePickerProps = {
     date?: Date
 }
 
-const defaultLabelStyles = "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2 mt-4"
+const defaultLabelStyles = "text-sm sm:text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2 mt-4"
 
 export default function DatePicker({
     label = "Date",
@@ -30,7 +30,7 @@ export default function DatePicker({
                 <Input
                     type="date"
                     name="date"
-                    className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                    className="h-10 sm:h-11 md:h-12 text-sm sm:text-base bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
                     {...field}
                 />
             </FormControl>

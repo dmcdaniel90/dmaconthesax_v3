@@ -22,8 +22,8 @@ export default function Announcement({
     children
 }: AnnouncementProps) {
     return (
-        <div className={`flex flex-col gap-6 px-32 py-12 h-auto min-h-[150px] justify-center ${textColor} ${bgColor} ${rounded ? 'rounded-2xl' : null}`}>
-            <h2 className={`${playfairDisplay.className} text-4xl`}>{text}</h2>
+        <div className={`flex flex-col gap-4 sm:gap-6 px-4 sm:px-8 md:px-16 lg:px-32 py-8 sm:py-10 md:py-12 h-auto min-h-[120px] sm:min-h-[150px] justify-center ${textColor} ${bgColor} ${rounded ? 'rounded-2xl' : null}`}>
+            <h2 className={`${playfairDisplay.className} text-2xl sm:text-3xl md:text-4xl leading-tight`}>{text}</h2>
             {children}
         </div >
     )

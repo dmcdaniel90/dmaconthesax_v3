@@ -11,7 +11,7 @@ type TimePickerProps = {
     step?: number
 }
 
-const defaultLabelStyles = "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2 mt-4"
+const defaultLabelStyles = "text-sm sm:text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2 mt-4"
 
 export default function TimePicker({ label = "Time", labelClasses = defaultLabelStyles, field, min = "10:00", max = "23:59", step = 1800 }: TimePickerProps) {
     return (
@@ -24,7 +24,7 @@ export default function TimePicker({ label = "Time", labelClasses = defaultLabel
                     step={step}
                     min={min}
                     max={max}
-                    className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                    className="h-10 sm:h-11 md:h-12 text-sm sm:text-base bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
                     {...field}
                 />
             </FormControl>

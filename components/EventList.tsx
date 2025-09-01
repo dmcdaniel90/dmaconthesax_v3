@@ -34,22 +34,22 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
     };
 
     return (
-        <div className={`bg-gray-900/50 ${view === "grid" ? "px-32" : "px-128"} py-12`}>
-            <h2 className="text-3xl text-white">Upcoming Events</h2>
-            <Button className="mt-4 cursor-pointer font-bold bg-[#02ACAC] hover:bg-[#005C5C] hover:text-white  transition-colors" onClick={() => setView(view === "grid" ? "list" : "grid")}>{view === "grid" ? "Switch to List View" : "Switch to Grid View"}</Button>
-            <div className={`grid ${view === "grid" ? "grid-cols-3" : "grid-cols-1"} gap-4`}>
+        <div className={`bg-gray-900/50 px-4 sm:px-8 md:px-16 lg:px-32 py-8 sm:py-12`}>
+            <h2 className="text-2xl sm:text-3xl text-white mb-4">Upcoming Events</h2>
+            <Button className="mb-6 cursor-pointer font-bold bg-[#02ACAC] hover:bg-[#005C5C] hover:text-white transition-colors text-sm sm:text-base" onClick={() => setView(view === "grid" ? "list" : "grid")}>{view === "grid" ? "Switch to List View" : "Switch to Grid View"}</Button>
+            <div className={`grid ${view === "grid" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"} gap-4 sm:gap-6`}>
                 {paginatedEvents.map((event: MusicEvents) => (
                     <Event key={event.eventName + Math.random()} eventName={event.eventName} monthNumber={event.monthNumber} day={event.day} year={event.year} time={event.time || "TBA"} location={event.location || "TBA"} ticketPrice={event.ticketPrice || 0} imgSrc={event.imgSrc || ""} imgAltText={event.imgAltText || ""} />
                 ))}
             </div>
 
             {/* Shadcn Pagination Component */}
-            <Pagination className="mt-8 text-white">
-                <PaginationContent>
+            <Pagination className="mt-6 sm:mt-8 text-white">
+                <PaginationContent className="flex flex-wrap justify-center gap-1 sm:gap-2">
                     <PaginationItem>
                         <PaginationPrevious
                             onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                            className={`cursor-pointer ${currentPage === 1 ? 'pointer-events-none opacity-50' : ''} hover:bg-[#02ACAC]`}
+                            className={`cursor-pointer text-sm sm:text-base ${currentPage === 1 ? 'pointer-events-none opacity-50' : ''} hover:bg-[#02ACAC]`}
                         />
                     </PaginationItem>
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -57,7 +57,7 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
                             <PaginationLink
                                 onClick={() => handlePageChange(page)}
                                 isActive={currentPage === page}
-                                className={`cursor-pointer ${currentPage === page ? 'text-black' : ''} hover:bg-[#02ACAC]`}
+                                className={`cursor-pointer text-sm sm:text-base px-2 sm:px-3 py-1 sm:py-2 ${currentPage === page ? 'text-black' : ''} hover:bg-[#02ACAC]`}
                             >
                                 {page}
                             </PaginationLink>
@@ -66,7 +66,7 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
                     <PaginationItem>
                         <PaginationNext
                             onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-                            className={`cursor-pointer ${currentPage === totalPages ? 'pointer-events-none opacity-50' : ''} hover:bg-[#02ACAC]`}
+                            className={`cursor-pointer text-sm sm:text-base ${currentPage === totalPages ? 'pointer-events-none opacity-50' : ''} hover:bg-[#02ACAC]`}
                         />
                     </PaginationItem>
                 </PaginationContent>

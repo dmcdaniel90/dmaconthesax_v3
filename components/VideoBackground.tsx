@@ -1,20 +1,27 @@
 
 const VideoBackground = () => {
     return (
-        <div className="inset-0 w-[100%] overflow-hidden -z-50 rounded-lg fixed">
-            <div className="absolute inset-0 bg-gradient-to-b from-black dark:from-black via-gray-800/70 to-transparent opacity-90">
-            </div>
+        <div className="fixed inset-0 w-full h-full overflow-hidden -z-50">
+            {/* Video element */}
             <video
                 autoPlay
                 loop
                 muted
                 playsInline
-                className="object-fit w-[100vw] opacity-100 mx-auto relative top-[-50%]"
+                className="absolute inset-0 w-full h-full object-cover object-center"
+                style={{
+                    objectPosition: 'center 30%' // Position video to keep performer visible
+                }}
             >
                 <source src="/background.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
             </video>
-            <div className="absolute inset-0 bg-gradient-to-b from-white dark:from-black to-transparent opacity-20"></div>
+            
+            {/* Dark overlay to ensure text readability */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/20"></div>
+            
+            {/* Subtle top gradient for better header visibility */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent"></div>
         </div>
     );
 };

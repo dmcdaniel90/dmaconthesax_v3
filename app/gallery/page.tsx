@@ -23,7 +23,7 @@ const photoUrls = [
 
 export default function Gallery() {
     return (
-        <main className="grow shrink-0 basis-auto">
+        <main className="mt-24 grow shrink-0 basis-auto">
             <VideoList type="grid" itemsPerPage={3} videos={videoUrls} />
             <PhotoGallery images={photoUrls} />
         </main>

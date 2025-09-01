@@ -8,7 +8,7 @@ type LocationSelectProps = {
     field: any;
 }
 
-const defaultLabelStyles = "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2 mt-4"
+const defaultLabelStyles = "text-sm sm:text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2 mt-4"
 export default function LocationSelect({ label = "Location", labelClasses = defaultLabelStyles, field }: LocationSelectProps) {
 
     return (
@@ -16,20 +16,20 @@ export default function LocationSelect({ label = "Location", labelClasses = defa
             <FormLabel className={labelClasses} htmlFor="location">{label}</FormLabel>
             <FormControl>
                 <Select name="location" onValueChange={field.onChange} {...field}>
-                    <SelectTrigger id="locationTrigger" className="w-full cursor-pointer">
+                    <SelectTrigger id="locationTrigger" className="h-10 sm:h-11 md:h-12 text-sm sm:text-base w-full cursor-pointer">
                         <SelectValue placeholder="Select Location" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem className="cursor-pointer" value="Swindon">Swindon</SelectItem>
-                        <SelectItem className="cursor-pointer" value="Bath">Bath</SelectItem>
-                        <SelectItem className="cursor-pointer" value="Bristol">Bristol</SelectItem>
-                        <SelectItem className="cursor-pointer" value="London">London</SelectItem>
-                        <SelectItem className="cursor-pointer" value="Brighton">Gloucester</SelectItem>
-                        <SelectItem className="cursor-pointer" value="Manchester">Manchester</SelectItem>
-                        <SelectItem className="cursor-pointer" value="Newcastle">Newcastle</SelectItem>
-                        <SelectItem className="cursor-pointer" value="Nottingham">Nottingham</SelectItem>
-                        <SelectItem className="cursor-pointer" value="Oxford">Oxford</SelectItem>
-                        <SelectItem className="cursor-pointer" value="Other">Other (Please Specify)</SelectItem>
+                        <SelectItem className="cursor-pointer text-sm sm:text-base" value="Swindon">Swindon</SelectItem>
+                        <SelectItem className="cursor-pointer text-sm sm:text-base" value="Bath">Bath</SelectItem>
+                        <SelectItem className="cursor-pointer text-sm sm:text-base" value="Bristol">Bristol</SelectItem>
+                        <SelectItem className="cursor-pointer text-sm sm:text-base" value="London">London</SelectItem>
+                        <SelectItem className="cursor-pointer text-sm sm:text-base" value="Brighton">Gloucester</SelectItem>
+                        <SelectItem className="cursor-pointer text-sm sm:text-base" value="Manchester">Manchester</SelectItem>
+                        <SelectItem className="cursor-pointer text-sm sm:text-base" value="Newcastle">Newcastle</SelectItem>
+                        <SelectItem className="cursor-pointer text-sm sm:text-base" value="Nottingham">Nottingham</SelectItem>
+                        <SelectItem className="cursor-pointer text-sm sm:text-base" value="Oxford">Oxford</SelectItem>
+                        <SelectItem className="cursor-pointer text-sm sm:text-base" value="Other">Other (Please Specify)</SelectItem>
                     </SelectContent>
                 </Select>
             </FormControl>

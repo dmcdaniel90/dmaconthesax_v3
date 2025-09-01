@@ -8,14 +8,14 @@ type NameInputProps = {
     field: Field
 }
 
-const defaultLabelStyles = "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2 mt-4"
+const defaultLabelStyles = "text-sm sm:text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2 mt-4"
 
 export default function NameInput({ label = "Name", labelClasses = defaultLabelStyles, field }: NameInputProps) {
     return (
         <FormItem>
             <FormLabel className={labelClasses} htmlFor="name">{label}</FormLabel>
             <FormControl>
-                <Input id="name" {...field} />
+                <Input id="name" className="h-10 sm:h-11 md:h-12 text-sm sm:text-base" {...field} />
             </FormControl>
             <FormMessage />
         </FormItem>

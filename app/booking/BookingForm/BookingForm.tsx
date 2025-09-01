@@ -30,10 +30,10 @@ export default function BookingForm() {
 
 
     return (
-        <Card className="h-full flex flex-col justify-center rounded-l-none rounded-br-lg px-4">
+        <Card className="h-full flex flex-col justify-center lg:rounded-l-none rounded-br-xl px-2 sm:px-4">
             <CardHeader>
-                <CardTitle className="text-4xl my-4">Request a Quote</CardTitle>
-                <CardDescription className="text-lg">Enter your event details and we will get back to you soon</CardDescription>
+                <CardTitle className="text-2xl sm:text-3xl md:text-4xl my-2 sm:my-4">Request a Quote</CardTitle>
+                <CardDescription className="text-base sm:text-lg">Enter your event details and we will get back to you soon</CardDescription>
             </CardHeader>
             <CardContent>
                 {!isSubmitSuccessful && (

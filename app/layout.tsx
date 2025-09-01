@@ -31,11 +31,6 @@ export default function RootLayout({
           <VideoBackground />
           <Header />
           {children}
-          <footer className="flex items-center justify-center h-12 shrink-0 bg-gray-950">
-            <p className="text-sm text-muted-foreground">
-              Devin McDaniel Music - 2025 - Website by Devin McDaniel
-            </p>
-          </footer>
         </body>
       </html>
     </HeaderProvider>

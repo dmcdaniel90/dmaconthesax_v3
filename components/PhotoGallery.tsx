@@ -41,9 +41,9 @@ export default function PhotoGallery({ images, itemsPerPage = 12, type = "carous
     }, [paginatedPhotos, setImages]);
 
     return (
-        <div className={`bg-gray-900/50 px-24 py-12`}>
-            <h2 className="text-3xl text-white mb-4 ml-12">Photos</h2>
-            <Button className="mt-4 ml-12 cursor-pointer hover:bg-background hover:text-foreground transition-colors mb-8" onClick={() => setView(view === "grid" ? "carousel" : "grid")}>{view === "grid" ? "Switch to Carousel View" : "Switch to Grid View"}</Button>
+        <div className={`bg-gray-900/50 px-4 sm:px-8 md:px-16 lg:px-24 py-8 sm:py-12`}>
+            <h2 className="text-2xl sm:text-3xl text-white mb-4 px-4 sm:px-8 md:px-12">Photos</h2>
+            <Button className="mt-4 px-4 sm:px-8 md:px-12 cursor-pointer hover:bg-background hover:text-foreground transition-colors mb-6 sm:mb-8 text-sm sm:text-base" onClick={() => setView(view === "grid" ? "carousel" : "grid")}>{view === "grid" ? "Switch to Carousel View" : "Switch to Grid View"}</Button>
 
             {isOpen && (
                 <LightboxComponent />
@@ -52,9 +52,9 @@ export default function PhotoGallery({ images, itemsPerPage = 12, type = "carous
             {
                 view === "carousel" &&
                 <Carousel>
-                    <CarouselContent className="px-12">
+                    <CarouselContent className="px-4 sm:px-8 md:px-12">
                         {paginatedPhotos.map((image, index) => (
-                            <CarouselItem key={index} className="basis-1/3 cursor-pointer">
+                            <CarouselItem key={index} className="basis-full sm:basis-1/2 lg:basis-1/3 cursor-pointer">
                                 <Image
                                     src={image}
                                     alt={`Image ${index}`}
@@ -67,8 +67,8 @@ export default function PhotoGallery({ images, itemsPerPage = 12, type = "carous
                             </CarouselItem>
                         ))}
                     </CarouselContent>
-                    <CarouselNext className="cursor-pointer hover:opacity-80 w-[50px] h-[50px]" />
-                    <CarouselPrevious className="cursor-pointer hover:opacity-80 w-[50px] h-[50px]" />
+                    <CarouselNext className="cursor-pointer hover:opacity-80 w-[40px] h-[40px] sm:w-[50px] sm:h-[50px]" />
+                    <CarouselPrevious className="cursor-pointer hover:opacity-80 w-[40px] h-[40px] sm:w-[50px] sm:h-[50px]" />
                 </Carousel>
             }
 
@@ -76,7 +76,7 @@ export default function PhotoGallery({ images, itemsPerPage = 12, type = "carous
             {
                 view === "grid" &&
                 <>
-                    <div className="grid grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
                         {paginatedPhotos.map((image, index) => (
                             <Image
                                 key={index}
@@ -89,20 +89,30 @@ export default function PhotoGallery({ images, itemsPerPage = 12, type = "carous
                                 onClick={() => handleOpen(index)} />
                         ))}
                     </div>
-                    <Pagination className="mt-8 text-white">
-                        <PaginationContent>
+                    <Pagination className="mt-6 sm:mt-8 text-white">
+                        <PaginationContent className="flex flex-wrap justify-center gap-1 sm:gap-2">
                             <PaginationItem>
-                                <PaginationPrevious />
+                                <PaginationPrevious 
+                                    onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                                    className={`cursor-pointer text-sm sm:text-base ${currentPage === 1 ? 'pointer-events-none opacity-50' : ''}`}
+                                />
                             </PaginationItem>
                             {[...Array(totalPages)].map((_, index) => (
                                 <PaginationItem key={index}>
-                                    <PaginationLink onClick={() => handlePageChange(index + 1)}>
+                                    <PaginationLink 
+                                        onClick={() => handlePageChange(index + 1)}
+                                        isActive={currentPage === index + 1}
+                                        className={`cursor-pointer text-sm sm:text-base px-2 sm:px-3 py-1 ${currentPage === index + 1 ? 'text-black' : ''}`}
+                                    >
                                         {index + 1}
                                     </PaginationLink>
                                 </PaginationItem>
                             ))}
                             <PaginationItem>
-                                <PaginationNext />
+                                <PaginationNext 
+                                    onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                                    className={`cursor-pointer text-sm sm:text-base ${currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}`}
+                                />
                             </PaginationItem>
                         </PaginationContent>
                     </Pagination>
