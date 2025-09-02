@@ -20,6 +20,7 @@ export default function FailureStateContactForm({ form }: Props) {
     return (
         <div className="h-full flex flex-col items-center justify-center text-center text-black rounded-md">
             <svg
+                data-testid="failure-icon"
                 width="97"
                 height="97"
                 viewBox="0 0 97 97"

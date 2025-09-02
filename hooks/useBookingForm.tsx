@@ -13,7 +13,7 @@ export const formSchema = z.object({
     location: z.string().optional(),
     eventType: z.string().optional(),
     message: z.string().min(20, { message: "Description of your event must be at least 20 characters long" }),
-    consent: z.boolean({ message: "You must consent to our privacy policy to submit this form" }),
+    consent: z.literal(true, { message: "You must consent to our privacy policy to submit this form" }),
     botcheck: z.boolean(),
     cc_email: z.string().optional()
 })

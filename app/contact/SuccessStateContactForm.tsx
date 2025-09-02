@@ -12,6 +12,7 @@ export default function SuccessStateContactForm({ form }: Props) {
     return (
         <div className="flex flex-col items-center justify-center text-center text-black rounded-md">
             <svg
+                data-testid="success-icon"
                 width="100"
                 height="100"
                 className="text-green-600"
