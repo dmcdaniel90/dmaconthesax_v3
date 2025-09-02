@@ -1,20 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { UseFormReturn } from "react-hook-form";
-import { z } from "zod";
-
-const formSchema = z.object({
-    from_name: z.string(),
-    subject: z.string(),
-    name: z.string().min(2, { message: "Name must be at least 2 characters long" }),
-    email: z.email().includes("@", { message: "Invalid email address" }),
-    message: z.string().min(20, { message: "Message must be at least 20 characters long" }),
-    botcheck: z.boolean()
-})
-
-type formSchemaType = z.infer<typeof formSchema>
+import { ContactFormSchemaType } from "@/lib/contactSchema";
 
 type Props = {
-    form: UseFormReturn<formSchemaType>;
+    form: UseFormReturn<ContactFormSchemaType>;
 }
 
 export default function SuccessStateContactForm({ form }: Props) {
@@ -36,7 +25,7 @@ export default function SuccessStateContactForm({ form }: Props) {
                 />
             </svg>
             <h3 className="py-5 text-2xl text-green-700">Message Sent Successfully!</h3>
-            <p className="text-gray-500 md:px-3">Thanks for your message! We'll get back to you within 24-48 hours.</p>
+            <p className="text-gray-500 md:px-3">Thanks for your message! We&apos;ll get back to you within 24-48 hours.</p>
             <Button
                 className="mt-8 mb-4 cursor-pointer w-full bg-[#02ACAC] hover:bg-[#02ACAC]/90 text-white text-base sm:text-lg px-4 sm:px-6 py-2 font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer"
                 onClick={() => reset()}>

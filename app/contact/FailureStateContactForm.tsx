@@ -1,17 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { UseFormReturn } from "react-hook-form";
-import { z } from "zod";
 
-const formSchema = z.object({
-    from_name: z.string(),
-    subject: z.string(),
-    name: z.string().min(2, { message: "Name must be at least 2 characters long" }),
-    email: z.email().includes("@", { message: "Invalid email address" }),
-    message: z.string().min(20, { message: "Message must be at least 20 characters long" }),
-    botcheck: z.boolean()
-})
-
-type formSchemaType = z.infer<typeof formSchema>
+type formSchemaType = {
+    from_name: string;
+    subject: string;
+    name: string;
+    email: string;
+    message: string;
+    botcheck: boolean;
+}
 
 type Props = {
     form: UseFormReturn<formSchemaType>;

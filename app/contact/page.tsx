@@ -1,6 +1,7 @@
 import Link from "next/link"
 import ContactForm from "./ContactForm"
 import CallToActionAlt from "@/components/CallToActionAlt"
+import Image from "next/image"
 
 export default function Contact() {
     return (
@@ -19,7 +20,7 @@ export default function Contact() {
                             Get In Touch
                         </h1>
                         <p className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                            Ready to make your event unforgettable? Let's start a conversation.
+                            Ready to make your event unforgettable? Let&apos;s start a conversation.
                         </p>
                     </div>
                 </div>
@@ -107,7 +108,7 @@ export default function Contact() {
                                         Send Message
                                     </h2>
                                     <p className="text-gray-400 text-lg">
-                                        Fill out the form below and we'll get back to you
+                                        Fill out the form below and we&apos;ll get back to you
                                     </p>
                                 </div>
                                 
@@ -138,7 +139,7 @@ export default function Contact() {
                                 
                                 <div className="relative">
                                     <div className="aspect-square rounded-2xl overflow-hidden">
-                                        <img 
+                                        <Image 
                                             src="/sax_portrait_2.webp" 
                                             alt="Saxophone Performance" 
                                             className="w-full h-full object-cover"

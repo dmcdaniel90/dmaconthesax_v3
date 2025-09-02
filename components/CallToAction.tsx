@@ -2,7 +2,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { TypeAnimation } from "react-type-animation";
-import { playfairDisplay } from "@/lib/fonts";
 
 type CallToActionProps = {
     width?: string | number | undefined
