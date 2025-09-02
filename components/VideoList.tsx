@@ -23,9 +23,9 @@ export default function VideoList({ itemsPerPage = 3, type = "grid", videos }: {
     };
 
     return (
-        <div className={`bg-gray-900/50 px-4 sm:px-8 md:px-16 lg:px-24 py-8 sm:py-12`}>
+        <div className={`bg-gray-900/50 px-4 sm:px-8 md:px-16 lg:px-24 py-8 sm:py-12 w-full`}>
             <h2 className="text-2xl sm:text-3xl text-white mb-4">Videos</h2>
-            <Button className="mt-4 mb-6 sm:mb-8 cursor-pointer hover:bg-background hover:text-foreground transition-colors text-sm sm:text-base px-3 sm:px-4 py-2" onClick={() => setView(view === "grid" ? "list" : "grid")}>{view === "grid" ? "Switch to List View" : "Switch to Grid View"}</Button>
+            <Button className="bg-[#02ACAC] mt-4 mb-6 sm:mb-8 cursor-pointer hover:bg-background hover:text-foreground transition-colors text-sm sm:text-base px-3 sm:px-4 py-2" onClick={() => setView(view === "grid" ? "list" : "grid")}>{view === "grid" ? "Switch to List View" : "Switch to Grid View"}</Button>
             <div className={`grid ${view === "grid" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"} gap-4`}>
                 {paginatedVideos.map((video: any) => (
                     <div key={video + Math.random()} className={`${view === "grid" ? "h-[200px] sm:h-[250px] md:h-[300px]" : "h-[400px] sm:h-[500px] md:h-[600px]"}`}>
@@ -37,10 +37,11 @@ export default function VideoList({ itemsPerPage = 3, type = "grid", videos }: {
             {/* Shadcn Pagination Component */}
             <Pagination className="mt-6 sm:mt-8 text-white">
                 <PaginationContent className="flex flex-wrap justify-center gap-1 sm:gap-2">
-                    <PaginationItem>
+                    <PaginationItem className="!hidden md:!block">
                         <PaginationPrevious
                             onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                             className={`cursor-pointer text-sm sm:text-base ${currentPage === 1 ? 'pointer-events-none opacity-50' : ''}`}
+                            aria-label="Go to previous page"
                         />
                     </PaginationItem>
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -54,10 +55,11 @@ export default function VideoList({ itemsPerPage = 3, type = "grid", videos }: {
                             </PaginationLink>
                         </PaginationItem>
                     ))}
-                    <PaginationItem>
+                    <PaginationItem className="">
                         <PaginationNext
                             onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-                            className={`cursor-pointer text-sm sm:text-base ${currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}`}
+                            className={`!hidden md:!block cursor-pointer text-sm sm:text-base ${currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}`}
+                            aria-label="Go to next page"
                         />
                     </PaginationItem>
                 </PaginationContent>

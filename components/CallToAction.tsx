@@ -24,6 +24,7 @@ type CallToActionProps = {
     imgWidth?: number
     imgHeight?: number
 }
+
 export default function CallToAction({
     width,
     title,
@@ -48,62 +49,68 @@ export default function CallToAction({
     width = typeof width === "number" ? `${width}px` : width
 
     return (
-        <div className="relative grid grid-cols-1 overflow-hidden bg-gradient-to-br from-gray-900/80 to-gray-800/50 p-4 sm:p-6 text-white shadow-xl md:grid-cols-9 px-4 sm:px-8 md:px-16 lg:px-32 py-12 sm:py-16 md:py-24 lg:py-32 xl:py-48" style={{ width: width || "auto" }}>
-
-            {/* Content */}
-            <div className={`z-10 space-y-3 sm:space-y-4 col-span-1 md:col-span-4`}>
-                {
-                    subtitle ?
-                        <div className="inline-block rounded-lg bg-[#F7B478] px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-semibold tracking-wider text-black uppercase">{subtitle}</div>
-                        :
-                        null
-                }
-                <h2 className={`mb-3 sm:mb-4 text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl leading-tight font-bold tracking-tight ${playfairDisplay.className}`}>
-                    {title}
-                    {" "}
-                    {
-                        enableTypewriter ?
+        <div className="relative overflow-hidden bg-gradient-to-br from-gray-900/80 via-gray-800/70 to-gray-900/80 backdrop-blur-sm rounded-3xl p-8 sm:p-10 lg:p-12 xl:p-16 border border-gray-700/30 shadow-2xl" style={{ width: width || "auto" }}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16 items-center">
+                {/* Content */}
+                <div className="space-y-6 lg:space-y-8">
+                    {subtitle && (
+                        <div className="text-black inline-block rounded-xl bg-[#F7B478] px-4 py-2 text-sm font-semibold tracking-wider text-[#02ACAC] uppercase border border-[#02ACAC]/30">
+                            {subtitle}
+                        </div>
+                    )}
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight">
+                        {title}
+                        {" "}
+                        {enableTypewriter && (
                             <TypeAnimation 
-                                className="text-gray-400 inline-block whitespace-nowrap" 
+                                className="text-[#02ACAC] inline-block whitespace-nowrap" 
                                 sequence={typewriterSequence} 
                                 repeat={Infinity}
-                                style={{ minWidth: '200px' }} // Ensure minimum width for longest word
+                                style={{ minWidth: '200px' }}
                             />
-                            :
-                            null
-                    }
-                </h2>
-                <p className="max-w-xl text-sm sm:text-base text-gray-300 leading-relaxed">
-                    {body}
-                </p>
-                <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-2 mt-4 sm:mt-6">
-                    <button className="rounded-md bg-[#02ACAC] px-4 sm:px-6 py-2 sm:py-3 font-medium transition-all duration-300 hover:bg-[#005C5C] cursor-pointer text-sm sm:text-base">
-                        <Link href={`/${primaryRoute}`} onClick={handlePrimaryBtnClick}>{primaryBtnText}</Link>
-                    </button>
-                    {
-                        enableSecondaryBtn ?
-                            <button className="rounded-md border border-white/30 bg-transparent px-4 sm:px-6 py-2 sm:py-3 font-medium transition-all hover:bg-white/10 cursor-pointer text-sm sm:text-base">
-                                <Link href={`/${secondaryRoute}`} onClick={handleSecondaryBtnClick}>{secondaryBtnText}</Link>
+                        )}
+                    </h2>
+                    {body && (
+                        <p className="text-lg sm:text-xl lg:text-2xl text-gray-300 leading-relaxed max-w-xl">
+                            {body}
+                        </p>
+                    )}
+                    <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                        <button 
+                            onClick={handlePrimaryBtnClick}
+                            className="inline-flex items-center justify-center px-8 py-4 bg-[#02ACAC] hover:bg-[#02ACAC]/90 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105"
+                        >
+                            <Link href={`/${primaryRoute}`}>{primaryBtnText}</Link>
+                        </button>
+                        {enableSecondaryBtn && (
+                            <button 
+                                onClick={handleSecondaryBtnClick}
+                                className="inline-flex items-center justify-center px-8 py-4 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl transition-all duration-300 border border-gray-600 hover:border-gray-500"
+                            >
+                                <Link href={`/${secondaryRoute}`}>{secondaryBtnText}</Link>
                             </button>
-                            :
-                            null
-                    }
+                        )}
+                    </div>
                 </div>
-            </div>
 
-            {/* Image - Fixed styling issues */}
-            <div className="relative col-span-1 md:col-span-5 h-48 sm:h-64 md:h-80 lg:h-96 xl:h-[500px] mt-6 md:mt-0 flex items-center justify-center scale-x-[-1]">
-                <Image
-                    src={imgSrc || ""}
-                    alt={imgAltText || ""}
-                    className={`${imgClassnames} w-full h-full object-cover`}
-                    width={imgWidth || 1152}
-                    height={imgHeight || 768}
-                    style={{
-                        maxWidth: '100%',
-                        maxHeight: '100%',
-                    }}
-                />
+                {/* Image */}
+                {imgSrc && (
+                    <div className="relative">
+                        <div className="aspect-video rounded-2xl overflow-hidden">
+                            <Image
+                                src={imgSrc}
+                                alt={imgAltText || ""}
+                                className={`${imgClassnames} w-full h-full object-cover`}
+                                width={imgWidth || 1152}
+                                height={imgHeight || 768}
+                                style={{
+                                    maxWidth: '100%',
+                                    maxHeight: '100%',
+                                }}
+                            />
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

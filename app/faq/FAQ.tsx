@@ -6,17 +6,17 @@ import { useHeaderContext } from "../contexts/HeaderContext"
 import Announcement from "@/components/Announcement"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-export default function FAQ() {
+export default function FAQ({showTitle = true}) {
     const { dispatch } = useHeaderContext()
 
     const handleNavChange = () => {
-        dispatch({ type: "SET_NAV_LINK", payload: 'booking' })
+        dispatch({ type: "SET_ACTIVE_LINK", payload: 'booking' })
     }
 
     return (
         <>
             <section className="sm:mt-12 md:mt-16 mb-16 sm:mb-20 md:mb-28 px-4 sm:px-6 md:px-8 w-full max-w-[1000px]">
-                <h3 className="text-2xl sm:text-3xl font-semibold mb-4 text-white text-center">Frequently Asked Questions</h3>
+                {showTitle && <h3 className="text-2xl sm:text-3xl font-semibold mb-4 text-white text-center">Frequently Asked Questions</h3>}
                 <Accordion type="single" collapsible className="text-white py-4 sm:py-6 md:py-8 rounded-2xl w-full">
                     <FAQItem
                         title="What kind of music do you perform?"
@@ -62,8 +62,8 @@ export default function FAQ() {
             </section>
             <section className="w-full text-center mb-0 px-4 sm:px-6 md:px-8">
                 <Announcement textColor="text-white" text="Ready to book?" bgColor="bg-[#005C5C]/80" rounded={false}>
-                    <Button className="mx-auto w-full max-w-[300px] sm:max-w-[400px] md:max-w-[500px] h-[40px] sm:h-[45px] md:h-[50px] rounded-md bg-white text-black text-base sm:text-lg px-4 sm:px-6 py-2 font-medium transition-all duration-300 hover:bg-[#F7B478] cursor-pointer">
-                        <Link href={`/booking`} onClick={handleNavChange}>Get a quote</Link>
+                    <Button asChild className="mx-auto w-full max-w-[300px] sm:max-w-[400px] md:max-w-[500px] h-[40px] sm:h-[45px] md:h-[50px] bg-[#02ACAC] hover:bg-[#02ACAC]/90 text-white text-base sm:text-lg px-4 sm:px-6 py-2 font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                        <Link onClick={handleNavChange} href="/booking">Get a quote</Link>
                     </Button>
                 </Announcement>
             </section>

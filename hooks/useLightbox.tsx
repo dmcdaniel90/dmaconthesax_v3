@@ -29,11 +29,51 @@ export function useLightbox() {
     };
 
     const LightboxComponent = () => (
-        <div className={`fixed top-0 left-0 w-full h-full bg-gray-950/80 flex justify-center items-center z-[1000] cursor-alias`} onClick={handleClickOutside}>
-            <button onClick={handleClose} className="absolute bg-transparent border-0 text-white text-3xl cursor-pointer top-[30px] right-[30px]">X</button>
-            <button onClick={handlePrev} className="absolute border-0  text-2xl cursor-pointer top-[50%] left-[100px] bg-white text-gray-900 w-[50px] h-[50px] rounded-full flex justify-center items-center hover:opacity-80 transition-opacity duration-300">&lt;</button>
-            <img src={images[currentIndex]} alt={`Lightbox ${currentIndex}`} className="w-[80%] h-[80%] opacity-100 cursor-default" />
-            <button onClick={handleNext} className="absolute border-0  text-2xl cursor-pointer top-[50%] right-[100px] bg-white text-gray-900 w-[50px] h-[50px] rounded-full flex justify-center items-center hover:opacity-80 transition-opacity duration-300">&gt;</button>
+        <div className={`fixed top-0 left-0 w-full h-full bg-gray-950/90 backdrop-blur-sm flex justify-center items-center z-[1000] cursor-alias`} onClick={handleClickOutside}>
+            {/* Close button */}
+            <button 
+                onClick={handleClose} 
+                className="absolute bg-gray-900/80 hover:bg-gray-800/90 border border-gray-600/50 text-white text-2xl sm:text-3xl cursor-pointer top-4 sm:top-6 right-4 sm:right-6 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 z-10"
+                aria-label="Close lightbox"
+            >
+                ×
+            </button>
+            
+            {/* Previous button */}
+            <button 
+                onClick={handlePrev} 
+                className="absolute border-0 text-2xl cursor-pointer top-1/2 -translate-y-1/2 left-2 sm:left-4 md:left-8 lg:left-16 bg-white/90 hover:bg-white text-gray-900 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex justify-center items-center hover:scale-110 transition-all duration-200 shadow-lg z-10"
+                aria-label="Previous image"
+            >
+                ‹
+            </button>
+            
+            {/* Image container with responsive sizing */}
+            <div className="relative w-full h-full flex items-center justify-center p-4 sm:p-6 md:p-8 lg:p-12">
+                <img 
+                    src={images[currentIndex]} 
+                    alt={`Lightbox image ${currentIndex + 1} of ${images.length}`} 
+                    className="max-w-full max-h-full w-auto h-auto object-contain rounded-lg shadow-2xl"
+                    style={{
+                        maxWidth: 'min(90vw, 90vh * 16/9)',
+                        maxHeight: 'min(90vh, 90vw * 9/16)'
+                    }}
+                />
+            </div>
+            
+            {/* Next button */}
+            <button 
+                onClick={handleNext} 
+                className="absolute border-0 text-2xl cursor-pointer top-1/2 -translate-y-1/2 right-2 sm:right-4 md:right-8 lg:right-16 bg-white/90 hover:bg-white text-gray-900 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex justify-center items-center hover:scale-110 transition-all duration-200 shadow-lg z-10"
+                aria-label="Next image"
+            >
+                ›
+            </button>
+            
+            {/* Image counter */}
+            <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 bg-gray-900/80 text-white text-sm sm:text-base px-3 py-2 rounded-full border border-gray-600/50">
+                {currentIndex + 1} / {images.length}
+            </div>
         </div>
     )
 

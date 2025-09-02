@@ -29,7 +29,7 @@ export default function SuccessStateBookingForm({ form }: Props) {
             <h3 className="py-5 text-2xl text-green-700">Success</h3>
             <p className="text-gray-500 md:px-3">Thanks for your request! We will get back to you soon with availability and a quote.</p>
             <Button
-                className="mt-8 mb-4 cursor-pointer hover:bg-gray-950/60 w-full"
+                className="mt-8 mb-4 cursor-pointer w-full bg-[#02ACAC] hover:bg-[#02ACAC]/90 text-white text-base sm:text-lg px-4 sm:px-6 py-2 font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer"
                 onClick={() => reset()}>
                 Go back
             </Button>

@@ -1,13 +1,24 @@
 import { Button } from "@/components/ui/button";
-import { formSchemaType } from "@/hooks/useBookingForm";
-import type { UseFormReturn } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
+import { z } from "zod";
+
+const formSchema = z.object({
+    from_name: z.string(),
+    subject: z.string(),
+    name: z.string().min(2, { message: "Name must be at least 2 characters long" }),
+    email: z.email().includes("@", { message: "Invalid email address" }),
+    message: z.string().min(20, { message: "Message must be at least 20 characters long" }),
+    botcheck: z.boolean()
+})
+
+type formSchemaType = z.infer<typeof formSchema>
 
 type Props = {
     form: UseFormReturn<formSchemaType>;
 }
-export default function FailureStateBookingForm({ form }: Props) {
 
-    const { reset } = form;
+export default function FailureStateContactForm({ form }: Props) {
+    const { reset } = form
 
     return (
         <div className="h-full flex flex-col items-center justify-center text-center text-black rounded-md">
@@ -28,7 +39,7 @@ export default function FailureStateBookingForm({ form }: Props) {
             <h3 className="text-2xl text-red-400 py-7">
                 Oops, Something went wrong!
             </h3>
-            <p className="text-gray-500 md:px-3">There was a problem processing your request. Please try again later or contact me directly at <a href="contact@devinmcdaniel.com" className="underline hover:text-red-400">contact@devinmcdaniel.com</a></p>
+            <p className="text-gray-500 md:px-3">There was a problem sending your message. Please try again later or contact me directly at <a href="mailto:contact@devinmcdaniel.com" className="underline hover:text-red-400">contact@devinmcdaniel.com</a></p>
             <Button className="mt-8 mb-4 cursor-pointer w-full bg-red-600 hover:bg-red-500/90 text-white text-base sm:text-lg px-4 sm:px-6 py-2 font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer" onClick={() => reset()}>
                 Try Again
             </Button>

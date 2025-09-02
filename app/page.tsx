@@ -38,7 +38,7 @@ export default function Home() {
         typewriterSequence={["Weddings", 1000, "Events", 1000, "Festivals", 1000]}
         imgSrc="/image1.webp"
         imgAltText="DMAC on the Sax is a professional saxophonist for your next event"
-        imgClassnames="drop-shadow-2xl"
+        imgClassnames="drop-shadow-2xl scale-x-[-1]"
         imgWidth={1152}
         imgHeight={768}
       />
