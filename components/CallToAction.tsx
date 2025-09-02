@@ -76,19 +76,25 @@ export default function CallToAction({
                         </p>
                     )}
                     <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                        <button 
+                        <Link 
+                            href={`/${primaryRoute}`}
                             onClick={handlePrimaryBtnClick}
-                            className="inline-flex items-center justify-center px-8 py-4 bg-[#02ACAC] hover:bg-[#02ACAC]/90 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105"
+                            className="inline-flex items-center justify-center px-8 py-4 bg-[#02ACAC] hover:bg-[#02ACAC]/90 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+                            aria-label={primaryBtnText}
+                            tabIndex={0}
                         >
-                            <Link href={`/${primaryRoute}`}>{primaryBtnText}</Link>
-                        </button>
+                            {primaryBtnText}
+                        </Link>
                         {enableSecondaryBtn && (
-                            <button 
+                            <Link 
+                                href={`/${secondaryRoute}`}
                                 onClick={handleSecondaryBtnClick}
-                                className="inline-flex items-center justify-center px-8 py-4 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl transition-all duration-300 border border-gray-600 hover:border-gray-500"
+                                className="inline-flex items-center justify-center px-8 py-4 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl transition-all duration-300 border border-gray-600 hover:border-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+                                aria-label={secondaryBtnText}
+                                tabIndex={0}
                             >
-                                <Link href={`/${secondaryRoute}`}>{secondaryBtnText}</Link>
-                            </button>
+                                {secondaryBtnText}
+                            </Link>
                         )}
                     </div>
                 </div>

@@ -91,7 +91,12 @@ export default function DefaultStateBookingForm({ onSubmit, form }: DefaultState
                     name="consent"
                     render={({ field }) => <ConsentBox field={field as unknown as ControllerRenderProps & Field} />}
                 />
-                <Button className="mt-6 sm:mt-8 mb-4 sm:mb-6 cursor-pointer w-full bg-[#02ACAC] hover:bg-[#02ACAC]/90 text-white text-base sm:text-lg px-4 sm:px-6 py-2 font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer" type="submit">
+                <Button 
+                    className="mt-6 sm:mt-8 mb-4 sm:mb-6 cursor-pointer w-full bg-[#02ACAC] hover:bg-[#02ACAC]/90 text-white text-base sm:text-lg px-4 sm:px-6 py-2 font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900" 
+                    type="submit"
+                    aria-label="Request a quote"
+                    tabIndex={0}
+                >
                     {isSubmitting ? (
                         <svg
                             className="w-5 h-5 mx-auto text-white animate-spin"

@@ -30,10 +30,10 @@ export default function DefaultStateContactForm({ onSubmit, form }: Props) {
 
     return (
         <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(onSubmit)} aria-labelledby="contact-form-title" aria-describedby="contact-form-description">
                 {/* Hidden fields */}
                 <FormField
-                    render={() => <input type="checkbox" className="hidden" style={{ display: 'none' }} id="" {...register("botcheck")} />}
+                    render={() => <input type="checkbox" className="hidden" style={{ display: 'none' }} id="botcheck" {...register("botcheck")} />}
                     name="botcheck"
                 />
 
@@ -41,25 +41,31 @@ export default function DefaultStateContactForm({ onSubmit, form }: Props) {
                 <FormField
                     control={control}
                     name="name"
-                    render={({ field }) => <NameInput field={field as unknown as Field} />}
+                    render={({ field }) => <NameInput field={field as unknown as Field} required={true} />}
                 />
                 <FormField
                     control={control}
                     name="email"
-                    render={({ field }) => <EmailInput field={field as unknown as Field} />}
+                    render={({ field }) => <EmailInput field={field as unknown as Field} required={true} />}
                 />
                 <FormField
                     control={control}
                     name="message"
-                    render={({ field }) => <DescriptionTextarea field={field as unknown as Field} placeholder="Enter your message" />}
+                    render={({ field }) => <DescriptionTextarea field={field as unknown as Field} placeholder="Enter your message" required={true} />}
                 />
-                <Button className="mt-8 mb-4 cursor-pointer w-full bg-[#02ACAC] hover:bg-[#02ACAC]/90 text-white text-base sm:text-lg px-4 sm:px-6 py-2 font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer" type="submit">
+                <Button 
+                    className="mt-8 mb-4 cursor-pointer w-full bg-[#02ACAC] hover:bg-[#02ACAC]/90 text-white text-base sm:text-lg px-4 sm:px-6 py-2 font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900" 
+                    type="submit"
+                    aria-label="Submit contact form"
+                    tabIndex={0}
+                >
                     {isSubmitting ? (
                         <svg
                             className="w-5 h-5 mx-auto text-white animate-spin"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
-                            viewBox="0 0 24 24">
+                            viewBox="0 0 24 24"
+                            aria-hidden="true">
                             <circle
                                 className="opacity-25"
                                 cx="12"

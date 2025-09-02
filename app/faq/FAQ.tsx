@@ -62,9 +62,15 @@ export default function FAQ({showTitle = true}) {
             </section>
             <section className="w-full text-center mb-0 px-4 sm:px-6 md:px-8">
                 <Announcement textColor="text-white" text="Ready to book?" bgColor="bg-[#005C5C]/80" rounded={false}>
-                    <Button asChild className="mx-auto w-full max-w-[300px] sm:max-w-[400px] md:max-w-[500px] h-[40px] sm:h-[45px] md:h-[50px] bg-[#02ACAC] hover:bg-[#02ACAC]/90 text-white text-base sm:text-lg px-4 sm:px-6 py-2 font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                        <Link onClick={handleNavChange} href="/booking">Get a quote</Link>
-                    </Button>
+                    <Link 
+                        onClick={handleNavChange} 
+                        href="/booking"
+                        className="mx-auto w-full max-w-[300px] sm:max-w-[400px] md:max-w-[500px] h-[40px] sm:h-[45px] md:h-[50px] bg-[#02ACAC] hover:bg-[#02ACAC]/90 text-white text-base sm:text-lg px-4 sm:px-6 py-2 font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 inline-flex items-center justify-center"
+                        aria-label="Get a quote for booking"
+                        tabIndex={0}
+                    >
+                        Get a quote
+                    </Link>
                 </Announcement>
             </section>
         </>

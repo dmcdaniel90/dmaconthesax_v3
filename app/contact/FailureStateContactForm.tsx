@@ -40,7 +40,12 @@ export default function FailureStateContactForm({ form }: Props) {
                 Oops, Something went wrong!
             </h3>
             <p className="text-gray-500 md:px-3">There was a problem sending your message. Please try again later or contact me directly at <a href="mailto:contact@devinmcdaniel.com" className="underline hover:text-red-400">contact@devinmcdaniel.com</a></p>
-            <Button className="mt-8 mb-4 cursor-pointer w-full bg-red-600 hover:bg-red-500/90 text-white text-base sm:text-lg px-4 sm:px-6 py-2 font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer" onClick={() => reset()}>
+            <Button 
+                className="mt-8 mb-4 cursor-pointer w-full bg-red-600 hover:bg-red-500/90 text-white text-base sm:text-lg px-4 sm:px-6 py-2 font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900" 
+                onClick={() => reset()}
+                aria-label="Try again"
+                tabIndex={0}
+            >
                 Try Again
             </Button>
         </div>

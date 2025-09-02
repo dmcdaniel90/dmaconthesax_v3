@@ -36,7 +36,14 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
     return (
         <div className={`bg-gray-900/50 px-4 sm:px-8 md:px-16 lg:px-32 py-8 sm:py-12`}>
             <h2 className="text-2xl sm:text-3xl text-white mb-4">Upcoming Events</h2>
-            <Button className="mb-6 cursor-pointer font-bold bg-[#02ACAC] hover:bg-[#005C5C] hover:text-white transition-colors text-sm sm:text-base" onClick={() => setView(view === "grid" ? "list" : "grid")}>{view === "grid" ? "Switch to List View" : "Switch to Grid View"}</Button>
+            <Button 
+                className="mb-6 cursor-pointer font-bold bg-[#02ACAC] hover:bg-[#005C5C] hover:text-white transition-colors text-sm sm:text-base focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900" 
+                onClick={() => setView(view === "grid" ? "list" : "grid")}
+                aria-label={`Switch to ${view === "grid" ? "List" : "Grid"} View`}
+                tabIndex={0}
+            >
+                {view === "grid" ? "Switch to List View" : "Switch to Grid View"}
+            </Button>
             <div className={`grid ${view === "grid" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"} gap-4 sm:gap-6`}>
                 {paginatedEvents.map((event: MusicEvents) => (
                     <Event key={event.eventName + Math.random()} eventName={event.eventName} monthNumber={event.monthNumber} day={event.day} year={event.year} time={event.time || "TBA"} location={event.location || "TBA"} ticketPrice={event.ticketPrice || 0} imgSrc={event.imgSrc || ""} imgAltText={event.imgAltText || ""} />

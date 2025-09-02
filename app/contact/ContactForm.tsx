@@ -55,8 +55,8 @@ export default function ContactForm() {
     return (
         <Card className="min-h-fit w-full px-0 sm:px-4">
             <CardHeader>
-                <CardTitle className="text-2xl sm:text-3xl md:text-4xl my-2 sm:my-4">Contact Me</CardTitle>
-                <CardDescription className="text-base sm:text-lg">Send me a message and I'll get back to you soon</CardDescription>
+                <CardTitle id="contact-form-title" className="text-2xl sm:text-3xl md:text-4xl my-2 sm:my-4">Contact Me</CardTitle>
+                <CardDescription id="contact-form-description" className="text-base sm:text-lg">Send me a message and I'll get back to you soon</CardDescription>
             </CardHeader>
             <CardContent className="pb-8">
                 {!isSubmitSuccessful && (

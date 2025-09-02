@@ -8,19 +8,29 @@ type DescriptionTextareaProps = {
     label?: string,
     labelClasses?: string,
     field: Field;
-    placeholder?: string
+    placeholder?: string;
+    required?: boolean;
 }
 export default function DescriptionTextarea({
-    label = "Description",
+    label = "Message",
     labelClasses = defaultLabelStyles,
     field,
-    placeholder = "Enter a description"
+    placeholder = "Enter your message",
+    required = false
 }: DescriptionTextareaProps) {
     return (
         <FormItem>
-            <FormLabel className={labelClasses} htmlFor="description">{label}</FormLabel>
+            <FormLabel className={labelClasses} htmlFor="message">{label}</FormLabel>
             <FormControl>
-                <Textarea id="description" maxLength={400} placeholder={placeholder} className="h-24 sm:h-28 md:h-32 text-sm sm:text-base" {...field} />
+                <Textarea 
+                    id="message" 
+                    name="message" 
+                    maxLength={400} 
+                    placeholder={placeholder} 
+                    className="h-24 sm:h-28 md:h-32 text-sm sm:text-base" 
+                    aria-required={required}
+                    {...field} 
+                />
             </FormControl>
             <FormMessage />
         </FormItem>

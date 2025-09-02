@@ -16,9 +16,13 @@ export default function EmailInput({ label = "Email", labelClasses = defaultLabe
         <FormItem>
             <FormLabel className={labelClasses} htmlFor="email">{label}</FormLabel>
             <FormControl>
-                {
-                    required ? <Input id="email" type="email" className="h-10 sm:h-11 md:h-12 text-sm sm:text-base" {...field} /> : <Input id="email" type="email" className="h-10 sm:h-11 md:h-12 text-sm sm:text-base" {...field} />
-                }
+                <Input 
+                    id="email" 
+                    type="email" 
+                    className="h-10 sm:h-11 md:h-12 text-sm sm:text-base" 
+                    aria-required={required}
+                    {...field} 
+                />
             </FormControl>
             <FormMessage />
         </FormItem>

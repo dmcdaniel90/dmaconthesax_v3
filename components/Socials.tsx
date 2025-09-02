@@ -15,7 +15,15 @@ export default function Socials({ socials, color, size, gap }: { socials: { face
         <span className="flex flex-row justify-center items-center w-full" style={{ gap: gap }}>
             {
                 Object.entries(socials).map(([key, value]) => (
-                    <Link key={key} className={`transition-all duration-200 ease-in-out hover:scale-110 flex items-center justify-center`} style={{ color: color }} href={value} target="_blank">
+                    <Link 
+                        key={key} 
+                        className={`transition-all duration-200 ease-in-out hover:scale-110 flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 rounded-full p-1`} 
+                        style={{ color: color }} 
+                        href={value} 
+                        target="_blank"
+                        aria-label={`Visit ${key} page`}
+                        tabIndex={0}
+                    >
                         {key === "facebook" && <FaFacebook size={mobileSize} className="sm:hidden hover:text-[#02ACAC]" />}
                         {key === "facebook" && <FaFacebook size={tabletSize} className="hidden sm:block md:hidden hover:text-[#02ACAC]" />}
                         {key === "facebook" && <FaFacebook size={desktopSize} className="hidden md:block hover:text-[#02ACAC]" />}

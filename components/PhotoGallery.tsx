@@ -63,7 +63,14 @@ export default function PhotoGallery({ images, itemsPerPage = 12, type = "carous
     return (
         <div className={`bg-gray-900/50 px-2 sm:px-4 md:px-8 lg:px-16 xl:px-24 py-6 sm:py-8 md:py-12`}>
             <h2 className="text-xl sm:text-2xl md:text-3xl text-white mb-3 sm:mb-4 px-2 sm:px-4 md:px-8 lg:px-12">Photos</h2>
-            <Button className="bg-[#02ACAC] mt-3 sm:mt-4 px-3 sm:px-4 md:px-8 lg:px-12 cursor-pointer hover:bg-background hover:text-foreground transition-colors mb-4 sm:mb-6 md:mb-8 text-sm sm:text-base" onClick={() => setView(view === "grid" ? "carousel" : "grid")}>{view === "grid" ? "Switch to Carousel View" : "Switch to Grid View"}</Button>
+            <Button 
+                className="bg-[#02ACAC] mt-3 sm:mt-4 px-3 sm:px-4 md:px-8 lg:px-12 cursor-pointer hover:bg-background hover:text-foreground transition-colors mb-4 sm:mb-6 md:mb-8 text-sm sm:text-base focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900" 
+                onClick={() => setView(view === "grid" ? "carousel" : "grid")}
+                aria-label={`Switch to ${view === "grid" ? "Carousel" : "Grid"} View`}
+                tabIndex={0}
+            >
+                {view === "grid" ? "Switch to Carousel View" : "Switch to Grid View"}
+            </Button>
 
             {isOpen && (
                 <LightboxComponent />

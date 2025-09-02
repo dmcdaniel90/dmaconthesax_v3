@@ -25,7 +25,14 @@ export default function VideoList({ itemsPerPage = 3, type = "grid", videos }: {
     return (
         <div className={`bg-gray-900/50 px-4 sm:px-8 md:px-16 lg:px-24 py-8 sm:py-12 w-full`}>
             <h2 className="text-2xl sm:text-3xl text-white mb-4">Videos</h2>
-            <Button className="bg-[#02ACAC] mt-4 mb-6 sm:mb-8 cursor-pointer hover:bg-background hover:text-foreground transition-colors text-sm sm:text-base px-3 sm:px-4 py-2" onClick={() => setView(view === "grid" ? "list" : "grid")}>{view === "grid" ? "Switch to List View" : "Switch to Grid View"}</Button>
+            <Button 
+                className="bg-[#02ACAC] mt-4 mb-6 sm:mb-8 cursor-pointer hover:bg-background hover:text-foreground transition-colors text-sm sm:text-base px-3 sm:px-4 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900" 
+                onClick={() => setView(view === "grid" ? "list" : "grid")}
+                aria-label={`Switch to ${view === "grid" ? "List" : "Grid"} View`}
+                tabIndex={0}
+            >
+                {view === "grid" ? "Switch to List View" : "Switch to Grid View"}
+            </Button>
             <div className={`grid ${view === "grid" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"} gap-4`}>
                 {paginatedVideos.map((video: any) => (
                     <div key={video + Math.random()} className={`${view === "grid" ? "h-[200px] sm:h-[250px] md:h-[300px]" : "h-[400px] sm:h-[500px] md:h-[600px]"}`}>
