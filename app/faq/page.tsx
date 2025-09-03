@@ -25,7 +25,7 @@ export default function FAQPage() {
             </section>
 
             {/* FAQ Section */}
-            <section className="bg-gradient-to-br from-gray-900/80 via-gray-800/70 to-gray-900/80 backdrop-blur-sm rounded-3xl p-8 sm:p-10 lg:p-12 border border-gray-700/30 shadow-2xl">
+            <section className="flex flex-col items-center bg-gradient-to-br from-gray-900/80 via-gray-800/70 to-gray-900/80 backdrop-blur-sm rounded-3xl p-8 sm:p-10 lg:p-12 border border-gray-700/30 shadow-2xl">
                 <FAQ showTitle={false} />
             </section>
 
