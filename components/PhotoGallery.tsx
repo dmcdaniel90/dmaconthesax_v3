@@ -13,10 +13,14 @@ import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, Pagi
 import { useLightbox } from "../hooks/useLightbox";
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Loading, Skeleton } from "@/components/ui/loading";
 
 export default function PhotoGallery({ images, itemsPerPage = 12, type = "carousel" }: { images: string[], itemsPerPage?: number, type?: "grid" | "carousel" }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [view, setView] = useState<"grid" | "carousel">(type);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isViewChanging, setIsViewChanging] = useState(false);
+    const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
 
     // Embla carousel for mobile gesture support
     const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -28,6 +32,15 @@ export default function PhotoGallery({ images, itemsPerPage = 12, type = "carous
             '(min-width: 1024px)': { slidesToScroll: 3 },
         }
     });
+
+    // Simulate loading time for better UX
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 600);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     // Memoize the paginated data to prevent unnecessary recalculations
     const paginatedPhotos = useMemo(() => {
@@ -45,6 +58,15 @@ export default function PhotoGallery({ images, itemsPerPage = 12, type = "carous
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
+        setLoadedImages(new Set()); // Reset loaded images on page change
+    };
+
+    const handleViewChange = () => {
+        setIsViewChanging(true);
+        setTimeout(() => {
+            setView(view === "grid" ? "carousel" : "grid");
+            setIsViewChanging(false);
+        }, 300);
     };
 
     // Embla carousel navigation
@@ -56,21 +78,55 @@ export default function PhotoGallery({ images, itemsPerPage = 12, type = "carous
         if (emblaApi) emblaApi.scrollNext();
     }, [emblaApi]);
 
+    const handleImageLoad = (index: number) => {
+        setLoadedImages(prev => new Set(prev).add(index));
+    };
+
     useEffect(() => {
         setImages(paginatedPhotos);
     }, [paginatedPhotos, setImages]);
 
+    // Skeleton loader for photos
+    const PhotoSkeleton = () => (
+        <div className="bg-gray-800/50 rounded-lg overflow-hidden animate-pulse">
+            <Skeleton className="w-full aspect-square" />
+        </div>
+    );
+
+    if (isLoading) {
+        return (
+            <div className="bg-gray-900/50 px-2 sm:px-4 md:px-8 lg:px-16 xl:px-24 py-6 sm:py-8 md:px-12">
+                <div className="flex items-center gap-3 mb-6">
+                    <Skeleton className="h-6 w-24" />
+                    <Skeleton className="h-8 w-40" />
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-4">
+                    {Array.from({ length: itemsPerPage }).map((_, i) => (
+                        <PhotoSkeleton key={i} />
+                    ))}
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className={`bg-gray-900/50 px-2 sm:px-4 md:px-8 lg:px-16 xl:px-24 py-6 sm:py-8 md:py-12`}>
-            <h2 className="text-xl sm:text-2xl md:text-3xl text-white mb-3 sm:mb-4 px-2 sm:px-4 md:px-8 lg:px-12">Photos</h2>
-            <Button 
-                className="bg-[#02ACAC] mt-3 sm:mt-4 px-3 sm:px-4 md:px-8 lg:px-12 cursor-pointer hover:bg-background hover:text-foreground transition-colors mb-4 sm:mb-6 md:mb-8 text-sm sm:text-base focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900" 
-                onClick={() => setView(view === "grid" ? "carousel" : "grid")}
-                aria-label={`Switch to ${view === "grid" ? "Carousel" : "Grid"} View`}
-                tabIndex={0}
-            >
-                {view === "grid" ? "Switch to Carousel View" : "Switch to Grid View"}
-            </Button>
+            <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl sm:text-2xl md:text-3xl text-white px-2 sm:px-4 md:px-8 lg:px-12">Photos</h2>
+                <Button 
+                    className="bg-[#02ACAC] px-3 sm:px-4 md:px-8 lg:px-12 cursor-pointer hover:bg-background hover:text-foreground transition-all duration-300 mb-4 sm:mb-6 md:mb-8 text-sm sm:text-base focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 disabled:opacity-50" 
+                    onClick={handleViewChange}
+                    disabled={isViewChanging}
+                    aria-label={`Switch to ${view === "grid" ? "Carousel" : "Grid"} View`}
+                    tabIndex={0}
+                >
+                    {isViewChanging ? (
+                        <Loading variant="dots" size="sm" className="text-white" />
+                    ) : (
+                        view === "grid" ? "Switch to Carousel View" : "Switch to Grid View"
+                    )}
+                </Button>
+            </div>
 
             {isOpen && (
                 <LightboxComponent />
@@ -80,19 +136,37 @@ export default function PhotoGallery({ images, itemsPerPage = 12, type = "carous
                 view === "carousel" &&
                 <Carousel>
                     <CarouselContent className="px-2 sm:px-4 md:px-8 lg:px-12">
-                        {paginatedPhotos.map((image, index) => (
-                            <CarouselItem key={index} className="basis-full sm:basis-1/2 lg:basis-1/3 cursor-pointer">
-                                <Image
-                                    src={image}
-                                    alt={`Image ${index}`}
-                                    width={400}
-                                    height={400}
-                                    style={{ objectFit: "cover", width: "100%", height: "100%" }}
-                                    className="cursor-pointer hover:scale-105 transition-transform duration-200"
-                                    onClick={() => handleOpen(index)}
-                                />
-                            </CarouselItem>
-                        ))}
+                        {isViewChanging ? (
+                            // Show skeleton loaders during view change
+                            Array.from({ length: Math.min(6, paginatedPhotos.length) }).map((_, i) => (
+                                <CarouselItem key={i} className="basis-full sm:basis-1/2 lg:basis-1/3">
+                                    <PhotoSkeleton />
+                                </CarouselItem>
+                            ))
+                        ) : (
+                            paginatedPhotos.map((image, index) => (
+                                <CarouselItem key={index} className="basis-full sm:basis-1/2 lg:basis-1/3 cursor-pointer">
+                                    <div className="relative">
+                                        {!loadedImages.has(index) && (
+                                            <div className="absolute inset-0 bg-gray-800/50 rounded-lg flex items-center justify-center">
+                                                <Loading variant="spinner" size="sm" />
+                                            </div>
+                                        )}
+                                        <Image
+                                            src={image}
+                                            alt={`Image ${index}`}
+                                            width={400}
+                                            height={400}
+                                            style={{ objectFit: "cover", width: "100%", height: "100%" }}
+                                            className={`cursor-pointer hover:scale-105 transition-all duration-300 ${!loadedImages.has(index) ? 'opacity-0' : 'opacity-100'}`}
+                                            onClick={() => handleOpen(index)}
+                                            onLoad={() => handleImageLoad(index)}
+                                            loading="lazy"
+                                        />
+                                    </div>
+                                </CarouselItem>
+                            ))
+                        )}
                     </CarouselContent>
                     <CarouselNext className="cursor-pointer hover:opacity-80 w-[40px] h-[40px] sm:w-[50px] sm:h-[50px]" />
                     <CarouselPrevious className="cursor-pointer hover:opacity-80 w-[40px] h-[50px] sm:w-[50px] sm:h-[50px]" />

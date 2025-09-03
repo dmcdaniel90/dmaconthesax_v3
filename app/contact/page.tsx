@@ -3,17 +3,18 @@ import ContactForm from "./ContactForm"
 import CallToActionAlt from "@/components/CallToActionAlt"
 import Image from "next/image"
 import ResponsiveImage from "@/components/ResponsiveImage"
+import AdvancedVideoPlayer from "@/components/AdvancedVideoPlayer"
 
 export default function Contact() {
     return (
         <main className="mt-16 min-h-screen bg-gradient-to-br from-gray-900/80 via-gray-800/60 via-[#02ACAC]/10 to-gray-900/90">
             {/* Hero Section */}
-            <section className="relative overflow-hidden py-20 sm:py-24 lg:py-32 xl:py-40">
+            <section className="relative overflow-hidden pt-20 sm:pt-24 lg:pt-32 xl:pt-40">
                 {/* Background Pattern */}
                 <div className="absolute inset-0 opacity-40">
                     <div className="w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMkFDQUMiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')]"></div>
                 </div>
-                
+
                 <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <div className="max-w-4xl mx-auto">
                         <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#02ACAC] to-transparent mx-auto mb-8"></div>
@@ -63,8 +64,8 @@ export default function Contact() {
                                         </div>
                                         <div className="min-w-0 flex-1">
                                             <p className="text-sm text-gray-400 mb-1">Email</p>
-                                            <a 
-                                                href="mailto:contact@devinmcdaniel.com" 
+                                            <a
+                                                href="mailto:contact@devinmcdaniel.com"
                                                 className="text-lg lg:text-xl text-white hover:text-[#02ACAC] transition-colors duration-300 underline decoration-2 underline-offset-4 break-all"
                                             >
                                                 contact@devinmcdaniel.com
@@ -81,8 +82,8 @@ export default function Contact() {
                                         </div>
                                         <div className="min-w-0 flex-1">
                                             <p className="text-sm text-gray-400 mb-1">Phone</p>
-                                            <a 
-                                                href="tel:+447359142634" 
+                                            <a
+                                                href="tel:+447359142634"
                                                 className="text-lg lg:text-xl text-white hover:text-[#02ACAC] transition-colors duration-300 break-all"
                                             >
                                                 +447359142634
@@ -96,6 +97,19 @@ export default function Contact() {
                                     <p className="text-gray-300 text-center">
                                         Want to get pricing and availability? <Link href="/booking" className="text-[#02ACAC] hover:text-[#02ACAC]/80 underline decoration-2 underline-offset-4 transition-colors duration-300">Click here</Link> to get a quote.
                                     </p>
+                                </div>
+                                <div className="relative">
+                                    <div className="w-full h-64 sm:h-80 lg:h-96 rounded-2xl overflow-hidden border border-gray-700/30 hover:border-[#02ACAC]/30 transition-all duration-300">
+                                        <AdvancedVideoPlayer
+                                            autoPlay={true}
+                                            loop={true}
+                                            muted={true}
+                                            showControls={false}
+                                            showQualitySelector={false}
+                                            showPerformanceMetrics={true}
+                                            className="w-full h-full"
+                                        />
+                                    </div>
                                 </div>
                             </div>
 
@@ -114,7 +128,7 @@ export default function Contact() {
                                         Fill out the form below and we&apos;ll get back to you
                                     </p>
                                 </div>
-                                
+
                                 <ContactForm />
                             </div>
                         </div>
@@ -128,28 +142,24 @@ export default function Contact() {
                                     </h2>
                                     <div className="prose prose-lg prose-invert max-w-none">
                                         <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                                            We specialize in creating unforgettable musical experiences for your events. 
-                                            From intimate gatherings to large celebrations, our saxophone performances 
+                                            We specialize in creating unforgettable musical experiences for your events.
+                                            From intimate gatherings to large celebrations, our saxophone performances
                                             add elegance and sophistication to any occasion.
                                         </p>
                                         <p className="text-gray-300 text-lg leading-relaxed">
-                                            Whether you need background music for a corporate event, wedding ceremony, 
-                                            or private party, we work closely with you to understand your vision and 
+                                            Whether you need background music for a corporate event, wedding ceremony,
+                                            or private party, we work closely with you to understand your vision and
                                             deliver a performance that exceeds expectations.
                                         </p>
                                     </div>
                                 </div>
-                                
                                 <div className="relative">
-                                    <div className="">
-                                        <ResponsiveImage 
-                                            imageName="sticker_008_bl3jqp"
-                                            fallbackSrc="/sax_portrait_2.webp"
-                                            alt="Saxophone Performance" 
-                                            className="relative w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                        />
-                                    </div>
-                                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent rounded-2xl"></div>
+                                    <ResponsiveImage
+                                        imageName="sticker_008_bl3jqp"
+                                        fallbackSrc="/sax_portrait_2.webp"
+                                        alt="Saxophone Performance"
+                                        className="relative w-full h-full"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -159,7 +169,7 @@ export default function Contact() {
 
             {/* CTA Section */}
             <CallToActionAlt />
-            
+
         </main>
     )
 }

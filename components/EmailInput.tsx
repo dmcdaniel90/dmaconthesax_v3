@@ -21,6 +21,8 @@ export default function EmailInput({ label = "Email", labelClasses = defaultLabe
                     type="email" 
                     className="h-10 sm:h-11 md:h-12 text-sm sm:text-base" 
                     aria-required={required}
+                    autoComplete="email"
+                    placeholder="Enter your email address"
                     {...field} 
                 />
             </FormControl>

@@ -20,6 +20,8 @@ export default function NameInput({ label = "Name", labelClasses = defaultLabelS
                     id="name" 
                     className="h-10 sm:h-11 md:h-12 text-sm sm:text-base" 
                     aria-required={required}
+                    autoComplete="name"
+                    placeholder="Enter your full name"
                     {...field} 
                 />
             </FormControl>

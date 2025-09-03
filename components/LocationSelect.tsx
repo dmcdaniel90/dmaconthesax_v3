@@ -16,7 +16,7 @@ export default function LocationSelect({ label = "Location", labelClasses = defa
             <FormLabel className={labelClasses} htmlFor="location">{label}</FormLabel>
             <FormControl>
                 <Select name="location" onValueChange={field.onChange} {...field}>
-                    <SelectTrigger id="locationTrigger" className="h-10 sm:h-11 md:h-12 text-sm sm:text-base w-full cursor-pointer">
+                    <SelectTrigger id="locationTrigger" className="h-10 sm:h-11 md:h-12 text-sm sm:text-base w-full cursor-pointer" aria-label="Select event location">
                         <SelectValue placeholder="Select Location" />
                     </SelectTrigger>
                     <SelectContent>

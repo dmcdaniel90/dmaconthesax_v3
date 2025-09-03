@@ -29,9 +29,14 @@ export default function DescriptionTextarea({
                     placeholder={placeholder} 
                     className="h-24 sm:h-28 md:h-32 text-sm sm:text-base" 
                     aria-required={required}
+                    autoComplete="off"
+                    aria-describedby="message-help"
                     {...field} 
                 />
             </FormControl>
+            <div id="message-help" className="text-xs text-gray-500 mt-1">
+                Maximum 400 characters
+            </div>
             <FormMessage />
         </FormItem>
     )

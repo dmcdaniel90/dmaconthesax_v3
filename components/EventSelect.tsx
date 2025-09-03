@@ -19,7 +19,7 @@ export default function EventSelect({ label = "Event Type", labelClasses = defau
             <FormLabel className={labelClasses} htmlFor="eventType">{label}</FormLabel>
             <FormControl>
                 <Select name="eventType" onValueChange={field.onChange} {...field}>
-                    <SelectTrigger id="eventtypeTrigger" className="h-10 sm:h-11 md:h-12 text-sm sm:text-base w-full cursor-pointer">
+                    <SelectTrigger id="eventtypeTrigger" className="h-10 sm:h-11 md:h-12 text-sm sm:text-base w-full cursor-pointer" aria-label="Select event type">
                         <SelectValue placeholder="Select Event Type" />
                     </SelectTrigger>
                     <SelectContent>
