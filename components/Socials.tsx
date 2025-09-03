@@ -2,8 +2,14 @@
 import Link from "next/link";
 import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa6";
 
+type SocialPlatforms = {
+    facebook?: string;
+    instagram?: string;
+    youtube?: string;
+    spotify?: string;
+}
 
-export default function Socials({ socials, color, size, gap }: { socials: { facebook: string, instagram: string, youtube: string, spotify: string }, color?: string, size?: string, gap?: string | number }) {
+export default function Socials({ socials, color, size, gap }: { socials: SocialPlatforms, color?: string, size?: string, gap?: string | number }) {
 
     // Convert size to number for responsive calculations
     const baseSize = parseInt(size || "24");
@@ -35,7 +41,7 @@ export default function Socials({ socials, color, size, gap }: { socials: { face
                         {key === "youtube" && <FaYoutube size={mobileSize} className="sm:hidden hover:text-[#02ACAC]" />}
                         {key === "youtube" && <FaYoutube size={tabletSize} className="hidden sm:block md:hidden hover:text-[#02ACAC]" />}
                         {key === "youtube" && <FaYoutube size={desktopSize} className="hidden md:block hover:text-[#02ACAC]" />}
-                        {/* {key === "spotify" && <FaSpotify size={size} />} */}
+                        
                     </Link>
                 ))
             }

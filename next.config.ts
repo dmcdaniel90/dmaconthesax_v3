@@ -8,7 +8,15 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
     ],
+  },
+  // Enable experimental features for better video performance
+  experimental: {
+    optimizePackageImports: ['next-cloudinary'],
   },
   async redirects() {
     return [

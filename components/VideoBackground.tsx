@@ -1,8 +1,11 @@
 
 const VideoBackground = () => {
+    // Cloudinary video URL for better performance and optimization
+    const cloudinaryVideoUrl = "https://res.cloudinary.com/dllh8yqz8/video/upload/v1755861559/dmaconthesax_website_bg.mp4";
+    
     return (
         <div className="fixed inset-0 w-full h-full overflow-hidden -z-50">
-            {/* Video element */}
+            {/* Video element with Cloudinary URL for optimized delivery */}
             <video
                 autoPlay
                 loop
@@ -13,7 +16,7 @@ const VideoBackground = () => {
                     objectPosition: 'center 30%' // Position video to keep performer visible
                 }}
             >
-                <source src="/background.mp4" type="video/mp4" />
+                <source src={cloudinaryVideoUrl} type="video/mp4" />
                 Your browser does not support the video tag.
             </video>
             

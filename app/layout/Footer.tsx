@@ -1,5 +1,11 @@
 import Socials from "@/components/Socials"
 
+const SOCIAL_LINKS = {
+    facebook: `https://www.facebook.com/dmaconthesax`,
+    instagram: `https://www.instagram.com/dmaconthesax`,
+    youtube: `https://www.youtube.com/@dmcdaniel9`,
+}
+
 export default function Footer() {
     return (
         <footer className="relative bg-gradient-to-t from-gray-900/95 to-gray-800/80 backdrop-blur-sm border-t border-gray-700/30">
@@ -18,12 +24,7 @@ export default function Footer() {
                 {/* Social media icons with enhanced styling */}
                 <div className="flex justify-center items-center w-full pt-2">
                     <Socials 
-                        socials={{ 
-                            facebook: "https://www.facebook.com/", 
-                            instagram: "https://www.instagram.com/", 
-                            youtube: "https://www.youtube.com/", 
-                            spotify: "https://www.spotify.com/" 
-                        }} 
+                        socials={SOCIAL_LINKS} 
                         size="32" 
                         gap={24} 
                         color="#02ACAC" 

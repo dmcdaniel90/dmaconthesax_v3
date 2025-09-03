@@ -6,12 +6,10 @@ import "./globals.css";
 import Head from "next/head";
 import { HeaderProvider } from "./contexts/HeaderContext";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "DMAC on the Sax - Private Saxophonist",
   description: "DMAC on the Sax is a professional saxophonist and music educator. He is a highly skilled musician who brings his passion for music to life in the studio and in the classroom.",
-
 };
-
 
 export default function RootLayout({
   children,
@@ -30,7 +28,9 @@ export default function RootLayout({
         >
           <VideoBackground />
           <Header />
-          {children}
+          <main className="landscape-mobile-content">
+            {children}
+          </main>
         </body>
       </html>
     </HeaderProvider>

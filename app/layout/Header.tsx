@@ -6,21 +6,20 @@ import { splitWordsAndCapitalize } from "@/lib/utils";
 import Socials from "@/components/Socials";
 import Image from "next/image";
 import { useHeaderContext } from "../contexts/HeaderContext";
+import { useLandscapeMobile } from "@/hooks/useLandscapeMobile";
 
-
-const SOCIALS = {
+const SOCIAL_LINKS = {
     facebook: `https://www.facebook.com/dmaconthesax`,
     instagram: `https://www.instagram.com/dmaconthesax`,
-    youtube: `https://www.youtube.com/@dmcdaniel9}`,
-    spotify: ''
+    youtube: `https://www.youtube.com/@dmcdaniel9`,
 }
-
 const LINKS = ["home", "about", "events", "gallery", "booking", "faq", "contact"]
 
 
 export default function Header() {
     // const title = "DMAC on the Sax"
     const HeaderContext = useHeaderContext()
+    const { isLandscapeMobile, orientation } = useLandscapeMobile()
 
     const handleNavChange = (currentPath: string) => {
         HeaderContext.dispatch({ type: "SET_ACTIVE_LINK", payload: currentPath })
@@ -39,14 +38,21 @@ export default function Header() {
 
     }, []);
 
+    // Dynamic header height based on landscape mobile state
+    const getHeaderHeight = () => {
+        if (isLandscapeMobile) {
+            return HeaderContext.state.activeLink === "home" ? "h-[25vh]" : "h-[20vh]";
+        }
+        return HeaderContext.state.activeLink === "home" ? "h-[60vh] sm:h-[70vh] md:h-[85vh]" : "h-[40vh] sm:h-[45vh] md:h-[50vh]";
+    };
 
     return (
-        <header className={`flex flex-col items-center justify-center gap-4 sm:gap-6 md:gap-8 w-full ${HeaderContext.state.activeLink === "home" ? "h-[60vh] sm:h-[70vh] md:h-[85vh]" : "h-[40vh] sm:h-[45vh] md:h-[50vh]"} mb-4 z-50 transition-all duration-300 ease-in-out px-4 sm:px-6 md:px-8`}>
-            <div className="flex justify-center items-center w-full mb-2 sm:mb-4 md:mb-6">
-                <Socials socials={SOCIALS} color="white" size="32" gap={24} />
+        <header className={`landscape-mobile-header flex flex-col items-center justify-center gap-4 sm:gap-6 md:gap-8 w-full ${getHeaderHeight()} mb-4 z-50 transition-all duration-300 ease-in-out px-4 sm:px-6 md:px-8`}>
+            <div className="landscape-mobile-socials flex justify-center items-center w-full mb-2 sm:mb-4 md:mb-6">
+                <Socials socials={SOCIAL_LINKS} color="white" size={isLandscapeMobile ? "20" : "32"} gap={isLandscapeMobile ? 16 : 24} />
             </div>
             {/* {image !== undefined ? <Image className="my-4" src={image} width={100} height={100} alt="Logo" /> : <h1 className="text-6xl my-4 font-bold text-white">{title}</h1>} */}
-            <div className="relative inline-block w-full max-w-md sm:max-w-lg md:max-w-2xl h-auto transition-all duration-200 ease-in-out hover:scale-101">
+            <div className="landscape-mobile-logo relative inline-block w-full max-w-md sm:max-w-lg md:max-w-2xl h-auto transition-all duration-200 ease-in-out hover:scale-101">
                 <Image priority className="my-4 sm:my-6 md:my-8 w-full" src="/logo_white.svg" width={100} height={100} alt="DMAC on the Sax Logo" />
                 <Image
                     priority
@@ -57,7 +63,7 @@ export default function Header() {
                     alt="DMAC on the Sax Logo"
                 />
             </div>
-            <nav className="flex flex-wrap justify-center gap-2 sm:gap-4 md:gap-6 px-2 sm:px-4">
+            <nav className="landscape-mobile-nav flex flex-wrap justify-center gap-2 sm:gap-4 md:gap-6 px-2 sm:px-4">
                 {/* Prefetched when the link is hovered or enters the viewport */}
                 {LINKS.map((link) => (
                     <Link 
