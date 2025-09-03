@@ -47,6 +47,7 @@ export default function DefaultStateContactForm({ onSubmit, form }: Props) {
                     type="submit"
                     aria-label="Submit contact form"
                     tabIndex={0}
+                    role="button"
                 >
                     {isSubmitting ? (
                         <svg

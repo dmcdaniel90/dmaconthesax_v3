@@ -22,9 +22,12 @@ export { customRender as render }
 
 // Common test data
 export const mockContactFormData = {
+  from_name: 'Contact Form',
+  subject: 'Test Contact Form',
   name: 'John Doe',
   email: 'john@example.com',
-  message: 'This is a test message'
+  message: 'This is a test message that is long enough to meet the minimum requirement of 20 characters',
+  botcheck: false
 }
 
 export const mockBookingFormData = {
@@ -32,8 +35,12 @@ export const mockBookingFormData = {
   email: 'jane@example.com',
   date: '2024-12-25',
   time: '14:00',
-  location: 'Studio A',
-  description: 'Saxophone lesson'
+  location: 'London',
+  eventType: 'Wedding',
+  description: 'Saxophonist needed for wedding ceremony',
+  consent: true,
+  botcheck: false,
+  cc_email: 'cc@example.com'
 }
 
 // Mock functions
