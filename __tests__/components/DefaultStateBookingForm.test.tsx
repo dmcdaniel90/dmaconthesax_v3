@@ -3,6 +3,7 @@ import { render, screen } from '../utils/test-utils'
 import userEvent from '@testing-library/user-event'
 
 const loaderIcon = `<svg className="w-5 h-5 mx-auto text-white animate-spin"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle></svg>`
+
 // Mock the entire DefaultStateBookingForm component since Jest can't resolve the modules
 const DefaultStateBookingForm = ({ onSubmit, form }: any) => {
     const { formState: { isSubmitting }, handleSubmit } = form
@@ -28,6 +29,8 @@ const DefaultStateBookingForm = ({ onSubmit, form }: any) => {
                 type="email"
                 required={true}
             />
+            
+            {/* Date and Time inputs - these will be native inputs on mobile, custom pickers on desktop */}
             <input
                 data-testid="date-input"
                 type="date"
@@ -37,6 +40,7 @@ const DefaultStateBookingForm = ({ onSubmit, form }: any) => {
                 data-testid="time-input"
                 type="time"
             />
+            
             <input
                 data-testid="location-input"
                 type="text"
@@ -94,6 +98,18 @@ describe('DefaultStateBookingForm', () => {
 
     beforeEach(() => {
         jest.clearAllMocks()
+        
+        // Mock mobile detection for consistent testing
+        Object.defineProperty(navigator, 'userAgent', {
+            value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
+            configurable: true
+        })
+        
+        // Mock showPicker support
+        Object.defineProperty(HTMLInputElement.prototype, 'showPicker', {
+            value: undefined,
+            configurable: true
+        })
     })
 
     it('renders all form fields', () => {
@@ -150,6 +166,16 @@ describe('DefaultStateBookingForm', () => {
         // Test that the button is clickable
         await user.click(submitButton)
         expect(submitButton).toBeInTheDocument()
+    })
+
+    it('renders date and time inputs with correct types for mobile', () => {
+        render(<DefaultStateBookingForm onSubmit={mockOnSubmit} form={mockForm as any} />)
+        
+        const dateInput = screen.getByTestId('date-input')
+        const timeInput = screen.getByTestId('time-input')
+        
+        expect(dateInput).toHaveAttribute('type', 'date')
+        expect(timeInput).toHaveAttribute('type', 'time')
     })
 })
 

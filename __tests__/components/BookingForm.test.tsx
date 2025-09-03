@@ -70,6 +70,18 @@ describe('BookingForm', () => {
     beforeEach(() => {
         jest.clearAllMocks()
         mockPostMessage.mockResolvedValue({ success: true })
+        
+        // Mock mobile detection for consistent testing
+        Object.defineProperty(navigator, 'userAgent', {
+            value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
+            configurable: true
+        })
+        
+        // Mock showPicker support
+        Object.defineProperty(HTMLInputElement.prototype, 'showPicker', {
+            value: undefined,
+            configurable: true
+        })
     })
 
     it('renders the booking form with title and description', () => {
@@ -120,6 +132,16 @@ describe('BookingForm', () => {
         await user.click(submitButton)
         
         expect(screen.getByTestId('success-state-form')).toBeInTheDocument()
+    })
+
+    it('renders date and time inputs with correct types for mobile compatibility', () => {
+        render(<BookingForm />)
+        
+        const dateInput = screen.getByDisplayValue(mockBookingFormData.date)
+        const timeInput = screen.getByDisplayValue(mockBookingFormData.time)
+        
+        expect(dateInput).toHaveAttribute('type', 'date')
+        expect(timeInput).toHaveAttribute('type', 'time')
     })
         
 })

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { FormControl, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
@@ -18,6 +18,17 @@ type TimePickerProps = {
 
 const defaultLabelStyles = "text-sm sm:text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2 mt-4"
 
+// Utility function to detect mobile devices and native picker support
+const isMobileDevice = () => {
+    if (typeof window === 'undefined') return false
+    
+    const userAgent = navigator.userAgent
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)
+    
+    // Only use native picker on actual mobile devices, not desktop with touch
+    return isMobile
+}
+
 export default function TimePicker({ 
     label = "Time", 
     labelClasses = defaultLabelStyles, 
@@ -27,7 +38,48 @@ export default function TimePicker({
     step = 1800 
 }: TimePickerProps) {
     const [isOpen, setIsOpen] = useState(false)
+    const [isMobile, setIsMobile] = useState(false)
 
+    useEffect(() => {
+        // Check if device supports native time picker
+        const checkMobileSupport = () => {
+            setIsMobile(isMobileDevice())
+        }
+
+        checkMobileSupport()
+        window.addEventListener('resize', checkMobileSupport)
+        
+        return () => window.removeEventListener('resize', checkMobileSupport)
+    }, [])
+
+    // Native mobile time picker
+    if (isMobile) {
+        return (
+            <FormItem className="flex flex-col">
+                <FormLabel className={labelClasses} htmlFor="time">{label}</FormLabel>
+                <FormControl>
+                    <Input
+                        type="time"
+                        value={field.value || ""}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            field.onChange(e.target.value)
+                        }}
+                        min={min}
+                        max={max}
+                        step={step}
+                        className="h-10 sm:h-11 md:h-12 text-sm sm:text-base cursor-pointer"
+                        id="time"
+                        // Mobile-specific attributes for better UX
+                        autoComplete="off"
+                        inputMode="none"
+                    />
+                </FormControl>
+                <FormMessage />
+            </FormItem>
+        )
+    }
+
+    // Desktop custom time picker
     return (
         <FormItem className="flex flex-col">
             <FormLabel className={labelClasses} htmlFor="time">{label}</FormLabel>
@@ -53,7 +105,7 @@ export default function TimePicker({
                 <PopoverContent className="w-auto p-4" align="start">
                     <div className="space-y-4">
                         <div className="text-center">
-                            <h4 className="font-medium text-sm text-muted-foreground mb-2">Select Time</h4>
+                            <h4 className="text-sm text-muted-foreground mb-2">Select Time</h4>
                             <Input
                                 type="time"
                                 value={field.value || ""}
