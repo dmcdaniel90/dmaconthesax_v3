@@ -17,7 +17,7 @@ export type TextBlockProps = {
 }
 
 export default function TextBlock(props: TextBlockProps) {
-    const { heading, subheading, children, imageName, imageAltText, imagePosition, size, textWidth, width, headingSize, subheadingSize, bodySize, imgStyles, imgFallbackSrc } = props
+    const { heading, subheading, children, imageName, imageAltText, imagePosition, textWidth, width, headingSize, subheadingSize, bodySize, imgStyles, imgFallbackSrc } = props
     return (
         <section className="grid grid-cols-1 md:grid-cols-2 gap-4 text-white items-center w-full" style={{ width: width }}>
             <div className={`flex flex-col gap-4`} style={{ width: textWidth || width, order: imagePosition === "left" ? 2 : 1 }}>

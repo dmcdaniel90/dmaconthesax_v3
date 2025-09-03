@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
@@ -45,11 +45,10 @@ export default function PerformanceMonitor() {
                     setMetrics(prev => ({ ...prev, lcp: Math.round(entry.startTime) }))
                 }
                 if (entry.entryType === 'first-input') {
-                    setMetrics(prev => ({ ...prev, fid: Math.round(entry.processingStart - entry.startTime) }))
+                    setMetrics(prev => ({ ...prev, fid: Math.round((entry as any).processingStart - entry.startTime) }))
                 }
                 if (entry.entryType === 'layout-shift') {
-                    const clsEntry = entry as any
-                    setMetrics(prev => ({ ...prev, cls: Math.round(clsEntry.value * 1000) / 1000 }))
+                    setMetrics(prev => ({ ...prev, cls: Math.round((entry as any).value * 1000) / 1000 }))
                 }
             }
         })

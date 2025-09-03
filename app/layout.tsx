@@ -6,14 +6,16 @@ import PerformanceMonitor from "@/components/PerformanceMonitor";
 import "./globals.css";
 import { HeaderProvider } from "./contexts/HeaderContext";
 
-const metadata: Metadata = {
-  title: "DMAC on the Sax - Professional Saxophonist for Events",
-  description: "Professional saxophonist for weddings, events, and festivals. Over 20 years of experience delivering unforgettable musical experiences.",
-  other: {
-    // Performance optimizations
-    "X-DNS-Prefetch-Control": "on",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "DMAC on the Sax - Professional Saxophonist for Events",
+    description: "Professional saxophonist for weddings, events, and festivals. Over 20 years of experience delivering unforgettable musical experiences.",
+    other: {
+      // Performance optimizations
+      "X-DNS-Prefetch-Control": "on",
+    },
+  };
+}
 
 export default function RootLayout({
   children,

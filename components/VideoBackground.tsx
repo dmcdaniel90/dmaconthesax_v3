@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getResponsiveVideoUrls, getBackgroundVideoUrl } from '@/lib/cloudinary';
+import { getResponsiveVideoUrls } from '@/lib/cloudinary';
 
 const VideoBackground = () => {
   const [currentVideoUrl, setCurrentVideoUrl] = useState<string>('');
@@ -14,7 +14,6 @@ const VideoBackground = () => {
     // Function to determine the best video quality based on screen size
     const getOptimalVideoUrl = () => {
       const width = window.innerWidth;
-      const height = window.innerHeight;
       
       if (width <= 640) {
         return responsiveUrls.mobile; // Lower quality for mobile

@@ -2,12 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { 
-  getResponsiveVideoUrls, 
-  getAdaptiveVideoUrls, 
-  getDeviceOptimizedUrls,
   createCustomVideoUrl,
-  extractTransformations,
-  isValidCloudinaryUrl
 } from '@/lib/cloudinary';
 
 interface VideoQuality {
@@ -53,10 +48,6 @@ export default function AdvancedVideoPlayer({
   const fallbackUrl = "https://res.cloudinary.com/dllh8yqz8/video/upload/v1755861559/dmaconthesax_website_bg.mp4";
 
   useEffect(() => {
-    // Initialize video qualities with fallback URLs
-    const responsiveUrls = getResponsiveVideoUrls();
-    const adaptiveUrls = getAdaptiveVideoUrls();
-    const deviceUrls = getDeviceOptimizedUrls();
 
     const qualities: VideoQuality[] = [
       {
@@ -115,7 +106,6 @@ export default function AdvancedVideoPlayer({
     // Auto-select best quality based on screen size, with fallback
     const selectOptimalQuality = () => {
       const width = window.innerWidth;
-      const height = window.innerHeight;
       
       let optimalQuality: VideoQuality;
       

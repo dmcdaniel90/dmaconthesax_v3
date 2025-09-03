@@ -1,7 +1,6 @@
 import Link from "next/link"
 import ContactForm from "./ContactForm"
 import CallToActionAlt from "@/components/CallToActionAlt"
-import Image from "next/image"
 import ResponsiveImage from "@/components/ResponsiveImage"
 import AdvancedVideoPlayer from "@/components/AdvancedVideoPlayer"
 

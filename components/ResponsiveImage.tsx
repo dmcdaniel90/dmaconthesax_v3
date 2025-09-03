@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { getResponsiveImageUrls } from '@/lib/cloudinary';
+import Image from 'next/image';
 
 interface ResponsiveImageProps {
   imageName: string;
@@ -28,7 +29,7 @@ export default function ResponsiveImage({
 }: ResponsiveImageProps) {
   const [currentSrc, setCurrentSrc] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [, setError] = useState(false);
   const [cacheBuster, setCacheBuster] = useState(Date.now());
   const [hasTriedFallback, setHasTriedFallback] = useState(false);
 
@@ -127,7 +128,7 @@ export default function ResponsiveImage({
         </div>
       )}
       
-      <img
+      <Image
         src={finalImageSrc}
         alt={alt}
         className={`${className} ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}

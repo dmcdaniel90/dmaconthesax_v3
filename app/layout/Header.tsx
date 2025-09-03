@@ -19,7 +19,7 @@ const LINKS = ["home", "about", "events", "gallery", "booking", "faq", "contact"
 export default function Header() {
     // const title = "DMAC on the Sax"
     const HeaderContext = useHeaderContext()
-    const { isLandscapeMobile, orientation } = useLandscapeMobile()
+    const { isLandscapeMobile,  } = useLandscapeMobile()
 
     const handleNavChange = (currentPath: string) => {
         HeaderContext.dispatch({ type: "SET_ACTIVE_LINK", payload: currentPath })
