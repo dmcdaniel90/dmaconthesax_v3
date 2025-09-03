@@ -10,6 +10,7 @@ interface ResponsiveImageProps {
   className?: string;
   width?: number;
   height?: number;
+  fill?: boolean;
   fallbackSrc?: string;
   style?: React.CSSProperties;
   onLoad?: () => void;
@@ -22,6 +23,7 @@ export default function ResponsiveImage({
   className = '',
   width,
   height,
+  fill = false,
   fallbackSrc,
   style,
   onLoad,
@@ -120,8 +122,14 @@ export default function ResponsiveImage({
   // If using fallback, don't add cache buster to prevent flickering
   const finalImageSrc = hasTriedFallback ? currentSrc : `${currentSrc}?v=${cacheBuster}`;
 
+  // Determine if we should use fill or width/height
+  const shouldUseFill = fill || (!width && !height);
+  
+  // If using fill, parent must have position relative
+  const containerStyle = shouldUseFill ? { position: 'relative' as const } : {};
+
   return (
-    <div className={`relative ${className}`}>
+    <div className={`${className} ${shouldUseFill ? 'relative' : ''}`} style={containerStyle}>
       {isLoading && (
         <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
           <div className="text-gray-500 text-sm">Loading...</div>
@@ -131,9 +139,10 @@ export default function ResponsiveImage({
       <Image
         src={finalImageSrc}
         alt={alt}
-        className={`${className} ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
-        width={width}
-        height={height}
+        className={`${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+        width={shouldUseFill ? undefined : width}
+        height={shouldUseFill ? undefined : height}
+        fill={shouldUseFill}
         style={style}
         onLoad={handleImageLoad}
         onError={handleImageError}

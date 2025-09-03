@@ -158,6 +158,8 @@ export default function Contact() {
                                         fallbackSrc="/sax_portrait_2.webp"
                                         alt="Saxophone Performance"
                                         className="relative w-full h-full"
+                                        width={500}
+                                        height={500}
                                     />
                                 </div>
                             </div>

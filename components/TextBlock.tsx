@@ -32,6 +32,7 @@ export default function TextBlock(props: TextBlockProps) {
                         alt={imageAltText || "Image"}
                         className={`${imgStyles} w-full h-full rounded-lg object-cover`}
                         fallbackSrc={imgFallbackSrc}
+                        fill={true}
                     />
                 </div>
             )}

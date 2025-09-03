@@ -33,9 +33,9 @@ export default function About() {
                                 size="100%"
                                 textWidth="100%"
                                 width="100%"
-                                bodySize={16}
+                                bodySize={20}
                                 headingSize={36}
-                                subheadingSize={24}
+                                subheadingSize={36}
                             >
                                 <article className="space-y-6 sm:space-y-8">
                                     <p className="leading-relaxed">
@@ -46,7 +46,7 @@ export default function About() {
                         </div>
                         
                         <div className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/95 backdrop-blur-xl px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-8 sm:py-12 md:py-16 lg:py-20 rounded-3xl shadow-2xl border border-gray-700/20 hover:border-[#02ACAC]/30 transition-all duration-500 hover:shadow-[#02ACAC]/10">
-                            <article className="text-white">
+                            <article className="text-white text-lg">
                                 <p className="leading-relaxed">
                                     Devin graduated from the famous University of Texas Jazz Studies program, which has produced artists like Norah Jones and Tom &apos;Bones&apos; Malone. While studying, he played with various ensembles, including the UNT Lab Bands, the UNT Symphonic Band, and the Latin Jazz Ensemble, recording albums with both. Outside of school, Devin hit the clubs and festivals, even jamming with musicians from Earth, Wind &amp; Fire and on the Las Vegas Strip.
                                 </p>

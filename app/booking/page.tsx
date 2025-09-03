@@ -82,6 +82,7 @@ export default function Booking() {
                                             fallbackSrc="/sax_portrait_1.jpg"
                                             alt="Professional Saxophonist"
                                             className="w-full h-64 sm:h-80 lg:h-96 rounded-2xl object-cover"
+                                            fill={true}
                                         />
                                     </div>
 

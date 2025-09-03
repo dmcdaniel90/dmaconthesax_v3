@@ -18,6 +18,7 @@ export default function ImageDemoPage() {
               alt="DMAC on the Sax - Responsive Image Demo"
               className="w-full h-96 object-cover rounded-lg"
               fallbackSrc="/image1.webp"
+              fill={true}
             />
             <p className="text-gray-300 mt-4 text-center">
               This image automatically selects the optimal quality based on your screen size.

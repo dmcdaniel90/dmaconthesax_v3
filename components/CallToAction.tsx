@@ -106,6 +106,7 @@ export default function CallToAction({
                                 imageName={imgName}
                                 alt={imgAltText || ""}
                                 className={`${imgClassnames} w-full h-full object-cover`}
+                                fill={true}
                                 fallbackSrc={imgFallbackSrc}
                             />
                         </div>
