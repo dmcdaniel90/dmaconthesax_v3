@@ -305,3 +305,96 @@ export function extractTransformations(url: string): Record<string, string> {
   
   return transformations;
 }
+
+export const IMAGE_QUALITY_PRESETS = {
+  mobile: { width: 400, height: 300, quality: 'auto' as const, format: 'auto' as const },
+  tablet: { width: 800, height: 600, quality: 'auto' as const, format: 'auto' as const },
+  desktop: { width: 1200, height: 900, quality: 'auto' as const, format: 'auto' as const },
+  large: { width: 1600, height: 1200, quality: 'auto' as const, format: 'auto' as const }
+};
+
+/**
+ * Get optimized image URL with transformations
+ */
+export function getOptimizedImageUrl(options: {
+  width: number;
+  height: number;
+  quality: 'auto' | 'low' | 'medium' | 'high';
+  format: 'auto' | 'webm' | 'jpg' | 'png';
+  imageName: string;
+  crop?: 'fill' | 'scale' | 'fit';
+  gravity?: 'auto' | 'center' | 'north' | 'south' | 'east' | 'west';
+}) {
+  // Base Cloudinary URL
+  let url = `https://res.cloudinary.com/${CLOUDINARY_CONFIG.cloudName}/image/upload`;
+  
+  // Add transformations
+  const transformations: string[] = [];
+  
+  // Size transformations
+  transformations.push(`w_${options.width}`, `h_${options.height}`);
+  
+  // Crop and gravity - only add if they have valid values
+  if (options.crop && options.crop !== 'fill') {
+    transformations.push(`c_${options.crop}`);
+  }
+  
+  if (options.gravity && options.gravity !== 'auto') {
+    transformations.push(`g_${options.gravity}`);
+  }
+  
+  // Quality optimization
+  if (options.quality === 'auto') {
+    transformations.push('q_auto');
+  } else {
+    transformations.push(`q_${options.quality}`);
+  }
+  
+  // Format optimization
+  if (options.format === 'auto') {
+    transformations.push('f_auto');
+  } else {
+    transformations.push(`f_${options.format}`);
+  }
+  
+  // Build final URL
+  if (transformations.length > 0) {
+    url += `/${transformations.join(',')}`;
+  }
+  
+  url += `/${options.imageName}`;
+  
+  return url;
+}
+
+/**
+ * Get responsive image URLs for different screen sizes
+ */
+export function getResponsiveImageUrls(imageName: string) {
+  return {
+    mobile: getOptimizedImageUrl({
+      ...IMAGE_QUALITY_PRESETS.mobile,
+      imageName
+    }),
+    tablet: getOptimizedImageUrl({
+      ...IMAGE_QUALITY_PRESETS.tablet,
+      imageName
+    }),
+    desktop: getOptimizedImageUrl({
+      ...IMAGE_QUALITY_PRESETS.desktop,
+      imageName
+    }),
+    large: getOptimizedImageUrl({
+      ...IMAGE_QUALITY_PRESETS.large,
+      imageName
+    })
+  };
+}
+
+/**
+ * Get a specific responsive image URL
+ */
+export function getResponsiveImageUrl(imageName: string, preset: keyof typeof IMAGE_QUALITY_PRESETS = 'desktop') {
+  const presets = getResponsiveImageUrls(imageName);
+  return presets[preset];
+}

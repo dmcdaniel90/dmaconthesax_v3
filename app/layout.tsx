@@ -7,8 +7,8 @@ import Head from "next/head";
 import { HeaderProvider } from "./contexts/HeaderContext";
 
 const metadata: Metadata = {
-  title: "DMAC on the Sax - Private Saxophonist",
-  description: "DMAC on the Sax is a professional saxophonist and music educator. He is a highly skilled musician who brings his passion for music to life in the studio and in the classroom.",
+  title: "DMAC on the Sax - Professional Saxophonist for Events",
+  description: "Professional saxophonist for weddings, events, and festivals. Over 20 years of experience delivering unforgettable musical experiences.",
 };
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
           <link rel="preconnect" href="https://youtube.com" />
         </Head>
         <body
-          className={`${lato.variable}  antialiased bg-foreground flex flex-col min-h-screen`}
+          className={`${lato.variable} antialiased bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/95 min-h-screen flex flex-col`}
         >
           <VideoBackground />
           <Header />

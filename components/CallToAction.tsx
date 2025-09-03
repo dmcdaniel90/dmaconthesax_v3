@@ -1,7 +1,7 @@
 'use client'
-import Image from "next/image";
 import Link from "next/link";
 import { TypeAnimation } from "react-type-animation";
+import ResponsiveImage from "./ResponsiveImage";
 
 type CallToActionProps = {
     width?: string | number | undefined
@@ -17,11 +17,12 @@ type CallToActionProps = {
     secondaryBtnText?: string;
     enableTypewriter?: boolean;
     typewriterSequence?: (string | number)[];
-    imgSrc?: string;
+    imgName?: string;
     imgAltText?: string;
     imgClassnames?: string;
     imgWidth?: number
     imgHeight?: number
+    imgFallbackSrc?: string;
 }
 
 export default function CallToAction({
@@ -38,11 +39,10 @@ export default function CallToAction({
     secondaryBtnText = "Secondary",
     enableTypewriter = false,
     typewriterSequence = [],
-    imgSrc,
+    imgName,
     imgAltText,
     imgClassnames,
-    imgWidth,
-    imgHeight
+    imgFallbackSrc
 }: CallToActionProps) {
 
     width = typeof width === "number" ? `${width}px` : width
@@ -99,19 +99,14 @@ export default function CallToAction({
                 </div>
 
                 {/* Image */}
-                {imgSrc && (
+                {imgName && (
                     <div className="relative">
                         <div className="aspect-video rounded-2xl overflow-hidden">
-                            <Image
-                                src={imgSrc}
+                            <ResponsiveImage
+                                imageName={imgName}
                                 alt={imgAltText || ""}
                                 className={`${imgClassnames} w-full h-full object-cover`}
-                                width={imgWidth || 1152}
-                                height={imgHeight || 768}
-                                style={{
-                                    maxWidth: '100%',
-                                    maxHeight: '100%',
-                                }}
+                                fallbackSrc={imgFallbackSrc}
                             />
                         </div>
                     </div>

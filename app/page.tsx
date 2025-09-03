@@ -4,7 +4,7 @@ import EventList from "@/components/EventList";
 import CallToAction from "@/components/CallToAction";
 import Footer from "./layout/Footer";
 import { useHeaderContext } from "./contexts/HeaderContext";
-
+import ResponsiveImage from "@/components/ResponsiveImage";
 
 export default function Home() {
   const HeaderContext = useHeaderContext()
@@ -36,11 +36,12 @@ export default function Home() {
         secondaryBtnText="More info"
         enableTypewriter={true}
         typewriterSequence={["Weddings", 1000, "Events", 1000, "Festivals", 1000]}
-        imgSrc="/image1.webp"
+        imgName="sticker_007_wcvnkt" // Keep original for now, will be replaced by ResponsiveImage
         imgAltText="DMAC on the Sax is a professional saxophonist for your next event"
-        imgClassnames="drop-shadow-2xl scale-x-[-1]"
+        imgClassnames="drop-shadow-2xl"
         imgWidth={1152}
         imgHeight={768}
+        imgFallbackSrc="/image1.webp"
       />
       <Footer />
     </main>

@@ -44,7 +44,7 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
             >
                 {view === "grid" ? "Switch to List View" : "Switch to Grid View"}
             </Button>
-            <div className={`grid ${view === "grid" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"} gap-4 sm:gap-6`}>
+            <div className={`grid ${view === "grid" ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"} gap-4 sm:gap-6`}>
                 {paginatedEvents.map((event: MusicEvents) => (
                     <Event key={event.eventName + Math.random()} eventName={event.eventName} monthNumber={event.monthNumber} day={event.day} year={event.year} time={event.time || "TBA"} location={event.location || "TBA"} ticketPrice={event.ticketPrice || 0} imgSrc={event.imgSrc || ""} imgAltText={event.imgAltText || ""} />
                 ))}
