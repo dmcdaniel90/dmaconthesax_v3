@@ -11,16 +11,39 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import Image from "next/image"
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext } from "@/components/ui/pagination";
 import { useLightbox } from "../hooks/useLightbox";
+import { useCloudinaryCollection, getCloudinaryUrl, getImageAlt } from "../hooks/useCloudinaryCollection";
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Loading, Skeleton } from "@/components/ui/loading";
 
-export default function PhotoGallery({ images, itemsPerPage = 12, type = "carousel" }: { images: string[], itemsPerPage?: number, type?: "grid" | "carousel" }) {
+export default function PhotoGallery({ images, itemsPerPage, type = "carousel", useCloudinary = false, cloudinaryTag = "photo-gallery" }: { 
+    images?: string[], 
+    itemsPerPage?: number, 
+    type?: "grid" | "carousel",
+    useCloudinary?: boolean,
+    cloudinaryTag?: string
+}) {
     const [currentPage, setCurrentPage] = useState(1);
     const [view, setView] = useState<"grid" | "carousel">(type);
-    const [isLoading, setIsLoading] = useState(true);
     const [isViewChanging, setIsViewChanging] = useState(false);
     const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+    const [isPageLoading, setIsPageLoading] = useState(false);
+    
+    // Dynamic items per page based on view type
+    const dynamicItemsPerPage = itemsPerPage || (view === "grid" ? 15 : 5);
+
+    // Use the Cloudinary collection hook
+    const { 
+        images: cloudinaryImages, 
+        isLoading: isCloudinaryLoading, 
+        error: cloudinaryError 
+    } = useCloudinaryCollection({
+        cloudName: 'dllh8yqz8',
+        tag: cloudinaryTag,
+        resourceType: 'image',
+        maxResults: 100,
+        enabled: useCloudinary
+    });
 
     // Embla carousel for mobile gesture support
     const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -33,22 +56,17 @@ export default function PhotoGallery({ images, itemsPerPage = 12, type = "carous
         }
     });
 
-    // Simulate loading time for better UX
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 600);
-
-        return () => clearTimeout(timer);
-    }, []);
+    // Determine loading state
+    const isLoading = useCloudinary ? isCloudinaryLoading : false;
 
     // Memoize the paginated data to prevent unnecessary recalculations
     const paginatedPhotos = useMemo(() => {
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        return Array.prototype.slice.call(images, startIndex, startIndex + itemsPerPage);
-    }, [images, currentPage, itemsPerPage]);
+        const imageList = useCloudinary ? cloudinaryImages : (images || []);
+        const startIndex = (currentPage - 1) * dynamicItemsPerPage;
+        return Array.prototype.slice.call(imageList, startIndex, startIndex + dynamicItemsPerPage);
+    }, [useCloudinary, cloudinaryImages, images, currentPage, dynamicItemsPerPage]);
 
-    const totalPages = Math.ceil(images.length / itemsPerPage);
+    const totalPages = Math.ceil((useCloudinary ? cloudinaryImages.length : (images?.length || 0)) / dynamicItemsPerPage);
 
     const { isOpen,
         setImages,
@@ -56,9 +74,15 @@ export default function PhotoGallery({ images, itemsPerPage = 12, type = "carous
         LightboxComponent
     } = useLightbox();
 
-    const handlePageChange = (page: number) => {
+    const handlePageChange = async (page: number) => {
+        setIsPageLoading(true);
         setCurrentPage(page);
         setLoadedImages(new Set()); // Reset loaded images on page change
+        
+        // Simulate loading delay for better UX
+        setTimeout(() => {
+            setIsPageLoading(false);
+        }, 500);
     };
 
     const handleViewChange = () => {
@@ -83,8 +107,16 @@ export default function PhotoGallery({ images, itemsPerPage = 12, type = "carous
     };
 
     useEffect(() => {
-        setImages(paginatedPhotos);
-    }, [paginatedPhotos, setImages]);
+        if (useCloudinary) {
+            // Convert Cloudinary images to URLs for the lightbox
+            const imageUrls = paginatedPhotos.map((image) => 
+                getCloudinaryUrl(image as any, 1200, 1200)
+            );
+            setImages(imageUrls);
+        } else {
+            setImages(paginatedPhotos as string[]);
+        }
+    }, [paginatedPhotos, setImages, useCloudinary]);
 
     // Skeleton loader for photos
     const PhotoSkeleton = () => (
@@ -101,9 +133,27 @@ export default function PhotoGallery({ images, itemsPerPage = 12, type = "carous
                     <Skeleton className="h-8 w-40" />
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-4">
-                    {Array.from({ length: itemsPerPage }).map((_, i) => (
+                    {Array.from({ length: dynamicItemsPerPage }).map((_, i) => (
                         <PhotoSkeleton key={i} />
                     ))}
+                </div>
+            </div>
+        );
+    }
+
+    // Show error state if Cloudinary fails
+    if (useCloudinary && cloudinaryError) {
+        return (
+            <div className="bg-gray-900/50 px-2 sm:px-4 md:px-8 lg:px-16 xl:px-24 py-6 sm:py-8 md:px-12">
+                <div className="text-center py-12">
+                    <h2 className="text-xl sm:text-2xl md:text-3xl text-white mb-4">Photos</h2>
+                    <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-6">
+                        <p className="text-red-300 mb-2">Failed to load images from Cloudinary</p>
+                        <p className="text-gray-400 text-sm">{cloudinaryError}</p>
+                        <p className="text-gray-500 text-xs mt-2">
+                            Make sure the tag &quot;{cloudinaryTag}&quot; exists and the Resource List is enabled in your Cloudinary settings.
+                        </p>
+                    </div>
                 </div>
             </div>
         );
@@ -144,28 +194,37 @@ export default function PhotoGallery({ images, itemsPerPage = 12, type = "carous
                                 </CarouselItem>
                             ))
                         ) : (
-                            paginatedPhotos.map((image, index) => (
-                                <CarouselItem key={index} className="basis-full sm:basis-1/2 lg:basis-1/3 cursor-pointer">
-                                    <div className="relative">
-                                        {!loadedImages.has(index) && (
-                                            <div className="absolute inset-0 bg-gray-800/50 rounded-lg flex items-center justify-center">
-                                                <Loading variant="spinner" size="sm" />
-                                            </div>
-                                        )}
-                                        <Image
-                                            src={image}
-                                            alt={`Image ${index}`}
-                                            width={400}
-                                            height={400}
-                                            style={{ objectFit: "cover", width: "100%", height: "100%" }}
-                                            className={`cursor-pointer hover:scale-105 transition-all duration-300 ${!loadedImages.has(index) ? 'opacity-0' : 'opacity-100'}`}
-                                            onClick={() => handleOpen(index)}
-                                            onLoad={() => handleImageLoad(index)}
-                                            loading="lazy"
-                                        />
-                                    </div>
-                                </CarouselItem>
-                            ))
+                            paginatedPhotos.map((image, index) => {
+                                const imageSrc = useCloudinary 
+                                    ? getCloudinaryUrl(image as any)
+                                    : image as string;
+                                const imageAlt = useCloudinary 
+                                    ? getImageAlt(image as any, `Image ${index}`)
+                                    : `Image ${index}`;
+                                
+                                return (
+                                    <CarouselItem key={index} className="basis-full sm:basis-1/2 lg:basis-1/3 cursor-pointer">
+                                        <div className="relative">
+                                            {!loadedImages.has(index) && (
+                                                <div className="absolute inset-0 bg-gray-800/50 rounded-lg flex items-center justify-center">
+                                                    <Loading variant="spinner" size="sm" />
+                                                </div>
+                                            )}
+                                            <Image
+                                                src={imageSrc}
+                                                alt={imageAlt}
+                                                width={400}
+                                                height={400}
+                                                style={{ objectFit: "cover", width: "100%", height: "100%" }}
+                                                className={`cursor-pointer hover:scale-105 transition-all duration-300 ${!loadedImages.has(index) ? 'opacity-0' : 'opacity-100'}`}
+                                                onClick={() => handleOpen(index)}
+                                                onLoad={() => handleImageLoad(index)}
+                                                loading="lazy"
+                                            />
+                                        </div>
+                                    </CarouselItem>
+                                );
+                            })
                         )}
                     </CarouselContent>
                     <CarouselNext className="cursor-pointer hover:opacity-80 w-[40px] h-[40px] sm:w-[50px] sm:h-[50px]" />
@@ -179,24 +238,40 @@ export default function PhotoGallery({ images, itemsPerPage = 12, type = "carous
                 <>
                     {/* Desktop Grid View */}
                     <div className="hidden md:grid md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 lg:gap-4">
-                        {paginatedPhotos.map((image, index) => (
-                            <div 
-                                key={index}
-                                className="relative group aspect-square overflow-hidden rounded-xl bg-gray-800/50"
-                            >
-                                <Image
-                                    src={image}
-                                    alt={`Photo ${index + 1}`}
-                                    width={400}
-                                    height={400}
-                                    style={{ objectFit: "cover" }}
-                                    className="w-full h-full cursor-pointer transition-all duration-300 group-hover:scale-105 active:scale-95"
-                                    onClick={() => handleOpen(index)}
-                                    draggable={false}
-                                />
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-150 pointer-events-none" />
-                            </div>
-                        ))}
+                        {isPageLoading ? (
+                            // Show loading skeletons during page change
+                            Array.from({ length: dynamicItemsPerPage }).map((_, i) => (
+                                <PhotoSkeleton key={i} />
+                            ))
+                        ) : (
+                            paginatedPhotos.map((image, index) => {
+                                const imageSrc = useCloudinary 
+                                    ? getCloudinaryUrl(image as any)
+                                    : image as string;
+                                const imageAlt = useCloudinary 
+                                    ? getImageAlt(image as any, `Photo ${index + 1}`)
+                                    : `Photo ${index + 1}`;
+                                
+                                return (
+                                    <div 
+                                        key={index}
+                                        className="relative group aspect-square overflow-hidden rounded-xl bg-gray-800/50"
+                                    >
+                                        <Image
+                                            src={imageSrc}
+                                            alt={imageAlt}
+                                            width={400}
+                                            height={400}
+                                            style={{ objectFit: "cover" }}
+                                            className="w-full h-full cursor-pointer transition-all duration-300 group-hover:scale-105 active:scale-95"
+                                            onClick={() => handleOpen(index)}
+                                            draggable={false}
+                                        />
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-150 pointer-events-none" />
+                                    </div>
+                                );
+                            })
+                        )}
                     </div>
 
                     {/* Mobile Gesture Slider */}
@@ -204,25 +279,34 @@ export default function PhotoGallery({ images, itemsPerPage = 12, type = "carous
                         <div className="relative">
                             <div className="overflow-hidden" ref={emblaRef}>
                                 <div className="flex gap-2">
-                                    {paginatedPhotos.map((image, index) => (
-                                        <div 
-                                            key={index}
-                                            className="relative flex-[0_0_calc(50%-4px)] sm:flex-[0_0_calc(33.333%-8px)] aspect-square overflow-hidden rounded-lg bg-gray-800/50"
-                                        >
-                                            <Image
-                                                src={image}
-                                                alt={`Photo ${index + 1}`}
-                                                width={400}
-                                                height={400}
-                                                style={{ objectFit: "cover" }}
-                                                className="w-full h-full cursor-pointer transition-all duration-300 active:scale-95 touch-manipulation"
-                                                onClick={() => handleOpen(index)}
-                                                draggable={false}
-                                            />
-                                            {/* Touch feedback overlay for mobile */}
-                                            <div className="absolute inset-0 bg-black/0 active:bg-black/20 transition-colors duration-150 pointer-events-none" />
-                                        </div>
-                                    ))}
+                                    {paginatedPhotos.map((image, index) => {
+                                        const imageSrc = useCloudinary 
+                                            ? getCloudinaryUrl(image as any)
+                                            : image as string;
+                                        const imageAlt = useCloudinary 
+                                            ? getImageAlt(image as any, `Photo ${index + 1}`)
+                                            : `Photo ${index + 1}`;
+                                        
+                                        return (
+                                            <div 
+                                                key={index}
+                                                className="relative flex-[0_0_calc(50%-4px)] sm:flex-[0_0_calc(33.333%-8px)] aspect-square overflow-hidden rounded-lg bg-gray-800/50"
+                                            >
+                                                <Image
+                                                    src={imageSrc}
+                                                    alt={imageAlt}
+                                                    width={400}
+                                                    height={400}
+                                                    style={{ objectFit: "cover" }}
+                                                    className="w-full h-full cursor-pointer transition-all duration-300 active:scale-95 touch-manipulation"
+                                                    onClick={() => handleOpen(index)}
+                                                    draggable={false}
+                                                />
+                                                {/* Touch feedback overlay for mobile */}
+                                                <div className="absolute inset-0 bg-black/0 active:bg-black/20 transition-colors duration-150 pointer-events-none" />
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
                             

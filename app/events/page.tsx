@@ -1,7 +1,7 @@
 import EventList from "@/components/EventList"
 import Footer from "@/app/layout/Footer"
 import AnimatedPageTitle from "@/components/AnimatedPageTitle"
-import { FadeInUp, ScaleIn } from "@/components/ScrollReveal"
+import { FadeInUp } from "@/components/ScrollReveal"
 
 export default function Events() {
     return (

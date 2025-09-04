@@ -11,6 +11,7 @@ interface ResponsiveImageProps {
   width?: number;
   height?: number;
   fill?: boolean;
+  sizes?: string;
   fallbackSrc?: string;
   style?: React.CSSProperties;
   onLoad?: () => void;
@@ -24,6 +25,7 @@ export default function ResponsiveImage({
   width,
   height,
   fill = false,
+  sizes,
   fallbackSrc,
   style,
   onLoad,
@@ -131,8 +133,8 @@ export default function ResponsiveImage({
   return (
     <div className={`${className} ${shouldUseFill ? 'relative' : ''}`} style={containerStyle}>
       {isLoading && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-          <div className="text-gray-500 text-sm">Loading...</div>
+        <div className="absolute inset-0 skeleton flex items-center justify-center">
+          <div className="w-full h-full skeleton-image"></div>
         </div>
       )}
       
@@ -143,6 +145,7 @@ export default function ResponsiveImage({
         width={shouldUseFill ? undefined : width}
         height={shouldUseFill ? undefined : height}
         fill={shouldUseFill}
+        sizes={shouldUseFill ? (sizes || "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw") : undefined}
         style={style}
         onLoad={handleImageLoad}
         onError={handleImageError}

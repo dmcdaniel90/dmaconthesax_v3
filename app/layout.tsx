@@ -45,6 +45,10 @@ export default function RootLayout({
           <link rel="preload" href="/logo_white.svg" as="image" type="image/svg+xml" />
           <link rel="preload" href="/logo_colored.svg" as="image" type="image/svg+xml" />
           
+          {/* Preload critical images to prevent CLS */}
+          <link rel="preload" href="https://res.cloudinary.com/dllh8yqz8/image/upload/w_400,h_500,q_auto,f_auto/cruises_001_x335rh" as="image" />
+          <link rel="preload" href="https://res.cloudinary.com/dllh8yqz8/image/upload/w_400,h_500,q_auto,f_auto/sticker_007_wcvnkt" as="image" />
+          
           {/* Performance meta tags */}
           <meta name="theme-color" content="#02ACAC" />
           <meta name="color-scheme" content="dark" />

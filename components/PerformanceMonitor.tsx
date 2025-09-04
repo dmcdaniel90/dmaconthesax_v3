@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { onFCP, onLCP, onINP, onCLS, onTTFB, type Metric } from 'web-vitals'
 
 interface PerformanceMetrics {
     fcp: number | null
@@ -27,75 +28,152 @@ export default function PerformanceMonitor() {
     })
     const [isMonitoring, setIsMonitoring] = useState(false)
 
+    // Auto-start monitoring on component mount using web-vitals library
+    useEffect(() => {
+        // Only run in development mode
+        if (process.env.NODE_ENV === 'production') {
+            return
+        }
+        if (typeof window !== 'undefined') {
+            // Handle metric updates from web-vitals
+            const handleMetric = (metric: Metric) => {
+                console.log(`Web Vitals: ${metric.name} = ${metric.value}ms`)
+                setMetrics(prev => {
+                    const newMetrics = { ...prev }
+                    
+                    switch (metric.name) {
+                        case 'FCP':
+                            newMetrics.fcp = Math.round(metric.value)
+                            break
+                        case 'LCP':
+                            newMetrics.lcp = Math.round(metric.value)
+                            break
+                        case 'INP':
+                            newMetrics.fid = Math.round(metric.value)
+                            break
+                        case 'CLS':
+                            newMetrics.cls = Math.round(metric.value * 1000) / 1000
+                            break
+                        case 'TTFB':
+                            newMetrics.ttfb = Math.round(metric.value)
+                            break
+                    }
+                    
+                    return newMetrics
+                })
+            }
+
+            // Set up web-vitals listeners with better configuration
+            onFCP(handleMetric)
+            onLCP(handleMetric)
+            
+            // INP with more aggressive reporting
+            onINP(handleMetric, { reportAllChanges: true })
+            
+            // CLS with more aggressive reporting
+            onCLS(handleMetric, { reportAllChanges: true })
+            
+            onTTFB(handleMetric)
+
+            // Cleanup function (web-vitals doesn't provide cleanup, but we can track state)
+            return () => {
+                // Web-vitals listeners are automatically cleaned up
+            }
+        }
+    }, [])
+
+    // Only render in development mode
+    if (process.env.NODE_ENV === 'production') {
+        return null
+    }
+
     const measurePerformance = () => {
-        if (!window.performance || !window.performance.getEntriesByType) {
-            console.warn('Performance API not supported')
+        if (typeof window === 'undefined') {
+            console.warn('Performance measurement not available in SSR')
             return
         }
 
         setIsMonitoring(true)
 
-        // Measure Core Web Vitals
-        const observer = new PerformanceObserver((list) => {
-            for (const entry of list.getEntries()) {
-                if (entry.entryType === 'paint' && entry.name === 'first-contentful-paint') {
-                    setMetrics(prev => ({ ...prev, fcp: Math.round(entry.startTime) }))
+        // Web-vitals automatically handles measurement, but we can trigger a refresh
+        // by re-setting up the listeners to catch any metrics that might have been missed
+        const handleMetric = (metric: Metric) => {
+            setMetrics(prev => {
+                const newMetrics = { ...prev }
+                
+                switch (metric.name) {
+                    case 'FCP':
+                        newMetrics.fcp = Math.round(metric.value)
+                        break
+                    case 'LCP':
+                        newMetrics.lcp = Math.round(metric.value)
+                        break
+                    case 'INP':
+                        newMetrics.fid = Math.round(metric.value)
+                        break
+                    case 'CLS':
+                        newMetrics.cls = Math.round(metric.value * 1000) / 1000
+                        break
+                    case 'TTFB':
+                        newMetrics.ttfb = Math.round(metric.value)
+                        break
                 }
-                if (entry.entryType === 'largest-contentful-paint') {
-                    setMetrics(prev => ({ ...prev, lcp: Math.round(entry.startTime) }))
-                }
-                if (entry.entryType === 'first-input') {
-                    setMetrics(prev => ({ ...prev, fid: Math.round((entry as any).processingStart - entry.startTime) }))
-                }
-                if (entry.entryType === 'layout-shift') {
-                    setMetrics(prev => ({ ...prev, cls: Math.round((entry as any).value * 1000) / 1000 }))
+                
+                return newMetrics
+            })
+        }
+
+        // Re-setup listeners to catch any missed metrics with better configuration
+        onFCP(handleMetric)
+        onLCP(handleMetric)
+        
+        // INP with more aggressive reporting
+        onINP(handleMetric, { reportAllChanges: true })
+        
+        // CLS with more aggressive reporting
+        onCLS(handleMetric, { reportAllChanges: true })
+        
+        onTTFB(handleMetric)
+
+        // Also measure DOM and Window load times using navigation timing
+        try {
+            const navigationEntries = performance.getEntriesByType('navigation')
+            if (navigationEntries.length > 0) {
+                const navigationEntry = navigationEntries[0] as PerformanceNavigationTiming
+                
+                if (document.readyState === 'complete') {
+                    setMetrics(prev => ({ 
+                        ...prev, 
+                        domLoad: Math.round(navigationEntry.domContentLoadedEventEnd - navigationEntry.fetchStart),
+                        windowLoad: Math.round(navigationEntry.loadEventEnd - navigationEntry.fetchStart)
+                    }))
+                } else {
+                    // Set up listeners for when page finishes loading
+                    const handleDOMContentLoaded = () => {
+                        setMetrics(prev => ({ 
+                            ...prev, 
+                            domLoad: Math.round(performance.now()) 
+                        }))
+                    }
+
+                    const handleWindowLoad = () => {
+                        setMetrics(prev => ({ 
+                            ...prev, 
+                            windowLoad: Math.round(performance.now()) 
+                        }))
+                    }
+
+                    document.addEventListener('DOMContentLoaded', handleDOMContentLoaded, { once: true })
+                    window.addEventListener('load', handleWindowLoad, { once: true })
                 }
             }
-        })
-
-        try {
-            observer.observe({ entryTypes: ['paint', 'largest-contentful-paint', 'first-input', 'layout-shift'] })
-        } catch (e) {
-            console.warn('Performance observer not supported:', e)
+        } catch (error) {
+            console.warn('Error measuring load times:', error)
         }
 
-        // Measure TTFB
-        const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming
-        if (navigationEntry) {
-            setMetrics(prev => ({ 
-                ...prev, 
-                ttfb: Math.round(navigationEntry.responseStart - navigationEntry.requestStart) 
-            }))
-        }
-
-        // Measure DOM and Window load times
-        if (document.readyState === 'complete') {
-            const loadTime = performance.now()
-            setMetrics(prev => ({ 
-                ...prev, 
-                domLoad: Math.round(loadTime),
-                windowLoad: Math.round(loadTime)
-            }))
-        } else {
-            document.addEventListener('DOMContentLoaded', () => {
-                setMetrics(prev => ({ 
-                    ...prev, 
-                    domLoad: Math.round(performance.now()) 
-                }))
-            })
-
-            window.addEventListener('load', () => {
-                setMetrics(prev => ({ 
-                    ...prev, 
-                    windowLoad: Math.round(performance.now()) 
-                }))
-            })
-        }
-
-        // Stop monitoring after 5 seconds
+        // Stop monitoring after 5 seconds (shorter since web-vitals is more efficient)
         setTimeout(() => {
             setIsMonitoring(false)
-            observer.disconnect()
         }, 5000)
     }
 
@@ -129,6 +207,7 @@ export default function PerformanceMonitor() {
             domLoad: null,
             windowLoad: null
         })
+        setIsMonitoring(false)
     }
 
     return (
@@ -152,7 +231,7 @@ export default function PerformanceMonitor() {
                                 onClick={resetMetrics}
                                 size="sm"
                                 variant="outline"
-                                className="h-6 px-2 text-xs"
+                                className="h-6 px-2 text-xs text-black"
                             >
                                 Reset
                             </Button>
@@ -185,7 +264,7 @@ export default function PerformanceMonitor() {
 
                         <div className="space-y-2">
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-300">First Input Delay:</span>
+                                <span className="text-gray-300">Interaction to Next Paint:</span>
                                 <span className="text-white">
                                     {metrics.fid ? `${metrics.fid}ms` : 'N/A'}
                                 </span>
@@ -219,13 +298,38 @@ export default function PerformanceMonitor() {
                             </div>
                         </div>
 
-                        <div className="pt-2 border-t border-gray-700/50">
+                        <div className="pt-2 border-t border-gray-700/50 space-y-2">
                             <Button
                                 onClick={measurePerformance}
                                 disabled={isMonitoring}
                                 className="w-full bg-[#02ACAC] hover:bg-[#02ACAC]/90 text-white"
                             >
                                 {isMonitoring ? 'Measuring...' : 'Measure Performance'}
+                            </Button>
+                            
+                            <Button
+                                onClick={() => {
+                                    // Trigger a test interaction to help capture INP
+                                    const testElement = document.createElement('div')
+                                    testElement.style.position = 'fixed'
+                                    testElement.style.top = '-100px'
+                                    testElement.style.left = '-100px'
+                                    testElement.style.width = '1px'
+                                    testElement.style.height = '1px'
+                                    document.body.appendChild(testElement)
+                                    
+                                    // Simulate a click interaction
+                                    testElement.click()
+                                    
+                                    // Remove the test element
+                                    setTimeout(() => {
+                                        document.body.removeChild(testElement)
+                                    }, 100)
+                                }}
+                                variant="outline"
+                                className="w-full text-xs"
+                            >
+                                Test Interaction (for INP)
                             </Button>
                         </div>
                     </CardContent>

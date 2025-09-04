@@ -4,7 +4,7 @@ import CallToActionAlt from "@/components/CallToActionAlt"
 import ResponsiveImage from "@/components/ResponsiveImage"
 import AdvancedVideoPlayer from "@/components/AdvancedVideoPlayer"
 import AnimatedPageTitle from "@/components/AnimatedPageTitle"
-import { FadeInUp, FadeInLeft, FadeInRight, ScaleIn, StaggerContainer, StaggerItem } from "@/components/ScrollReveal"
+import { FadeInUp, FadeInLeft, FadeInRight } from "@/components/ScrollReveal"
 
 export default function Contact() {
     return (

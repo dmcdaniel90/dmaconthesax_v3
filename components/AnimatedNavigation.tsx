@@ -6,6 +6,7 @@ import { splitWordsAndCapitalize } from "@/lib/utils";
 import Socials from "@/components/Socials";
 import { useHeaderContext } from "@/app/contexts/HeaderContext";
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 
 const SOCIAL_LINKS = {
     facebook: `https://www.facebook.com/dmaconthesax`,
@@ -18,6 +19,22 @@ const LINKS = ["home", "about", "events", "gallery", "booking", "faq", "contact"
 export default function AnimatedNavigation() {
     const HeaderContext = useHeaderContext();
     const isHomePage = HeaderContext.state.activeLink === "home";
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+    const [isClient, setIsClient] = useState(false);
+
+    // Prevent hydration mismatch by only setting motion preference after client mount
+    useEffect(() => {
+        setIsClient(true);
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+        setPrefersReducedMotion(mediaQuery.matches)
+
+        const handleChange = (e: MediaQueryListEvent) => {
+            setPrefersReducedMotion(e.matches)
+        }
+
+        mediaQuery.addEventListener('change', handleChange)
+        return () => mediaQuery.removeEventListener('change', handleChange)
+    }, [])
 
     const handleClick = (link: string) => {
         HeaderContext.dispatch({ type: "SET_ACTIVE_LINK", payload: link })
@@ -30,29 +47,29 @@ export default function AnimatedNavigation() {
                 {!isHomePage && (
                     <motion.nav
                         key="sticky-nav"
-                        initial={{ y: -100, opacity: 0 }}
+                        initial={!isClient || prefersReducedMotion ? { opacity: 0 } : { y: -100, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
-                        exit={{ y: -100, opacity: 0 }}
+                        exit={!isClient || prefersReducedMotion ? { opacity: 0 } : { y: -100, opacity: 0 }}
                         transition={{ 
-                            duration: 0.5, 
+                            duration: !isClient || prefersReducedMotion ? 0 : 0.5, 
                             ease: [0.4, 0.0, 0.2, 1],
-                            opacity: { duration: 0.3 }
+                            opacity: { duration: !isClient || prefersReducedMotion ? 0 : 0.3 }
                         }}
                         className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-gray-900/95 via-gray-800/95 to-gray-900/95 backdrop-blur-xl border-b border-gray-700/20 shadow-lg"
                     >
                         <div className="container mx-auto px-6 sm:px-8 md:px-12 lg:px-16">
                             <motion.div 
                                 className="flex items-center justify-between h-16 lg:h-20"
-                                initial={{ scale: 0.95 }}
+                                initial={!isClient || prefersReducedMotion ? {} : { scale: 0.95 }}
                                 animate={{ scale: 1 }}
-                                transition={{ duration: 0.4, delay: 0.1 }}
+                                transition={{ duration: !isClient || prefersReducedMotion ? 0 : 0.4, delay: !isClient || prefersReducedMotion ? 0 : 0.1 }}
                             >
                                 {/* Logo on the left */}
                                 <motion.div 
                                     className="flex-shrink-0"
-                                    initial={{ x: -20, opacity: 0 }}
+                                    initial={!isClient || prefersReducedMotion ? { opacity: 0 } : { x: -20, opacity: 0 }}
                                     animate={{ x: 0, opacity: 1 }}
-                                    transition={{ duration: 0.4, delay: 0.2 }}
+                                    transition={{ duration: !isClient || prefersReducedMotion ? 0 : 0.4, delay: !isClient || prefersReducedMotion ? 0 : 0.2 }}
                                 >
                                     <Link href="/" onClick={() => handleClick('home')} className="flex items-center">
                                         <div className="relative w-12 h-12 lg:w-16 lg:h-16">
@@ -79,18 +96,18 @@ export default function AnimatedNavigation() {
                                 {/* Navigation links in the middle */}
                                 <motion.div 
                                     className="hidden md:flex items-center space-x-1 lg:space-x-2"
-                                    initial={{ y: -10, opacity: 0 }}
+                                    initial={!isClient || prefersReducedMotion ? { opacity: 0 } : { y: -10, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
-                                    transition={{ duration: 0.4, delay: 0.3 }}
+                                    transition={{ duration: !isClient || prefersReducedMotion ? 0 : 0.4, delay: !isClient || prefersReducedMotion ? 0 : 0.3 }}
                                 >
                                     {LINKS.map((link, index) => (
                                         <motion.div
                                             key={link}
-                                            initial={{ y: -10, opacity: 0 }}
+                                            initial={!isClient || prefersReducedMotion ? { opacity: 0 } : { y: -10, opacity: 0 }}
                                             animate={{ y: 0, opacity: 1 }}
                                             transition={{ 
-                                                duration: 0.3, 
-                                                delay: 0.4 + (index * 0.05),
+                                                duration: !isClient || prefersReducedMotion ? 0 : 0.3, 
+                                                delay: !isClient || prefersReducedMotion ? 0 : 0.4 + (index * 0.05),
                                                 ease: "easeOut"
                                             }}
                                         >
@@ -112,9 +129,9 @@ export default function AnimatedNavigation() {
                                 {/* Social links on the right */}
                                 <motion.div 
                                     className="flex-shrink-0"
-                                    initial={{ x: 20, opacity: 0 }}
+                                    initial={!isClient || prefersReducedMotion ? { opacity: 0 } : { x: 20, opacity: 0 }}
                                     animate={{ x: 0, opacity: 1 }}
-                                    transition={{ duration: 0.4, delay: 0.2 }}
+                                    transition={{ duration: !isClient || prefersReducedMotion ? 0 : 0.4, delay: !isClient || prefersReducedMotion ? 0 : 0.2 }}
                                 >
                                     <Socials 
                                         socials={SOCIAL_LINKS} 
@@ -136,9 +153,9 @@ export default function AnimatedNavigation() {
                         key="home-nav"
                         initial={{ y: 0, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
-                        exit={{ y: -50, opacity: 0 }}
+                        exit={!isClient || prefersReducedMotion ? { opacity: 0 } : { y: -50, opacity: 0 }}
                         transition={{ 
-                            duration: 0.4, 
+                            duration: !isClient || prefersReducedMotion ? 0 : 0.4, 
                             ease: [0.4, 0.0, 0.2, 1]
                         }}
                         className="hidden md:flex flex-col items-center justify-center gap-4 sm:gap-6 md:gap-8 w-full h-[60vh] sm:h-[70vh] md:h-[85vh] mb-4 z-50 transition-all duration-300 ease-in-out px-6 sm:px-8 md:px-12 lg:px-16"
@@ -146,9 +163,9 @@ export default function AnimatedNavigation() {
                         {/* Social Icons */}
                         <motion.div 
                             className="flex justify-center items-center w-full mb-2 sm:mb-4 md:mb-6"
-                            initial={{ y: -20, opacity: 0 }}
+                            initial={!isClient || prefersReducedMotion ? { opacity: 0 } : { y: -20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
-                            transition={{ duration: 0.5, delay: 0.1 }}
+                            transition={{ duration: !isClient || prefersReducedMotion ? 0 : 0.5, delay: !isClient || prefersReducedMotion ? 0 : 0.1 }}
                         >
                             <Socials 
                                 socials={SOCIAL_LINKS} 
@@ -160,10 +177,10 @@ export default function AnimatedNavigation() {
 
                         {/* Logo */}
                         <motion.div 
-                            className="relative inline-block w-full max-w-md sm:max-w-lg md:max-w-2xl h-auto transition-all duration-200 ease-in-out hover:scale-101 cursor-pointer"
-                            initial={{ scale: 0.8, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+                            className="relative inline-block w-full max-w-md sm:max-w-lg md:max-w-2xl h-auto transition-all duration-200 ease-in-out"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: !isClient || prefersReducedMotion ? 0 : 1.2, delay: !isClient || prefersReducedMotion ? 0 : 0.1, ease: "easeOut" }}
                         >
                             <Image 
                                 priority 
@@ -186,18 +203,18 @@ export default function AnimatedNavigation() {
                         {/* Navigation */}
                         <motion.nav 
                             className="flex flex-wrap justify-center gap-2 sm:gap-4 md:gap-6 px-2 sm:px-4"
-                            initial={{ y: 20, opacity: 0 }}
+                            initial={!isClient || prefersReducedMotion ? { opacity: 0 } : { y: 20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
-                            transition={{ duration: 0.5, delay: 0.3 }}
+                            transition={{ duration: !isClient || prefersReducedMotion ? 0 : 0.5, delay: !isClient || prefersReducedMotion ? 0 : 0.3 }}
                         >
                             {LINKS.map((link, index) => (
                                 <motion.div
                                     key={link}
-                                    initial={{ y: 20, opacity: 0 }}
+                                    initial={!isClient || prefersReducedMotion ? { opacity: 0 } : { y: 20, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
                                     transition={{ 
-                                        duration: 0.3, 
-                                        delay: 0.4 + (index * 0.05),
+                                        duration: !isClient || prefersReducedMotion ? 0 : 0.3, 
+                                        delay: !isClient || prefersReducedMotion ? 0 : 0.4 + (index * 0.05),
                                         ease: "easeOut"
                                     }}
                                 >

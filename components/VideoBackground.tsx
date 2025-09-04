@@ -98,7 +98,6 @@ const VideoBackground = () => {
         onCanPlay={() => setIsLoading(false)}
         onError={() => {
           // Fallback to basic URL if responsive URL fails
-          console.log('Video failed to load, using fallback URL');
           setCurrentVideoUrl(fallbackUrl);
           setIsLoading(false);
         }}

@@ -52,12 +52,8 @@ export default function AdvancedVideoPlayer({
   const fallbackUrl = getVideoUrl(videoName);
 
   useEffect(() => {
-    console.log('AdvancedVideoPlayer: videoName =', videoName);
-    console.log('AdvancedVideoPlayer: fallbackUrl =', fallbackUrl);
-
     // Generate responsive video URLs for the specific video
     const responsiveUrls = getResponsiveVideoUrls(videoName);
-    console.log('AdvancedVideoPlayer: responsiveUrls =', responsiveUrls);
     
     const qualities: VideoQuality[] = [
       {
@@ -185,7 +181,6 @@ export default function AdvancedVideoPlayer({
       
       // Fallback to working URL if current quality fails
       if (currentQuality && currentQuality.url !== fallbackUrl) {
-        console.log('Falling back to working URL');
         const fallbackQuality = availableQualities.find(q => q.label.includes('Fallback'));
         if (fallbackQuality) {
           setCurrentQuality(fallbackQuality);
@@ -246,7 +241,6 @@ export default function AdvancedVideoPlayer({
     ];
     
     const customUrl = createCustomVideoUrl(customTransformations);
-    console.log('Custom transformation URL:', customUrl);
     
     // You could apply this URL to the video
     if (videoRef.current) {

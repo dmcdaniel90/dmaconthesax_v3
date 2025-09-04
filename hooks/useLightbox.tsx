@@ -1,18 +1,45 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 export function useLightbox() {
     const [isOpen, setIsOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [images, setImages] = useState<string[]>([]);
+    const [isVisible, setIsVisible] = useState(false);
 
     const handleOpen = (index: number) => {
         setCurrentIndex(index);
         setIsOpen(true);
+        // Trigger animation after DOM update
+        setTimeout(() => setIsVisible(true), 10);
     };
 
     const handleClose = () => {
-        setIsOpen(false);
+        setIsVisible(false);
+        // Close after animation completes
+        setTimeout(() => setIsOpen(false), 300);
     };
+
+    // Handle escape key
+    useEffect(() => {
+        const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && isOpen) {
+                handleClose();
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('keydown', handleEscape);
+            // Prevent body scroll when lightbox is open
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+
+        return () => {
+            document.removeEventListener('keydown', handleEscape);
+            document.body.style.overflow = 'unset';
+        };
+    }, [isOpen]);
 
     const handlePrev = () => {
         setCurrentIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : images.length - 1));
@@ -29,7 +56,7 @@ export function useLightbox() {
     };
 
     const LightboxComponent = () => (
-        <div className={`fixed top-0 left-0 w-full h-full bg-gray-950/90 backdrop-blur-sm flex justify-center items-center z-[1000] cursor-alias`} onClick={handleClickOutside}>
+        <div className={`fixed top-0 left-0 w-full h-full bg-black/80 backdrop-blur-md flex justify-center items-center z-[1000] cursor-alias transition-all duration-300 ease-in-out ${isVisible ? 'opacity-100' : 'opacity-0'}`} onClick={handleClickOutside}>
             {/* Close button */}
             <button 
                 onClick={handleClose} 
@@ -48,15 +75,17 @@ export function useLightbox() {
                 ‹
             </button>
             
-            {/* Image container with responsive sizing */}
+            {/* Image container with original aspect ratio */}
             <div className="relative w-full h-full flex items-center justify-center p-4 sm:p-6 md:p-8 lg:p-12">
                 <img 
                     src={images[currentIndex]} 
                     alt={`Lightbox image ${currentIndex + 1} of ${images.length}`} 
-                    className="max-w-full max-h-full w-auto h-auto object-contain rounded-lg shadow-2xl"
+                    className={`max-w-full max-h-full w-auto h-auto object-contain rounded-lg shadow-2xl transition-all duration-300 ease-in-out ${isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}
                     style={{
-                        maxWidth: 'min(90vw, 90vh * 16/9)',
-                        maxHeight: 'min(90vh, 90vw * 9/16)'
+                        maxWidth: '95vw',
+                        maxHeight: '95vh',
+                        width: 'auto',
+                        height: 'auto'
                     }}
                 />
             </div>

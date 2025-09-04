@@ -45,8 +45,8 @@ async function callN8NWorkflow(formData: bookingFormSchemaType | contactFormSche
         if (response.status !== 200) {
             throw new Error("Failed to call N8N workflow")
         }
-    }).catch((error) => {
-        console.log(error)
+    }).catch(() => {
+        // Handle error silently
     })
 
     return {
@@ -64,7 +64,6 @@ export async function postMessage(formData: bookingFormSchemaType | contactFormS
     }
 
     if (!validatedData.success) {
-        console.log("Error: ", validatedData.error.issues)
         return {
             success: false,
             error: validatedData.error.issues
@@ -106,7 +105,6 @@ export async function postMessage(formData: bookingFormSchemaType | contactFormS
             error: null
         };
     } catch (error) {
-        console.log(error);
         return {
             success: false,
             error: error instanceof Error ? error.message : error

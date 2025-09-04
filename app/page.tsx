@@ -4,7 +4,7 @@ import EventList from "@/components/EventList";
 import CallToAction from "@/components/CallToAction";
 import Footer from "./layout/Footer";
 import { useHeaderContext } from "./contexts/HeaderContext";
-import { FadeInUp, ScaleIn, StaggerContainer, StaggerItem } from "@/components/ScrollReveal";
+import { FadeInUp, StaggerContainer, StaggerItem } from "@/components/ScrollReveal";
 
 export default function Home() {
   const HeaderContext = useHeaderContext()

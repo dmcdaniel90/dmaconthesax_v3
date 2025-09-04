@@ -15,7 +15,6 @@ const SOCIAL_LINKS = {
     instagram: `https://www.instagram.com/dmaconthesax`,
     youtube: `https://www.youtube.com/@dmcdaniel9`,
 }
-const LINKS = ["home", "about", "events", "gallery", "booking", "faq", "contact"]
 
 
 export default function Header() {

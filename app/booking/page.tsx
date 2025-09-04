@@ -7,7 +7,7 @@ import { useHeaderContext } from "../contexts/HeaderContext"
 import ResponsiveImage from "@/components/ResponsiveImage"
 import { CalendarIcon, Clock, MapPin, Music } from "lucide-react"
 import AnimatedPageTitle from "@/components/AnimatedPageTitle"
-import { FadeInUp, FadeInLeft, FadeInRight, ScaleIn, StaggerContainer, StaggerItem } from "@/components/ScrollReveal"
+import { FadeInLeft, FadeInRight } from "@/components/ScrollReveal"
 
 export default function Booking() {
     const HeaderContext = useHeaderContext()

@@ -1,7 +1,7 @@
 'use client'
 
 import { useInView } from 'framer-motion'
-import { useRef } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { motion, Variants } from 'framer-motion'
 
 interface ScrollRevealProps {
@@ -25,10 +25,26 @@ export default function ScrollReveal({
     once = true
 }: ScrollRevealProps) {
     const ref = useRef(null)
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+    const [isClient, setIsClient] = useState(false)
     const isInView = useInView(ref, { 
         once, 
         margin: "0px 0px -100px 0px" // Start animation slightly before element comes into view
     })
+
+    // Check for reduced motion preference
+    useEffect(() => {
+        setIsClient(true);
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+        setPrefersReducedMotion(mediaQuery.matches)
+
+        const handleChange = (e: MediaQueryListEvent) => {
+            setPrefersReducedMotion(e.matches)
+        }
+
+        mediaQuery.addEventListener('change', handleChange)
+        return () => mediaQuery.removeEventListener('change', handleChange)
+    }, [])
 
     // Default variants if none provided
     const defaultVariants: Variants = {
@@ -36,34 +52,35 @@ export default function ScrollReveal({
         visible: {
             opacity: 1,
             transition: {
-                duration,
-                delay,
+                duration: !isClient || prefersReducedMotion ? 0 : duration,
+                delay: !isClient || prefersReducedMotion ? 0 : delay,
                 ease: "easeOut"
             }
         }
     }
 
-    // Apply direction-based transforms to default variants
-    if (!variants) {
+    // Apply direction-based transforms to default variants (only if motion is not reduced)
+    // CLS Optimized: Reduced movement values to prevent layout shifts
+    if (!variants && isClient && !prefersReducedMotion) {
         switch (direction) {
             case 'up':
-                defaultVariants.hidden = { ...defaultVariants.hidden, y: 75 }
+                defaultVariants.hidden = { ...defaultVariants.hidden, y: 30 }
                 defaultVariants.visible = { ...defaultVariants.visible, y: 0 }
                 break
             case 'down':
-                defaultVariants.hidden = { ...defaultVariants.hidden, y: -75 }
+                defaultVariants.hidden = { ...defaultVariants.hidden, y: -30 }
                 defaultVariants.visible = { ...defaultVariants.visible, y: 0 }
                 break
             case 'left':
-                defaultVariants.hidden = { ...defaultVariants.hidden, x: -75 }
+                defaultVariants.hidden = { ...defaultVariants.hidden, x: -30 }
                 defaultVariants.visible = { ...defaultVariants.visible, x: 0 }
                 break
             case 'right':
-                defaultVariants.hidden = { ...defaultVariants.hidden, x: 75 }
+                defaultVariants.hidden = { ...defaultVariants.hidden, x: 30 }
                 defaultVariants.visible = { ...defaultVariants.visible, x: 0 }
                 break
             case 'scale':
-                defaultVariants.hidden = { ...defaultVariants.hidden, scale: 0.8 }
+                defaultVariants.hidden = { ...defaultVariants.hidden, scale: 0.95 }
                 defaultVariants.visible = { ...defaultVariants.visible, scale: 1 }
                 break
         }
@@ -119,17 +136,33 @@ export function StaggerContainer({
     once?: boolean
 }) {
     const ref = useRef(null)
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+    const [isClient, setIsClient] = useState(false)
     const isInView = useInView(ref, { 
         once, 
         margin: "0px 0px -100px 0px"
     })
 
+    // Check for reduced motion preference
+    useEffect(() => {
+        setIsClient(true);
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+        setPrefersReducedMotion(mediaQuery.matches)
+
+        const handleChange = (e: MediaQueryListEvent) => {
+            setPrefersReducedMotion(e.matches)
+        }
+
+        mediaQuery.addEventListener('change', handleChange)
+        return () => mediaQuery.removeEventListener('change', handleChange)
+    }, [])
+
     const containerVariants: Variants = {
         hidden: {},
         visible: {
             transition: {
-                staggerChildren: staggerDelay,
-                delayChildren: 0.2
+                staggerChildren: !isClient || prefersReducedMotion ? 0 : staggerDelay,
+                delayChildren: !isClient || prefersReducedMotion ? 0 : 0.2
             }
         }
     }
@@ -161,40 +194,59 @@ export function StaggerItem({
     delay?: number
     duration?: number
 }) {
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+    const [isClient, setIsClient] = useState(false)
+
+    // Check for reduced motion preference
+    useEffect(() => {
+        setIsClient(true);
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+        setPrefersReducedMotion(mediaQuery.matches)
+
+        const handleChange = (e: MediaQueryListEvent) => {
+            setPrefersReducedMotion(e.matches)
+        }
+
+        mediaQuery.addEventListener('change', handleChange)
+        return () => mediaQuery.removeEventListener('change', handleChange)
+    }, [])
+
     const itemVariants: Variants = {
         hidden: { opacity: 0 },
         visible: {
             opacity: 1,
             transition: {
-                duration,
-                delay,
+                duration: !isClient || prefersReducedMotion ? 0 : duration,
+                delay: !isClient || prefersReducedMotion ? 0 : delay,
                 ease: "easeOut"
             }
         }
     }
 
-    // Apply direction-based transforms
-    switch (direction) {
-        case 'up':
-            itemVariants.hidden = { ...itemVariants.hidden, y: 20 }
-            itemVariants.visible = { ...itemVariants.visible, y: 0 }
-            break
-        case 'down':
-            itemVariants.hidden = { ...itemVariants.hidden, y: -20 }
-            itemVariants.visible = { ...itemVariants.visible, y: 0 }
-            break
-        case 'left':
-            itemVariants.hidden = { ...itemVariants.hidden, x: -20 }
-            itemVariants.visible = { ...itemVariants.visible, x: 0 }
-            break
-        case 'right':
-            itemVariants.hidden = { ...itemVariants.hidden, x: 20 }
-            itemVariants.visible = { ...itemVariants.visible, x: 0 }
-            break
-        case 'scale':
-            itemVariants.hidden = { ...itemVariants.hidden, scale: 0.9 }
-            itemVariants.visible = { ...itemVariants.visible, scale: 1 }
-            break
+    // Apply direction-based transforms (only if motion is not reduced)
+    if (isClient && !prefersReducedMotion) {
+        switch (direction) {
+            case 'up':
+                itemVariants.hidden = { ...itemVariants.hidden, y: 20 }
+                itemVariants.visible = { ...itemVariants.visible, y: 0 }
+                break
+            case 'down':
+                itemVariants.hidden = { ...itemVariants.hidden, y: -20 }
+                itemVariants.visible = { ...itemVariants.visible, y: 0 }
+                break
+            case 'left':
+                itemVariants.hidden = { ...itemVariants.hidden, x: -20 }
+                itemVariants.visible = { ...itemVariants.visible, x: 0 }
+                break
+            case 'right':
+                itemVariants.hidden = { ...itemVariants.hidden, x: 20 }
+                itemVariants.visible = { ...itemVariants.visible, x: 0 }
+                break
+            case 'scale':
+                itemVariants.hidden = { ...itemVariants.hidden, scale: 0.9 }
+                itemVariants.visible = { ...itemVariants.visible, scale: 1 }
+                break
+        }
     }
 
     return (
