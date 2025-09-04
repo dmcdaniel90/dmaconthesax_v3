@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { 
   createCustomVideoUrl,
+  getVideoUrl,
+  getResponsiveVideoUrls,
 } from '@/lib/cloudinary';
 
 interface VideoQuality {
@@ -14,6 +16,7 @@ interface VideoQuality {
 }
 
 interface AdvancedVideoPlayerProps {
+  videoName: string; // Cloudinary public ID for the video
   autoPlay?: boolean;
   loop?: boolean;
   muted?: boolean;
@@ -24,6 +27,7 @@ interface AdvancedVideoPlayerProps {
 }
 
 export default function AdvancedVideoPlayer({
+  videoName,
   autoPlay = true,
   loop = true,
   muted = true,
@@ -44,56 +48,62 @@ export default function AdvancedVideoPlayer({
     networkActivity: 0
   });
 
-  // Working fallback URL for development
-  const fallbackUrl = "https://res.cloudinary.com/dllh8yqz8/video/upload/v1755861559/dmaconthesax_website_bg.mp4";
+  // Generate fallback URL using the videoName prop
+  const fallbackUrl = getVideoUrl(videoName);
 
   useEffect(() => {
+    console.log('AdvancedVideoPlayer: videoName =', videoName);
+    console.log('AdvancedVideoPlayer: fallbackUrl =', fallbackUrl);
 
+    // Generate responsive video URLs for the specific video
+    const responsiveUrls = getResponsiveVideoUrls(videoName);
+    console.log('AdvancedVideoPlayer: responsiveUrls =', responsiveUrls);
+    
     const qualities: VideoQuality[] = [
       {
         label: 'Mobile (Low)',
-        url: fallbackUrl, // Use working URL for all qualities in development
+        url: responsiveUrls.mobile,
         width: 640,
         height: 360,
         quality: 'low'
       },
       {
         label: 'Tablet (Medium)',
-        url: fallbackUrl,
+        url: responsiveUrls.tablet,
         width: 1024,
         height: 576,
         quality: 'medium'
       },
       {
         label: 'Desktop (High)',
-        url: fallbackUrl,
+        url: responsiveUrls.desktop,
         width: 1920,
         height: 1080,
         quality: 'high'
       },
       {
         label: 'Large (Ultra)',
-        url: fallbackUrl,
+        url: responsiveUrls.large,
         width: 2560,
         height: 1440,
         quality: 'ultra'
       },
       {
         label: 'Slow Network',
-        url: fallbackUrl,
+        url: responsiveUrls.mobile, // Use mobile quality for slow networks
         width: 640,
         height: 360,
         quality: 'low'
       },
       {
         label: 'Fast Network',
-        url: fallbackUrl,
+        url: responsiveUrls.desktop, // Use desktop quality for fast networks
         width: 1920,
         height: 1080,
         quality: 'high'
       },
       {
-        label: 'Fallback (Working)',
+        label: 'Fallback',
         url: fallbackUrl,
         width: 1920,
         height: 1080,

@@ -17,52 +17,6 @@ const SOCIAL_LINKS = {
 }
 const LINKS = ["home", "about", "events", "gallery", "booking", "faq", "contact"]
 
-// Animation variants for navigation items
-const navItemVariants = {
-    hidden: { opacity: 0, y: -20 },
-    visible: (i: number) => ({
-        opacity: 1,
-        y: 0,
-        transition: {
-            delay: i * 0.1,
-            duration: 0.5,
-            ease: "easeOut" as const
-        }
-    })
-};
-
-// Hover animation variants
-const hoverVariants = {
-    hover: {
-        scale: 1.15,
-        y: -2,
-        transition: {
-            duration: 0.2,
-            ease: "easeInOut" as const
-        }
-    },
-    tap: {
-        scale: 0.9,
-        y: 0,
-        transition: {
-            duration: 0.1
-        }
-    }
-};
-
-// Underline animation variants
-const underlineVariants = {
-    hidden: { width: 0, opacity: 0 },
-    visible: { 
-        width: "100%", 
-        opacity: 1,
-        transition: {
-            duration: 0.3,
-            ease: "easeInOut" as const
-        }
-    }
-};
-
 
 export default function Header() {
     // const title = "DMAC on the Sax"
@@ -87,8 +41,11 @@ export default function Header() {
 
     useEffect(() => {
         const currentPath = window.location.pathname;
-        handleNavChange(currentPath);
-
+        if (currentPath === "/") {
+            HeaderContext.dispatch({ type: "SET_ACTIVE_LINK", payload: 'home' })
+        } else {
+            handleNavChange(currentPath);
+        }
     }, []);
 
     // Dynamic header height based on landscape mobile state
@@ -102,7 +59,7 @@ export default function Header() {
     return (
         <>
             {/* Mobile/Tablet Header with Hamburger (hidden on desktop) */}
-            <header className={`landscape-mobile-header flex flex-col items-center justify-center gap-4 sm:gap-6 md:gap-8 w-full ${getHeaderHeight()} mb-4 z-40 transition-all duration-300 ease-in-out px-4 sm:px-6 md:px-8 md:hidden`}>
+            <header className={`landscape-mobile-header flex flex-col items-center justify-start gap-4 sm:gap-6 md:gap-8 w-full ${getHeaderHeight()} mb-4 z-40 transition-all duration-300 ease-in-out px-4 sm:px-6 md:px-8 md:hidden pt-8 sm:pt-12 md:pt-16`}>
                 {/* Top Bar with Social Icons and Hamburger */}
                 <div className="w-full flex justify-between items-center mb-4">
                     {/* Social Media Icons */}
@@ -168,58 +125,23 @@ export default function Header() {
                         alt="DMAC on the Sax Logo"
                     />
                 </div>
-                {/* Enhanced Navigation - visible on desktop */}
+                {/* Navigation - visible on desktop */}
                 <nav className="landscape-mobile-nav flex flex-wrap justify-center gap-2 sm:gap-4 md:gap-6 px-2 sm:px-4">
-                    {LINKS.map((link, index) => (
-                        <motion.div
-                            key={link}
-                            custom={index}
-                            variants={navItemVariants}
-                            initial="hidden"
-                            animate="visible"
-                            className="relative"
-                        >
-                            <Link 
-                                href={`/${link}`} 
-                                onClick={() => handleClick(link)} 
-                                className={`relative text-sm sm:text-lg md:text-xl text-white cursor-pointer font-semibold px-4 py-3 rounded-xl transition-all duration-300 group ${
-                                    HeaderContext.state.activeLink === link 
-                                        ? "text-[#02ACAC] shadow-lg bg-white/10" 
-                                        : "hover:text-[#02ACAC]"
-                                }`}
-                            >
-                                <motion.span
-                                    variants={hoverVariants}
-                                    whileHover="hover"
-                                    whileTap="tap"
-                                    className="block"
-                                >
-                                    {link !== "faq" ? splitWordsAndCapitalize(link) : "FAQ"}
-                                </motion.span>
-                                
-                                {/* Animated underline - now thicker and more visible */}
-                                <motion.div
-                                    className={`absolute bottom-0 left-0 h-1 bg-gradient-to-r from-[#02ACAC] to-[#F7B478] rounded-full ${
-                                        HeaderContext.state.activeLink === link ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                                    }`}
-                                    variants={underlineVariants}
-                                    initial="hidden"
-                                    animate={HeaderContext.state.activeLink === link ? "visible" : "hidden"}
-                                    whileHover="visible"
-                                />
-                                
-                                {/* Enhanced glow effect for active state */}
-                                {HeaderContext.state.activeLink === link && (
-                                    <motion.div
-                                        className="absolute inset-0 bg-gradient-to-r from-[#02ACAC]/30 to-[#F7B478]/30 rounded-xl blur-md"
-                                        initial={{ opacity: 0, scale: 0.8 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ duration: 0.3, ease: "easeOut" as const }}
-                                    />
-                                )}
-                            </Link>
-                        </motion.div>
-                    ))}
+                                         {/* Clean modern navigation with brand colors */}
+                     {LINKS.map((link) => (
+                         <Link 
+                             key={link} 
+                             href={`/${link}`} 
+                             onClick={() => handleClick(link)} 
+                             className={`relative text-sm sm:text-lg md:text-xl font-semibold px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer ${
+                                 HeaderContext.state.activeLink === link 
+                                     ? "text-[#02ACAC] bg-[#02ACAC]/10" 
+                                     : "text-white hover:text-[#02ACAC]/80 hover:bg-[#02ACAC]/5"
+                             }`}
+                         >
+                             {link !== "faq" ? splitWordsAndCapitalize(link) : "FAQ"}
+                         </Link>
+                     ))}
                 </nav>
             </header>
 

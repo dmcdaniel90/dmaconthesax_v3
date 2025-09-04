@@ -100,6 +100,7 @@ export default function Contact() {
                                 <div className="relative">
                                     <div className="w-full h-64 sm:h-80 lg:h-96 rounded-2xl overflow-hidden border border-gray-700/30 hover:border-[#02ACAC]/30 transition-all duration-300">
                                         <AdvancedVideoPlayer
+                                            videoName="kioki_promo_duazbe"
                                             autoPlay={true}
                                             loop={true}
                                             muted={true}

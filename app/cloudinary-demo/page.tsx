@@ -2,7 +2,7 @@ import AdvancedVideoPlayer from '@/components/AdvancedVideoPlayer';
 import { getResponsiveVideoUrls, getAdaptiveVideoUrls, getDeviceOptimizedUrls } from '@/lib/cloudinary';
 
 export default function CloudinaryDemoPage() {
-  const responsiveUrls = getResponsiveVideoUrls();
+  const responsiveUrls = getResponsiveVideoUrls('kioki_promo_duazbe');
   const adaptiveUrls = getAdaptiveVideoUrls();
   const deviceUrls = getDeviceOptimizedUrls();
 
@@ -56,6 +56,7 @@ export default function CloudinaryDemoPage() {
           <h2 className="text-3xl font-bold mb-6">Advanced Video Player</h2>
           <div className="bg-gray-800 p-6 rounded-lg">
             <AdvancedVideoPlayer
+              videoName="kioki_promo_duazbe"
               showQualitySelector={true}
               showPerformanceMetrics={true}
               className="w-full h-96"

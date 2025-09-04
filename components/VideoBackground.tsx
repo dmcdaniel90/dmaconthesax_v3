@@ -9,7 +9,7 @@ const VideoBackground = () => {
 
   useEffect(() => {
     // Get responsive video URLs for different screen sizes
-    const responsiveUrls = getResponsiveVideoUrls();
+    const responsiveUrls = getResponsiveVideoUrls('dmaconthesax_website_bg');
     
     // Function to determine the best video quality based on screen size
     const getOptimalVideoUrl = () => {

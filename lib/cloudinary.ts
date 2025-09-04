@@ -146,33 +146,7 @@ export function getBackgroundVideoUrl() {
   });
 }
 
-/**
- * Get responsive video URLs for different screen sizes
- */
-export function getResponsiveVideoUrls() {
-  return {
-    mobile: getOptimizedVideoUrl({
-      ...VIDEO_QUALITY_PRESETS.mobile,
-      crop: 'fill',
-      gravity: 'center'
-    }),
-    tablet: getOptimizedVideoUrl({
-      ...VIDEO_QUALITY_PRESETS.tablet,
-      crop: 'fill',
-      gravity: 'center'
-    }),
-    desktop: getOptimizedVideoUrl({
-      ...VIDEO_QUALITY_PRESETS.desktop,
-      crop: 'fill',
-      gravity: 'center'
-    }),
-    large: getOptimizedVideoUrl({
-      ...VIDEO_QUALITY_PRESETS.large,
-      crop: 'fill',
-      gravity: 'center'
-    })
-  };
-}
+
 
 /**
  * Get adaptive video URLs based on network conditions
@@ -269,12 +243,134 @@ export function getVideoAnalyticsUrl() {
 }
 
 /**
+ * Generate a Cloudinary video URL from a video name (public ID)
+ * @param videoName - The public ID of the video in Cloudinary
+ * @param options - Optional transformation options
+ * @returns Cloudinary video URL
+ */
+export function getVideoUrl(videoName: string, options: {
+  width?: number;
+  height?: number;
+  quality?: 'auto' | 'low' | 'medium' | 'high';
+  format?: 'mp4' | 'webm' | 'hls';
+  crop?: 'fill' | 'scale' | 'fit';
+  gravity?: 'auto' | 'center' | 'north' | 'south' | 'east' | 'west';
+  bitrate?: string;
+  fps?: number;
+  audioCodec?: 'aac' | 'mp3' | 'vorbis';
+  videoCodec?: 'h264' | 'h265' | 'vp8' | 'vp9';
+} = {}) {
+  const {
+    width,
+    height,
+    quality = 'auto',
+    format = 'mp4',
+    crop = 'fill',
+    gravity = 'auto',
+    bitrate,
+    fps,
+    audioCodec,
+    videoCodec
+  } = options;
+
+  // Base Cloudinary URL
+  let url = `https://res.cloudinary.com/${CLOUDINARY_CONFIG.cloudName}/video/upload`;
+  
+  // Add transformations
+  const transformations: string[] = [];
+  
+  // Size transformations
+  if (width && height) {
+    transformations.push(`w_${width}`, `h_${height}`);
+  }
+  
+  // Crop and gravity
+  if (crop !== 'fill') {
+    transformations.push(`c_${crop}`);
+  }
+  
+  if (gravity !== 'auto') {
+    transformations.push(`g_${gravity}`);
+  }
+  
+  // Quality optimization
+  if (quality === 'auto') {
+    transformations.push('q_auto');
+  } else {
+    transformations.push(`q_${quality}`);
+  }
+  
+  // Format optimization
+  if (format === 'hls') {
+    transformations.push('f_hls');
+  } else if (format === 'webm') {
+    transformations.push('f_webm');
+  }
+  
+  // Bitrate control for bandwidth optimization
+  if (bitrate) {
+    transformations.push(`br_${bitrate}`);
+  }
+  
+  // Frame rate control
+  if (fps) {
+    transformations.push(`fps_${fps}`);
+  }
+  
+  // Audio codec optimization
+  if (audioCodec) {
+    transformations.push(`ac_${audioCodec}`);
+  }
+  
+  // Video codec optimization
+  if (videoCodec) {
+    transformations.push(`vc_${videoCodec}`);
+  }
+  
+  // Build final URL
+  if (transformations.length > 0) {
+    url += `/${transformations.join(',')}`;
+  }
+  
+  url += `/${videoName}`;
+  
+  return url;
+}
+
+/**
+ * Get responsive video URLs for a specific video name
+ */
+export function getResponsiveVideoUrls(videoName: string) {
+  return {
+    mobile: getVideoUrl(videoName, {
+      ...VIDEO_QUALITY_PRESETS.mobile,
+      crop: 'fill',
+      gravity: 'center'
+    }),
+    tablet: getVideoUrl(videoName, {
+      ...VIDEO_QUALITY_PRESETS.tablet,
+      crop: 'fill',
+      gravity: 'center'
+    }),
+    desktop: getVideoUrl(videoName, {
+      ...VIDEO_QUALITY_PRESETS.desktop,
+      crop: 'fill',
+      gravity: 'center'
+    }),
+    large: getVideoUrl(videoName, {
+      ...VIDEO_QUALITY_PRESETS.large,
+      crop: 'fill',
+      gravity: 'center'
+    })
+  };
+}
+
+/**
  * Check if a video URL is valid Cloudinary URL
  */
 export function isValidCloudinaryUrl(url: string): boolean {
   return url.includes('res.cloudinary.com') && 
-         url.includes(CLOUDINARY_CONFIG.cloudName) && 
-         url.includes(CLOUDINARY_CONFIG.videoDirectory);
+         url.includes(CLOUDINARY_CONFIG.cloudName);
 }
 
 /**
