@@ -58,7 +58,7 @@ const VideoBackground = () => {
   // Don't render video until we have a valid URL
   if (!videoUrl) {
     return (
-      <div className="fixed inset-0 w-full h-full overflow-hidden -z-50">
+      <div className="fixed inset-0 w-full h-full overflow-hidden -z-50 max-w-full">
         {/* Loading state while determining video URL */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/40 flex items-center justify-center">
           <div className="text-white text-lg">Initializing video...</div>
@@ -74,7 +74,7 @@ const VideoBackground = () => {
   }
 
   return (
-    <div className="fixed inset-0 w-full h-full overflow-hidden -z-50">
+    <div className="fixed inset-0 w-full h-full overflow-hidden -z-50 max-w-full">
       {/* Loading state */}
       {isLoading && (
         <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10">
@@ -88,9 +88,11 @@ const VideoBackground = () => {
         loop
         muted
         playsInline
-        className="absolute inset-0 w-full h-full object-cover object-center"
+        className="absolute inset-0 w-full h-full object-cover object-center max-w-full max-h-full"
         style={{
-          objectPosition: 'center 30%' // Position video to keep performer visible
+          objectPosition: 'center 30%', // Position video to keep performer visible
+          maxWidth: '100vw',
+          maxHeight: '100vh'
         }}
         onLoadStart={() => setIsLoading(true)}
         onCanPlay={() => setIsLoading(false)}

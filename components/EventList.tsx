@@ -2,7 +2,7 @@
 import Event from "@/components/Event"
 import { Pagination, PaginationContent, PaginationNext, PaginationPrevious, PaginationItem, PaginationLink } from "@/components/ui/pagination"
 import * as events from '@/lib/sample-events.json'
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Loading, Skeleton } from "@/components/ui/loading";
 
@@ -23,6 +23,8 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
     const [view, setView] = useState<"grid" | "list">(type);
     const [isLoading, setIsLoading] = useState(true);
     const [isViewChanging, setIsViewChanging] = useState(false);
+    const [isSmallDevice, setIsSmallDevice] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     // Simulate loading time for better UX
     useEffect(() => {
@@ -31,6 +33,22 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
         }, 800);
 
         return () => clearTimeout(timer);
+    }, []);
+
+    // Detect small devices and set view to list
+    useEffect(() => {
+        const checkDeviceSize = () => {
+            const isSmall = window.innerWidth < 768; // md breakpoint
+            setIsSmallDevice(isSmall);
+            if (isSmall) {
+                setView("list");
+            }
+        };
+
+        checkDeviceSize();
+        window.addEventListener('resize', checkDeviceSize);
+        
+        return () => window.removeEventListener('resize', checkDeviceSize);
     }, []);
 
     // Memoize the paginated data to prevent unnecessary recalculations
@@ -43,9 +61,19 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
+        // Scroll to top of container when page changes
+        if (containerRef.current) {
+            containerRef.current.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }
     };
 
     const handleViewChange = () => {
+        // Don't allow view changes on small devices
+        if (isSmallDevice) return;
+        
         setIsViewChanging(true);
         setTimeout(() => {
             setView(view === "grid" ? "list" : "grid");
@@ -85,11 +113,11 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
     }
 
     return (
-        <div className={`bg-gray-900/50 px-4 sm:px-8 md:px-16 lg:px-32 py-8 sm:py-12`}>
+        <div ref={containerRef} className={`bg-gray-900/50 px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12`}>
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl sm:text-3xl text-white">Upcoming Events</h2>
                 <Button 
-                    className="cursor-pointer font-bold bg-[#02ACAC] hover:bg-[#005C5C] hover:text-white transition-all duration-300 text-sm sm:text-base focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 disabled:opacity-50" 
+                    className="hidden md:block cursor-pointer font-bold bg-[#02ACAC] hover:bg-[#005C5C] hover:text-white transition-all duration-300 text-sm sm:text-base focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 disabled:opacity-50" 
                     onClick={handleViewChange}
                     disabled={isViewChanging}
                     aria-label={`Switch to ${view === "grid" ? "List" : "Grid"} View`}

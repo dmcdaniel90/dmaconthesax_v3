@@ -3,6 +3,7 @@ import { lato } from "@/lib/fonts";
 import Header from "@/app/layout/Header";
 import VideoBackground from "@/components/VideoBackground";
 import PerformanceMonitor from "@/components/PerformanceMonitor";
+import StickyNavSpacer from "@/components/StickyNavSpacer";
 import "./globals.css";
 import { HeaderProvider } from "./contexts/HeaderContext";
 
@@ -53,6 +54,7 @@ export default function RootLayout({
         >
           <VideoBackground />
           <Header />
+          <StickyNavSpacer />
           <main className="landscape-mobile-content">
             {children}
           </main>

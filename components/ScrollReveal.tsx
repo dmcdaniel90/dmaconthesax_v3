@@ -38,7 +38,7 @@ export default function ScrollReveal({
             transition: {
                 duration,
                 delay,
-                ease: [0.6, 0.05, -0.01, 0.9]
+                ease: "easeOut"
             }
         }
     }
@@ -168,7 +168,7 @@ export function StaggerItem({
             transition: {
                 duration,
                 delay,
-                ease: [0.6, 0.05, -0.01, 0.9]
+                ease: "easeOut"
             }
         }
     }

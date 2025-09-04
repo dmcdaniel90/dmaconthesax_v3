@@ -265,7 +265,11 @@ export default function AdvancedVideoPlayer({
   }
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative ${className}`} style={{ 
+      overflow: 'hidden',
+      position: 'relative',
+      zIndex: 'auto'
+    }}>
       {/* Video Element */}
       <video
         ref={videoRef}
@@ -273,9 +277,18 @@ export default function AdvancedVideoPlayer({
         loop={loop}
         muted={muted}
         controls={showControls}
+        playsInline
+        webkit-playsinline="true"
+        x5-playsinline="true"
+        x5-video-player-type="h5"
+        x5-video-player-fullscreen="false"
         className="w-full h-full object-cover"
         style={{
-          objectPosition: 'center 30%'
+          objectPosition: 'center 30%',
+          maxWidth: '100%',
+          maxHeight: '100%',
+          position: 'relative',
+          zIndex: 'auto'
         }}
       >
         <source src={currentQuality.url} type="video/mp4" />

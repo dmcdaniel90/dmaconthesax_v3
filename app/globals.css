@@ -80,8 +80,10 @@
     @apply border-border outline-ring/50;
     box-sizing: border-box;
   }
-  body {
+  html, body {
     @apply text-foreground;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
   @keyframes sweep {
@@ -196,5 +198,43 @@
   p {
     line-height: 1.4 !important;
     margin-bottom: 0.75rem !important;
+  }
+}
+
+/* Optimize padding for very small devices */
+@media screen and (max-width: 375px) {
+  .container {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  /* Ensure content doesn't get compressed */
+  .landscape-mobile-content {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  /* Reduce excessive padding on small devices */
+  .landscape-mobile-header {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
+
+/* Additional small device optimizations */
+@media screen and (max-width: 320px) {
+  .container {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+  
+  .landscape-mobile-content {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+  
+  .landscape-mobile-header {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
   }
 }

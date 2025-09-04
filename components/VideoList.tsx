@@ -1,12 +1,13 @@
 'use client';
 import { Pagination, PaginationContent, PaginationNext, PaginationPrevious, PaginationItem, PaginationLink } from "@/components/ui/pagination"
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Video from "@/components/Video";
 
 export default function VideoList({ itemsPerPage = 3, type = "grid", videos }: { itemsPerPage?: number, type?: "grid" | "list", videos: string[] }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [view, setView] = useState<"grid" | "list">(type);
+    const [isSmallDevice, setIsSmallDevice] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
     // Memoize the paginated data to prevent unnecessary recalculations
@@ -16,6 +17,22 @@ export default function VideoList({ itemsPerPage = 3, type = "grid", videos }: {
     }, [videos, currentPage, itemsPerPage]);
 
     const totalPages = Math.ceil(videos.length / itemsPerPage);
+
+    // Detect small devices and set view to list
+    useEffect(() => {
+        const checkDeviceSize = () => {
+            const isSmall = window.innerWidth < 768; // md breakpoint
+            setIsSmallDevice(isSmall);
+            if (isSmall) {
+                setView("list");
+            }
+        };
+
+        checkDeviceSize();
+        window.addEventListener('resize', checkDeviceSize);
+        
+        return () => window.removeEventListener('resize', checkDeviceSize);
+    }, []);
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -30,11 +47,15 @@ export default function VideoList({ itemsPerPage = 3, type = "grid", videos }: {
     };
 
     return (
-        <div ref={containerRef} className={`bg-gray-900/50 px-4 sm:px-8 md:px-16 lg:px-24 py-8 sm:py-12 w-full`}>
+        <div ref={containerRef} className={`bg-gray-900/50 px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12 w-full`}>
             <h2 className="text-2xl sm:text-3xl text-white mb-4">Videos</h2>
             <Button 
-                className="bg-[#02ACAC] mt-4 mb-6 sm:mb-8 cursor-pointer hover:bg-background hover:text-foreground transition-colors text-sm sm:text-base px-3 sm:px-4 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900" 
-                onClick={() => setView(view === "grid" ? "list" : "grid")}
+                className="hidden md:block bg-[#02ACAC] mt-4 mb-6 sm:mb-8 cursor-pointer hover:bg-background hover:text-foreground transition-colors text-sm sm:text-base px-3 sm:px-4 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900" 
+                onClick={() => {
+                    // Don't allow view changes on small devices
+                    if (isSmallDevice) return;
+                    setView(view === "grid" ? "list" : "grid");
+                }}
                 aria-label={`Switch to ${view === "grid" ? "List" : "Grid"} View`}
                 tabIndex={0}
             >

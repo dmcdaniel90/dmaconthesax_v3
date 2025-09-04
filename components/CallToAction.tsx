@@ -101,7 +101,7 @@ export default function CallToAction({
                 {/* Image */}
                 {imgName && (
                     <div className="relative">
-                        <div className="aspect-video rounded-2xl overflow-hidden">
+                        <div className="aspect-video rounded-2xl overflow-hidden lg:scale-125">
                             <ResponsiveImage
                                 imageName={imgName}
                                 alt={imgAltText || ""}

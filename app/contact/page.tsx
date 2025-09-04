@@ -3,10 +3,13 @@ import ContactForm from "./ContactForm"
 import CallToActionAlt from "@/components/CallToActionAlt"
 import ResponsiveImage from "@/components/ResponsiveImage"
 import AdvancedVideoPlayer from "@/components/AdvancedVideoPlayer"
+import AnimatedPageTitle from "@/components/AnimatedPageTitle"
+import { FadeInUp, FadeInLeft, FadeInRight, ScaleIn, StaggerContainer, StaggerItem } from "@/components/ScrollReveal"
 
 export default function Contact() {
     return (
-        <main className="mt-16 min-h-screen bg-gradient-to-br from-gray-900/80 via-gray-800/60 via-[#02ACAC]/10 to-gray-900/90">
+        <>
+            <main className="mt-16 min-h-screen bg-gradient-to-br from-gray-900/80 via-gray-800/60 via-[#02ACAC]/10 to-gray-900/90">
             {/* Hero Section */}
             <section className="relative overflow-hidden pt-20 sm:pt-24 lg:pt-32 xl:pt-40">
                 {/* Background Pattern */}
@@ -14,29 +17,24 @@ export default function Contact() {
                     <div className="w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMkFDQUMiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')]"></div>
                 </div>
 
-                <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <div className="max-w-4xl mx-auto">
-                        <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#02ACAC] to-transparent mx-auto mb-8"></div>
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-black tracking-tight leading-tight mb-6">
-                            <span className="bg-gradient-to-r from-white via-gray-100 to-[#02ACAC] bg-clip-text text-transparent">
-                                Get In Touch
-                            </span>
-                        </h1>
-                        <p className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                            Ready to make your event unforgettable? Let&apos;s start a conversation.
-                        </p>
-                    </div>
+                <div className="relative z-10 container mx-auto px-6 sm:px-8 md:px-12 lg:px-16">
+                    <AnimatedPageTitle
+                        title="Get In Touch"
+                        subtitle="Ready to make your event unforgettable? Let's start a conversation."
+                        delay={0}
+                    />
                 </div>
             </section>
 
             {/* Main Content Section */}
             <section className="relative z-10 py-20 sm:py-24 lg:py-32 xl:py-40">
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="container mx-auto px-6 sm:px-8 md:px-12 lg:px-16">
                     <div className="max-w-7xl mx-auto">
                         {/* Contact Information Cards */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16 mb-16 lg:mb-20">
                             {/* Contact Info Card */}
-                            <div className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/90 backdrop-blur-xl rounded-3xl p-8 sm:p-10 lg:p-12 xl:p-16 border border-gray-700/20 hover:border-[#02ACAC]/30 transition-all duration-500 hover:shadow-[#02ACAC]/10 shadow-2xl">
+                            <FadeInLeft delay={0.2}>
+                                <div className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/90 backdrop-blur-xl rounded-3xl p-8 sm:p-10 lg:p-12 xl:p-16 border border-gray-700/20 hover:border-[#02ACAC]/30 transition-all duration-500 hover:shadow-[#02ACAC]/10 shadow-2xl">
                                 <div className="text-center mb-10">
                                     <div className="w-16 h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24 bg-[#02ACAC]/20 rounded-full flex items-center justify-center mx-auto mb-6">
                                         <svg className="w-8 h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 text-[#02ACAC]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,7 +63,7 @@ export default function Contact() {
                                             <p className="text-sm text-gray-400 mb-1">Email</p>
                                             <a
                                                 href="mailto:contact@devinmcdaniel.com"
-                                                className="text-lg lg:text-xl text-white hover:text-[#02ACAC] transition-colors duration-300 underline decoration-2 underline-offset-4 break-all"
+                                                className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-white hover:text-[#02ACAC] transition-colors duration-300 underline decoration-2 underline-offset-4 whitespace-nowrap"
                                             >
                                                 contact@devinmcdaniel.com
                                             </a>
@@ -111,10 +109,12 @@ export default function Contact() {
                                         />
                                     </div>
                                 </div>
-                            </div>
+                                </div>
+                            </FadeInLeft>
 
                             {/* Contact Form Card */}
-                            <div className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/90 backdrop-blur-xl rounded-3xl p-8 sm:p-10 lg:p-12 xl:p-16 border border-gray-700/20 hover:border-[#02ACAC]/30 transition-all duration-500 hover:shadow-[#02ACAC]/10 shadow-2xl">
+                            <FadeInRight delay={0.4}>
+                                <div className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/90 backdrop-blur-xl rounded-3xl p-8 sm:p-10 lg:p-12 xl:p-16 border border-gray-700/20 hover:border-[#02ACAC]/30 transition-all duration-500 hover:shadow-[#02ACAC]/10 shadow-2xl">
                                 <div className="text-center mb-10">
                                     <div className="w-16 h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24 bg-[#02ACAC]/20 rounded-full flex items-center justify-center mx-auto mb-6">
                                         <svg className="w-8 h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 text-[#02ACAC]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,11 +130,13 @@ export default function Contact() {
                                 </div>
 
                                 <ContactForm />
-                            </div>
+                                </div>
+                            </FadeInRight>
                         </div>
 
                         {/* About Section with Image */}
-                        <div className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/90 backdrop-blur-xl rounded-3xl p-8 sm:p-10 lg:p-12 xl:p-16 border border-gray-700/20 hover:border-[#02ACAC]/30 transition-all duration-500 hover:shadow-[#02ACAC]/10 shadow-2xl">
+                        <FadeInUp delay={0.6}>
+                            <div className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/90 backdrop-blur-xl rounded-3xl p-8 sm:p-10 lg:p-12 xl:p-16 border border-gray-700/20 hover:border-[#02ACAC]/30 transition-all duration-500 hover:shadow-[#02ACAC]/10 shadow-2xl">
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16 items-center">
                                 <div>
                                     <h2 className="text-2xl lg:text-3xl xl:text-4xl font-bold text-white mb-6">
@@ -153,25 +155,28 @@ export default function Contact() {
                                         </p>
                                     </div>
                                 </div>
-                                <div className="relative">
+                                <div className="relative w-full max-w-[400px] min-w-[200px] mx-auto aspect-[4/5]">
                                     <ResponsiveImage
                                         imageName="sticker_008_bl3jqp"
                                         fallbackSrc="/sax_portrait_2.webp"
                                         alt="Saxophone Performance"
-                                        className="relative w-full h-full"
-                                        width={500}
-                                        height={500}
+                                        className="w-full h-full rounded-2xl object-cover"
+                                        fill={true}
                                     />
                                 </div>
                             </div>
-                        </div>
+                            </div>
+                        </FadeInUp>
                     </div>
                 </div>
             </section>
 
             {/* CTA Section */}
-            <CallToActionAlt />
+            <FadeInUp delay={0.8}>
+                <CallToActionAlt />
+            </FadeInUp>
 
-        </main>
+            </main>
+        </>
     )
 }
