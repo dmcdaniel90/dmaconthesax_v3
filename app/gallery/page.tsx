@@ -16,7 +16,7 @@ const videoUrls = [
 export default function Gallery() {
     return (
         <>
-            <main className="mt-16 min-h-screen bg-gradient-to-br from-gray-900/80 via-gray-800/60 via-[#02ACAC]/10 to-gray-900/90">
+            <main className="pt-20 sm:pt-24 md:pt-32 min-h-screen bg-gradient-to-br from-gray-900/80 via-gray-800/60 via-[#02ACAC]/10 to-gray-900/90">
             {/* Hero Section */}
             <section className="relative overflow-hidden py-20 sm:py-24 lg:py-32 xl:py-40">
                 {/* Background Pattern */}
@@ -39,7 +39,13 @@ export default function Gallery() {
                     <div className="max-w-7xl mx-auto">
                         <FadeInUp delay={0.2}>
                             <div className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/95 backdrop-blur-xl rounded-3xl p-8 sm:p-10 lg:p-12 border border-gray-700/20 hover:border-[#02ACAC]/30 transition-all duration-500 hover:shadow-[#02ACAC]/10 shadow-2xl">
-                                <VideoList type="grid" itemsPerPage={3} videos={videoUrls} />
+                                <VideoList 
+                                    type="grid" 
+                                    itemsPerPage={3} 
+                                    videos={videoUrls}
+                                    useCloudinary={true}
+                                    cloudinaryTag="video-gallery"
+                                />
                             </div>
                         </FadeInUp>
                     </div>

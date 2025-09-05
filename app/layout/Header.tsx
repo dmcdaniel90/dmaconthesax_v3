@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import Socials from "@/components/Socials";
 import Image from "next/image";
 import { useHeaderContext } from "../contexts/HeaderContext";
@@ -22,6 +23,7 @@ export default function Header() {
     const HeaderContext = useHeaderContext()
     const { isLandscapeMobile,  } = useLandscapeMobile()
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+    const pathname = usePathname()
 
     const handleNavChange = (currentPath: string) => {
         HeaderContext.dispatch({ type: "SET_ACTIVE_LINK", payload: currentPath })
@@ -29,8 +31,6 @@ export default function Header() {
             HeaderContext.dispatch({ type: "SET_ACTIVE_LINK", payload: 'home' })
         }
     }
-
-
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen)
@@ -44,6 +44,11 @@ export default function Header() {
             handleNavChange(currentPath);
         }
     }, []);
+    
+    // Only show header on home page
+    if (pathname !== '/') {
+        return null;
+    }
 
     // Dynamic header height based on landscape mobile state
     const getHeaderHeight = () => {

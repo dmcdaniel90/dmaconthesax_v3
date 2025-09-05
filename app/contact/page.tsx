@@ -9,7 +9,7 @@ import { FadeInUp, FadeInLeft, FadeInRight } from "@/components/ScrollReveal"
 export default function Contact() {
     return (
         <>
-            <main className="mt-16 min-h-screen bg-gradient-to-br from-gray-900/80 via-gray-800/60 via-[#02ACAC]/10 to-gray-900/90">
+            <main className="pt-20 sm:pt-24 md:pt-32 min-h-screen bg-gradient-to-br from-gray-900/80 via-gray-800/60 via-[#02ACAC]/10 to-gray-900/90">
             {/* Hero Section */}
             <section className="relative overflow-hidden pt-20 sm:pt-24 lg:pt-32 xl:pt-40">
                 {/* Background Pattern */}

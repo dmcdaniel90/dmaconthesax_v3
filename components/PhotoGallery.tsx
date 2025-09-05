@@ -108,15 +108,16 @@ export default function PhotoGallery({ images, itemsPerPage, type = "carousel", 
 
     useEffect(() => {
         if (useCloudinary) {
-            // Convert Cloudinary images to URLs for the lightbox
-            const imageUrls = paginatedPhotos.map((image) => 
+            // Convert ALL Cloudinary images to URLs for the lightbox, not just paginated ones
+            const allImages = useCloudinary ? cloudinaryImages : (images || []);
+            const imageUrls = allImages.map((image) => 
                 getCloudinaryUrl(image as any, 1200, 1200)
             );
             setImages(imageUrls);
         } else {
-            setImages(paginatedPhotos as string[]);
+            setImages(images || []);
         }
-    }, [paginatedPhotos, setImages, useCloudinary]);
+    }, [useCloudinary, cloudinaryImages, images, setImages]);
 
     // Skeleton loader for photos
     const PhotoSkeleton = () => (
@@ -188,19 +189,19 @@ export default function PhotoGallery({ images, itemsPerPage, type = "carousel", 
                     <CarouselContent className="px-2 sm:px-4 md:px-8 lg:px-12">
                         {isViewChanging ? (
                             // Show skeleton loaders during view change
-                            Array.from({ length: Math.min(6, paginatedPhotos.length) }).map((_, i) => (
+                            Array.from({ length: Math.min(6, (useCloudinary ? cloudinaryImages.length : (images?.length || 0))) }).map((_, i) => (
                                 <CarouselItem key={i} className="basis-full sm:basis-1/2 lg:basis-1/3">
                                     <PhotoSkeleton />
                                 </CarouselItem>
                             ))
                         ) : (
-                            paginatedPhotos.map((image, index) => {
+                            (useCloudinary ? cloudinaryImages : (images || [])).map((image, index) => {
                                 const imageSrc = useCloudinary 
                                     ? getCloudinaryUrl(image as any)
                                     : image as string;
                                 const imageAlt = useCloudinary 
-                                    ? getImageAlt(image as any, `Image ${index}`)
-                                    : `Image ${index}`;
+                                    ? getImageAlt(image as any, `Image ${index + 1}`)
+                                    : `Image ${index + 1}`;
                                 
                                 return (
                                     <CarouselItem key={index} className="basis-full sm:basis-1/2 lg:basis-1/3 cursor-pointer">

@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useHeaderContext } from '@/app/contexts/HeaderContext'
 import { Phone } from 'lucide-react'
 
@@ -61,15 +62,31 @@ export default function MobileNav({ isOpen, onToggle }: MobileNavProps) {
                             transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
                         >
                             <div className="max-w-md mx-auto">
-                                {/* Logo/Brand */}
+                                {/* Logo */}
                                 <motion.div
                                     className="text-center mb-12"
                                     initial={{ scale: 0.8, opacity: 0 }}
                                     animate={{ scale: 1, opacity: 1 }}
                                     transition={{ duration: 0.4, ease: "easeOut", delay: 0.2 }}
                                 >
-                                    <h2 className="text-2xl font-bold text-white mb-2">DMAC on the Sax</h2>
-                                    <p className="text-gray-400">Professional Saxophone Performances</p>
+                                    <div className="relative w-full max-w-[200px] mx-auto h-auto">
+                                        <Image 
+                                            priority 
+                                            className="w-full" 
+                                            src="/logo_white.svg" 
+                                            width={200} 
+                                            height={100} 
+                                            alt="DMAC on the Sax Logo" 
+                                        />
+                                        <Image
+                                            priority
+                                            className="absolute inset-0 w-full h-auto mask-animation"
+                                            src="/logo_colored.svg"
+                                            width={200}
+                                            height={100}
+                                            alt="DMAC on the Sax Logo"
+                                        />
+                                    </div>
                                 </motion.div>
 
                                 {/* Navigation Links */}

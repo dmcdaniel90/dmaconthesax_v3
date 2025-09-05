@@ -4,7 +4,7 @@ import { FadeInUp, FadeInLeft, FadeInRight, ScaleIn, StaggerContainer, StaggerIt
 export default function About() {
     return (
         <>
-            <main className="mt-16 min-h-screen bg-gradient-to-br from-gray-900/80 via-gray-800/60 via-[#02ACAC]/10 to-gray-900/90">
+            <main className="pt-20 sm:pt-24 md:pt-32 min-h-screen bg-gradient-to-br from-gray-900/80 via-gray-800/60 via-[#02ACAC]/10 to-gray-900/90">
                 {/* Hero Section */}
                 <section className="relative overflow-hidden py-20 sm:py-24 lg:py-32 xl:py-40 min-h-[200px]">
                     {/* Background Pattern */}
