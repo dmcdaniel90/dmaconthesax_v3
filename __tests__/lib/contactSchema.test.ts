@@ -167,46 +167,19 @@ describe('contactFormSchema', () => {
   })
 
   describe('required fields', () => {
-    it('requires from_name field', () => {
-      const { from_name, ...invalidData } = validContactData
-      
-      const result = contactFormSchema.safeParse(invalidData)
-      expect(result.success).toBe(false)
-    })
-
-    it('requires subject field', () => {
-      const { subject, ...invalidData } = validContactData
-      
-      const result = contactFormSchema.safeParse(invalidData)
-      expect(result.success).toBe(false)
-    })
-
-    it('requires name field', () => {
-      const { name, ...invalidData } = validContactData
-      
-      const result = contactFormSchema.safeParse(invalidData)
-      expect(result.success).toBe(false)
-    })
-
-    it('requires email field', () => {
-      const { email, ...invalidData } = validContactData
-      
-      const result = contactFormSchema.safeParse(invalidData)
-      expect(result.success).toBe(false)
-    })
-
-    it('requires message field', () => {
-      const { message, ...invalidData } = validContactData
-      
-      const result = contactFormSchema.safeParse(invalidData)
-      expect(result.success).toBe(false)
-    })
-
-    it('requires botcheck field', () => {
-      const { botcheck, ...invalidData } = validContactData
-      
-      const result = contactFormSchema.safeParse(invalidData)
-      expect(result.success).toBe(false)
+    const requiredFields = ['from_name', 'subject', 'name', 'email', 'message', 'botcheck']
+    
+    requiredFields.forEach(field => {
+      it(`requires ${field} field`, () => {
+        const invalidData = { ...validContactData }
+        delete (invalidData as any)[field]
+        
+        const result = contactFormSchema.safeParse(invalidData)
+        expect(result.success).toBe(false)
+        if (!result.success) {
+          expect(result.error.issues.some(issue => issue.path.includes(field))).toBe(true)
+        }
+      })
     })
   })
 

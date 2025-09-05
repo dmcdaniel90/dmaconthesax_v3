@@ -1,10 +1,12 @@
 'use client';
 import { Pagination, PaginationContent, PaginationNext, PaginationPrevious, PaginationItem, PaginationLink } from "@/components/ui/pagination"
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import CloudinaryPlayer from "@/components/CloudinaryPlayer";
 import { useCloudinaryVideoCollection } from "../hooks/useCloudinaryVideoCollection";
 import { Skeleton } from "@/components/ui/loading";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import useEmblaCarousel from 'embla-carousel-react';
 
 export default function VideoList({ 
     itemsPerPage = 3, 
@@ -23,7 +25,25 @@ export default function VideoList({
     const [view, setView] = useState<"grid" | "list">(type);
     const [isSmallDevice, setIsSmallDevice] = useState(false);
     const [isPageLoading, setIsPageLoading] = useState(false);
+    const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
+
+    // Embla carousel for tablet gesture support
+    const [emblaRef, emblaApi] = useEmblaCarousel({
+        slidesToScroll: 1,
+        containScroll: 'trimSnaps',
+        dragFree: false,
+        skipSnaps: false,
+        watchDrag: true,
+        watchResize: true,
+        breakpoints: {
+            '(min-width: 640px)': { slidesToScroll: 1 }, // Tablet: 1 slide at a time
+            '(min-width: 1024px)': { slidesToScroll: 2 }, // Desktop: 2 slides at a time
+        }
+    });
+
+    // Dynamic items per page based on device size
+    const dynamicItemsPerPage = isSmallDevice ? 1 : itemsPerPage;
 
     // Use the Cloudinary video collection hook
     const { 
@@ -47,6 +67,79 @@ export default function VideoList({
         console.log('Video started playing');
     };
 
+    // Embla carousel navigation (for tablet)
+    const scrollPrev = useCallback(() => {
+        if (emblaApi) emblaApi.scrollPrev();
+    }, [emblaApi]);
+
+    const scrollNext = useCallback(() => {
+        if (emblaApi) emblaApi.scrollNext();
+    }, [emblaApi]);
+
+    // Mobile video navigation functions
+    const handlePrevVideo = () => {
+        if (isSmallDevice) {
+            const allVideos = useCloudinary ? cloudinaryVideos : (videos || []);
+            setCurrentVideoIndex(prev => {
+                const newIndex = prev === 0 ? allVideos.length - 1 : prev - 1;
+                // Update currentPage to match the new video index
+                const newPage = Math.floor(newIndex / dynamicItemsPerPage) + 1;
+                setCurrentPage(newPage);
+                return newIndex;
+            });
+        } else {
+            scrollPrev();
+        }
+    };
+
+    const handleNextVideo = () => {
+        if (isSmallDevice) {
+            const allVideos = useCloudinary ? cloudinaryVideos : (videos || []);
+            setCurrentVideoIndex(prev => {
+                const newIndex = prev === allVideos.length - 1 ? 0 : prev + 1;
+                // Update currentPage to match the new video index
+                const newPage = Math.floor(newIndex / dynamicItemsPerPage) + 1;
+                setCurrentPage(newPage);
+                return newIndex;
+            });
+        } else {
+            scrollNext();
+        }
+    };
+
+    // Touch gesture handling for mobile
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+    const minSwipeDistance = 50;
+
+    const onTouchStart = (e: React.TouchEvent) => {
+        if (isSmallDevice) {
+            setTouchEnd(null);
+            setTouchStart(e.targetTouches[0].clientX);
+        }
+    };
+
+    const onTouchMove = (e: React.TouchEvent) => {
+        if (isSmallDevice) {
+            setTouchEnd(e.targetTouches[0].clientX);
+        }
+    };
+
+    const onTouchEnd = () => {
+        if (!isSmallDevice || !touchStart || !touchEnd) return;
+        
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > minSwipeDistance;
+        const isRightSwipe = distance < -minSwipeDistance;
+
+        if (isLeftSwipe) {
+            handleNextVideo();
+        } else if (isRightSwipe) {
+            handlePrevVideo();
+        }
+    };
+
     // Memoize the paginated data to prevent unnecessary recalculations
     const paginatedVideos = useMemo(() => {
         let videoList: any[] = useCloudinary ? cloudinaryVideos : (videos || []);
@@ -67,11 +160,16 @@ export default function VideoList({
             });
         }
         
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        return Array.prototype.slice.call(videoList, startIndex, startIndex + itemsPerPage);
-    }, [useCloudinary, cloudinaryVideos, videos, currentPage, itemsPerPage]);
+        const startIndex = (currentPage - 1) * dynamicItemsPerPage;
+        return Array.prototype.slice.call(videoList, startIndex, startIndex + dynamicItemsPerPage);
+    }, [useCloudinary, cloudinaryVideos, videos, currentPage, dynamicItemsPerPage]);
 
-    const totalPages = Math.ceil((useCloudinary ? cloudinaryVideos.length : (videos?.length || 0)) / itemsPerPage);
+    const totalPages = Math.ceil((useCloudinary ? cloudinaryVideos.length : (videos?.length || 0)) / dynamicItemsPerPage);
+    
+    // Calculate current page based on currentVideoIndex for mobile navigation
+    const calculatedCurrentPage = isSmallDevice 
+        ? Math.floor(currentVideoIndex / dynamicItemsPerPage) + 1
+        : currentPage;
 
     // Detect small devices and set view to list
     useEffect(() => {
@@ -89,10 +187,16 @@ export default function VideoList({
         return () => window.removeEventListener('resize', checkDeviceSize);
     }, []);
 
+    // Reset currentVideoIndex when the full collection changes
+    useEffect(() => {
+        setCurrentVideoIndex(0);
+    }, [useCloudinary ? cloudinaryVideos : videos]);
+
 
     const handlePageChange = async (page: number) => {
         setIsPageLoading(true);
         setCurrentPage(page);
+        setCurrentVideoIndex(0); // Reset to first video on page change
         
         // Smooth scroll to top of container
         if (containerRef.current) {
@@ -120,16 +224,16 @@ export default function VideoList({
 
     if (isLoading) {
         return (
-            <div className="bg-gray-900/50 px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12 w-full">
+            <div className="bg-gray-900/50 px-2 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12 w-full">
                 <div className="flex items-center gap-3 mb-6">
                     <Skeleton className="h-6 w-24" />
                     <Skeleton className="h-8 w-40" />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {Array.from({ length: itemsPerPage }).map((_, i) => (
+                    {Array.from({ length: dynamicItemsPerPage }).map((_, i) => (
                         <VideoSkeleton 
                             key={i} 
-                            containerHeight={view === "grid" ? "200px" : "400px"} 
+                            containerHeight={view === "grid" ? "250px" : "300px"} 
                         />
                     ))}
                 </div>
@@ -140,7 +244,7 @@ export default function VideoList({
     // Show error state if Cloudinary fails
     if (useCloudinary && cloudinaryError) {
         return (
-            <div className="bg-gray-900/50 px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12 w-full">
+            <div className="bg-gray-900/50 px-2 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12 w-full">
                 <div className="text-center py-12">
                     <h2 className="text-2xl sm:text-3xl text-white mb-4">Videos</h2>
                     <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-6">
@@ -156,7 +260,7 @@ export default function VideoList({
     }
 
     return (
-        <div ref={containerRef} className={`bg-gray-900/50 px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12 w-full`}>
+        <div ref={containerRef} className={`bg-gray-900/50 px-2 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12 w-full`}>
             <h2 className="text-2xl sm:text-3xl text-white mb-4">Videos</h2>
             <Button 
                 className="w-[200px] h-[48px] hidden md:block bg-[#02ACAC] mt-4 mb-8 cursor-pointer hover:bg-background hover:text-foreground transition-colors text-base px-8 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
@@ -170,13 +274,14 @@ export default function VideoList({
             >
                 {view === "grid" ? "Switch to List View" : "Switch to Grid View"}
             </Button>
-            <div className={`grid ${view === "grid" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"} gap-4`}>
+            {/* Desktop Grid View */}
+            <div className="hidden lg:grid lg:grid-cols-3 gap-4">
                 {isPageLoading ? (
                     // Show loading skeletons during page change
-                    Array.from({ length: itemsPerPage }).map((_, i) => (
+                    Array.from({ length: dynamicItemsPerPage }).map((_, i) => (
                         <VideoSkeleton 
                             key={i} 
-                            containerHeight={view === "grid" ? "200px" : "400px"} 
+                            containerHeight={view === "grid" ? "250px" : "300px"} 
                         />
                     ))
                 ) : (
@@ -186,7 +291,7 @@ export default function VideoList({
                             return (
                                 <div 
                                     key={video + Math.random()} 
-                                    className={`${view === "grid" ? "h-[200px] sm:h-[250px] md:h-[300px]" : "h-[400px] sm:h-[500px] md:h-[600px]"}`}
+                                    className={`${view === "grid" ? "h-[250px] sm:h-[250px] md:h-[300px]" : "h-[300px] sm:h-[500px] md:h-[600px]"}`}
                                 >
                                     <div className="w-full h-full bg-gray-800 flex items-center justify-center text-white">
                                         Non-Cloudinary video: {video}
@@ -198,7 +303,7 @@ export default function VideoList({
                         return (
                             <div 
                                 key={video.assetId || index} 
-                                className={`${view === "grid" ? "h-[200px] sm:h-[250px] md:h-[300px]" : "h-[400px] sm:h-[500px] md:h-[600px]"}`}
+                                className={`${view === "grid" ? "h-[250px] sm:h-[250px] md:h-[300px]" : "h-[300px] sm:h-[500px] md:h-[600px]"}`}
                             >
                                 <CloudinaryPlayer
                                     publicId={video.publicId}
@@ -214,13 +319,81 @@ export default function VideoList({
                 )}
             </div>
 
+            {/* Mobile Single Video Display */}
+            <div className="lg:hidden">
+                <div className="relative">
+                    {(() => {
+                        const allVideos = useCloudinary ? cloudinaryVideos : (videos || []);
+                        return allVideos.length > 0 && (
+                            <div 
+                                className="relative h-[250px] sm:h-[300px] md:h-[400px] overflow-hidden rounded-lg bg-gray-800/50"
+                                onTouchStart={onTouchStart}
+                                onTouchMove={onTouchMove}
+                                onTouchEnd={onTouchEnd}
+                            >
+                                {(() => {
+                                    const currentVideo = allVideos[currentVideoIndex];
+                                    if (!useCloudinary) {
+                                        return (
+                                            <div className="w-full h-full bg-gray-800 flex items-center justify-center text-white">
+                                                Non-Cloudinary video: {currentVideo as string}
+                                            </div>
+                                        );
+                                    }
+                                    
+                                    return (
+                                        <CloudinaryPlayer
+                                            publicId={(currentVideo as any).publicId}
+                                            videoUrl={(currentVideo as any).secureUrl}
+                                            cloudName="dllh8yqz8"
+                                            profile="dmac-website-gallery"
+                                            className="w-full h-full"
+                                            onPlay={handleVideoPlay}
+                                        />
+                                    );
+                                })()}
+                                {/* Touch feedback overlay for mobile */}
+                                <div className="absolute inset-0 bg-black/0 active:bg-black/20 transition-colors duration-150 pointer-events-none" />
+                            </div>
+                        );
+                    })()}
+                    
+                    {/* Mobile Navigation Buttons - Always show when there are multiple videos */}
+                    {(() => {
+                        const allVideos = useCloudinary ? cloudinaryVideos : (videos || []);
+                        return allVideos.length > 1 && (
+                            <>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    className="absolute left-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-gray-900/90 border-gray-600 text-white hover:bg-gray-800/90 active:bg-gray-700/90 z-10 touch-manipulation shadow-lg"
+                                    onClick={handlePrevVideo}
+                                    aria-label="Previous video"
+                                >
+                                    <ChevronLeft className="h-5 w-5" />
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-gray-900/90 border-gray-600 text-white hover:bg-gray-800/90 active:bg-gray-700/90 z-10 touch-manipulation shadow-lg"
+                                    onClick={handleNextVideo}
+                                    aria-label="Next video"
+                                >
+                                    <ChevronRight className="h-5 w-5" />
+                                </Button>
+                            </>
+                        );
+                    })()}
+                </div>
+            </div>
+
             {/* Shadcn Pagination Component */}
             <Pagination className="mt-6 sm:mt-8 text-white">
                 <PaginationContent className="flex flex-wrap justify-center gap-1 sm:gap-2 max-w-full overflow-hidden">
                     <PaginationItem className="!hidden md:!block">
                         <PaginationPrevious
-                            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                            className={`cursor-pointer text-sm sm:text-base ${currentPage === 1 ? 'pointer-events-none opacity-50' : ''}`}
+                            onClick={() => handlePageChange(Math.max(1, calculatedCurrentPage - 1))}
+                            className={`cursor-pointer text-sm sm:text-base ${calculatedCurrentPage === 1 ? 'pointer-events-none opacity-50' : ''}`}
                             aria-label="Go to previous page"
                         />
                     </PaginationItem>
@@ -237,12 +410,12 @@ export default function VideoList({
                             }
                         } else {
                             // Show smart pagination for large numbers
-                            if (currentPage <= 4) {
+                            if (calculatedCurrentPage <= 4) {
                                 // Show first 5 pages + ellipsis + last page
                                 for (let i = 1; i <= 5; i++) pages.push(i);
                                 pages.push('...');
                                 pages.push(totalPages);
-                            } else if (currentPage >= totalPages - 3) {
+                            } else if (calculatedCurrentPage >= totalPages - 3) {
                                 // Show first page + ellipsis + last 5 pages
                                 pages.push(1);
                                 pages.push('...');
@@ -251,7 +424,7 @@ export default function VideoList({
                                 // Show first + ellipsis + current ±1 + ellipsis + last
                                 pages.push(1);
                                 pages.push('...');
-                                for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
+                                for (let i = calculatedCurrentPage - 1; i <= calculatedCurrentPage + 1; i++) pages.push(i);
                                 pages.push('...');
                                 pages.push(totalPages);
                             }
@@ -262,13 +435,13 @@ export default function VideoList({
                                 {page === '...' ? (
                                     <span className="px-2 py-1 text-gray-400">...</span>
                                 ) : (
-                                    <PaginationLink
-                                        onClick={() => handlePageChange(page as number)}
-                                        isActive={currentPage === page}
-                                        className={`cursor-pointer text-sm sm:text-base px-2 sm:px-3 py-1 ${currentPage === page ? 'text-black' : ''}`}
-                                    >
-                                        {page}
-                                    </PaginationLink>
+                                                                    <PaginationLink
+                                    onClick={() => handlePageChange(page as number)}
+                                    isActive={calculatedCurrentPage === page}
+                                    className={`cursor-pointer text-sm sm:text-base px-2 sm:px-3 py-1 ${calculatedCurrentPage === page ? 'text-black' : ''}`}
+                                >
+                                    {page}
+                                </PaginationLink>
                                 )}
                             </PaginationItem>
                         ));
@@ -276,8 +449,8 @@ export default function VideoList({
                     
                     <PaginationItem className="!hidden md:!block">
                         <PaginationNext
-                            onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-                            className={`cursor-pointer text-sm sm:text-base ${currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}`}
+                            onClick={() => handlePageChange(Math.min(totalPages, calculatedCurrentPage + 1))}
+                            className={`cursor-pointer text-sm sm:text-base ${calculatedCurrentPage === totalPages ? 'pointer-events-none opacity-50' : ''}`}
                             aria-label="Go to next page"
                         />
                     </PaginationItem>

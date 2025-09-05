@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react"
+import ResponsiveImage from "@/components/ResponsiveImage";
+import { extractPublicIdFromUrl } from "@/lib/cloudinary";
 
 export function useLightbox() {
     const [isOpen, setIsOpen] = useState(false);
@@ -77,17 +79,43 @@ export function useLightbox() {
             
             {/* Image container with original aspect ratio */}
             <div className="relative w-full h-full flex items-center justify-center p-4 sm:p-6 md:p-8 lg:p-12">
-                <img 
-                    src={images[currentIndex]} 
-                    alt={`Lightbox image ${currentIndex + 1} of ${images.length}`} 
-                    className={`max-w-full max-h-full w-auto h-auto object-contain rounded-lg shadow-2xl transition-all duration-300 ease-in-out ${isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}
-                    style={{
-                        maxWidth: '95vw',
-                        maxHeight: '95vh',
-                        width: 'auto',
-                        height: 'auto'
-                    }}
-                />
+                {(() => {
+                    const currentImageUrl = images[currentIndex];
+                    const publicId = extractPublicIdFromUrl(currentImageUrl);
+                    
+                    if (publicId) {
+                        return (
+                            <ResponsiveImage 
+                                imageName={publicId} 
+                                alt={`Lightbox image ${currentIndex + 1} of ${images.length}`} 
+                                width={1920}
+                                height={1080}
+                                className={`max-w-full max-h-full w-auto h-auto object-contain rounded-lg shadow-2xl transition-all duration-300 ease-in-out ${isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}
+                                style={{
+                                    maxWidth: '95vw',
+                                    maxHeight: '95vh',
+                                    width: 'auto',
+                                    height: 'auto'
+                                }}
+                            />
+                        );
+                    } else {
+                        // Fallback to regular img tag for non-Cloudinary URLs
+                        return (
+                            <img 
+                                src={currentImageUrl} 
+                                alt={`Lightbox image ${currentIndex + 1} of ${images.length}`} 
+                                className={`max-w-full max-h-full w-auto h-auto object-contain rounded-lg shadow-2xl transition-all duration-300 ease-in-out ${isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}
+                                style={{
+                                    maxWidth: '95vw',
+                                    maxHeight: '95vh',
+                                    width: 'auto',
+                                    height: 'auto'
+                                }}
+                            />
+                        );
+                    }
+                })()}
             </div>
             
             {/* Next button */}

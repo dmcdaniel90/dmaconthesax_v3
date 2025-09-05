@@ -55,6 +55,7 @@ export default function RootLayout({
         </head>
         <body
           className={`${lato.variable} antialiased bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/95 min-h-screen flex flex-col`}
+          suppressHydrationWarning={true} // Suppress hydration warnings caused by browser extensions
         >
           <VideoBackground />
           <Header />

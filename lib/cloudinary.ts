@@ -5,6 +5,29 @@ export const CLOUDINARY_CONFIG = {
   defaultVersion: 'v1755861559'
 };
 
+/**
+ * Extract publicId from a Cloudinary URL
+ * @param url - Full Cloudinary URL
+ * @returns The publicId or null if not a valid Cloudinary URL
+ */
+export function extractPublicIdFromUrl(url: string): string | null {
+  try {
+    // Match Cloudinary URL pattern: https://res.cloudinary.com/{cloud_name}/image/upload/{version}/{public_id}
+    const cloudinaryPattern = /https:\/\/res\.cloudinary\.com\/[^\/]+\/image\/upload\/(?:v\d+\/)?(.+?)(?:\.[^\/]+)?$/;
+    const match = url.match(cloudinaryPattern);
+    
+    if (match && match[1]) {
+      // Remove any file extension and return the publicId
+      return match[1].replace(/\.[^.]*$/, '');
+    }
+    
+    return null;
+  } catch (error) {
+    console.warn('Failed to extract publicId from URL:', url, error);
+    return null;
+  }
+}
+
 // Video quality presets for different use cases
 export const VIDEO_QUALITY_PRESETS = {
   mobile: {

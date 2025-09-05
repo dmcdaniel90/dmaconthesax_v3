@@ -1,7 +1,6 @@
 import React from 'react'
 import { render, screen } from '../utils/test-utils'
 import userEvent from '@testing-library/user-event'
-import { ContactFormSchemaType } from '@/lib/contactSchema'
 
 // Mock the entire DefaultStateContactForm component since Jest can't resolve the modules
 const DefaultStateContactForm = ({ onSubmit, form }: any) => {

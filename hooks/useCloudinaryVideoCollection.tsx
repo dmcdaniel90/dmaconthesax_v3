@@ -39,9 +39,7 @@ interface UseCloudinaryVideoCollectionReturn {
 }
 
 export function useCloudinaryVideoCollection({
-    cloudName,
     tag,
-    resourceType = 'video',
     maxResults = 100,
     enabled = true
 }: UseCloudinaryVideoCollectionOptions): UseCloudinaryVideoCollectionReturn {

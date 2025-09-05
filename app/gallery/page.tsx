@@ -38,7 +38,7 @@ export default function Gallery() {
                 <div className="container mx-auto px-6 sm:px-8 md:px-12 lg:px-16">
                     <div className="max-w-7xl mx-auto">
                         <FadeInUp delay={0.2}>
-                            <div className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/95 backdrop-blur-xl rounded-3xl p-8 sm:p-10 lg:p-12 border border-gray-700/20 hover:border-[#02ACAC]/30 transition-all duration-500 hover:shadow-[#02ACAC]/10 shadow-2xl">
+                            <div className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/95 backdrop-blur-xl rounded-3xl py-8 sm:p-10 lg:p-12 border border-gray-700/20 hover:border-[#02ACAC]/30 transition-all duration-500 hover:shadow-[#02ACAC]/10 shadow-2xl">
                                 <VideoList 
                                     type="grid" 
                                     itemsPerPage={3} 
@@ -57,12 +57,12 @@ export default function Gallery() {
                 <div className="container mx-auto px-6 sm:px-8 md:px-12 lg:px-16">
                     <div className="max-w-7xl mx-auto">
                         <FadeInUp delay={0.4}>
-                            <div className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/95 backdrop-blur-xl rounded-3xl p-8 sm:p-10 lg:p-12 border border-gray-700/20 hover:border-[#02ACAC]/30 transition-all duration-500 hover:shadow-[#02ACAC]/10 shadow-2xl">
-                                                                       <PhotoGallery
-                                           useCloudinary={true}
-                                           cloudinaryTag="production"
-                                           type="grid"
-                                       />
+                            <div className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/95 backdrop-blur-xl rounded-3xl py-8 sm:p-10 lg:p-12 border border-gray-700/20 hover:border-[#02ACAC]/30 transition-all duration-500 hover:shadow-[#02ACAC]/10 shadow-2xl">
+                                <PhotoGallery
+                                    useCloudinary={true}
+                                    cloudinaryTag="production"
+                                    type="grid"
+                                />
                             </div>
                         </FadeInUp>
                     </div>

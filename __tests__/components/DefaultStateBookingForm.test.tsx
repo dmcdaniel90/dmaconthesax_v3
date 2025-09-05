@@ -127,7 +127,6 @@ describe('DefaultStateBookingForm', () => {
     })
 
     it('renders submit button that can be clicked', async () => {
-        const user = userEvent.setup()
         render(<DefaultStateBookingForm onSubmit={mockOnSubmit} form={mockForm as any} />)
         const submitButton = screen.getByRole('button', { name: /submit/i })
         expect(submitButton).toBeInTheDocument()

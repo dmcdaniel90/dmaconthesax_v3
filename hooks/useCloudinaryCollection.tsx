@@ -34,9 +34,7 @@ interface UseCloudinaryCollectionReturn {
 }
 
 export function useCloudinaryCollection({
-    cloudName,
     tag,
-    resourceType = 'image',
     maxResults = 100,
     enabled = true
 }: UseCloudinaryCollectionOptions): UseCloudinaryCollectionReturn {

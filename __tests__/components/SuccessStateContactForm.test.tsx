@@ -2,7 +2,6 @@ import React from 'react'
 import { render, screen } from '../utils/test-utils'
 import userEvent from '@testing-library/user-event'
 import SuccessStateContactForm from '@/app/contact/SuccessStateContactForm'
-import { ContactFormSchemaType } from '@/lib/contactSchema'
 
 describe('SuccessStateContactForm', () => {
   const mockReset = jest.fn()

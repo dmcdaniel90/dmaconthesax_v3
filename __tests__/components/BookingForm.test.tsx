@@ -5,9 +5,8 @@ import userEvent from '@testing-library/user-event'
 import { mockBookingFormData } from '../utils/test-utils'
 
 const mockPostMessage = jest.fn()
-const mockUseBookingForm = jest.fn()
 
-const DefaultStateBookingForm = ({onSubmit, form}: any) => (
+const DefaultStateBookingForm = ({onSubmit}: any) => (
     <div data-testid="default-state-form">
         <form onSubmit={(e) => {
             e.preventDefault()

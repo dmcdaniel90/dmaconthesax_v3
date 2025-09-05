@@ -10,6 +10,7 @@ import MobileNav from "@/components/MobileNav";
 import AnimatedNavigation from "@/components/AnimatedNavigation";
 import HomeScrollTrigger from "@/components/HomeScrollTrigger";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 const SOCIAL_LINKS = {
     facebook: `https://www.facebook.com/dmaconthesax`,
@@ -70,67 +71,7 @@ export default function Header() {
                 <AnimatedNavigation />
             </div>
 
-            {/* Simple Navigation Bar for Internal Pages */}
-            {!isHomePage && (
-                <header className="bg-gray-900/90 backdrop-blur-sm border-b border-gray-700/50 px-6 sm:px-8 md:px-12 lg:px-16 py-4 sticky top-0 z-50">
-                    <div className="flex items-center justify-between max-w-7xl mx-auto gap-8">
-                        {/* Logo */}
-                        <div className="flex items-center flex-shrink-0">
-                            <Image
-                                src="/logo_white.svg"
-                                alt="DMAC on the Sax"
-                                width={160}
-                                height={50}
-                                className="h-10 w-auto"
-                                priority
-                            />
-                        </div>
-                        
-                        {/* Navigation Links */}
-                        <nav className="hidden md:flex items-center space-x-8 flex-1 justify-center">
-                            <a href="/" className="text-white hover:text-teal-400 transition-colors">Home</a>
-                            <a href="/about" className="text-white hover:text-teal-400 transition-colors">About</a>
-                            <a href="/gallery" className="text-white hover:text-teal-400 transition-colors">Gallery</a>
-                            <a href="/events" className="text-white hover:text-teal-400 transition-colors">Events</a>
-                            <a href="/booking" className="text-white hover:text-teal-400 transition-colors">Booking</a>
-                            <a href="/contact" className="text-white hover:text-teal-400 transition-colors">Contact</a>
-                        </nav>
-
-                        {/* Social Icons */}
-                        <div className="hidden md:flex flex-shrink-0">
-                            <Socials socials={SOCIAL_LINKS} color="white" size="20" gap={16} />
-                        </div>
-
-                        {/* Mobile Menu Button */}
-                        <button
-                            onClick={toggleMobileMenu}
-                            className="md:hidden text-white hover:text-teal-400 transition-colors"
-                            aria-label="Toggle mobile menu"
-                        >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    {/* Mobile Menu */}
-                    {isMobileMenuOpen && (
-                        <div className="md:hidden mt-4 pb-4 border-t border-gray-700/50 pt-4">
-                            <nav className="flex flex-col space-y-4">
-                                <a href="/" className="text-white hover:text-teal-400 transition-colors">Home</a>
-                                <a href="/about" className="text-white hover:text-teal-400 transition-colors">About</a>
-                                <a href="/gallery" className="text-white hover:text-teal-400 transition-colors">Gallery</a>
-                                <a href="/events" className="text-white hover:text-teal-400 transition-colors">Events</a>
-                                <a href="/booking" className="text-white hover:text-teal-400 transition-colors">Booking</a>
-                                <a href="/contact" className="text-white hover:text-teal-400 transition-colors">Contact</a>
-                                <div className="pt-4 border-t border-gray-700/50">
-                                    <Socials socials={SOCIAL_LINKS} color="white" size="20" gap={16} />
-                                </div>
-                            </nav>
-                        </div>
-                    )}
-                </header>
-            )}
+            {/* Simple Navigation Bar for Internal Pages - REMOVED: Using AnimatedNavigation instead */}
             
             {/* Mobile/Tablet Header with Hamburger (hidden on desktop, only for home page) */}
             {isHomePage && (
@@ -212,6 +153,56 @@ export default function Header() {
                     </div>
                 </motion.div>
             </motion.header>
+            )}
+
+            {/* Mobile Navigation Bar for Internal Pages */}
+            {!isHomePage && (
+                <motion.header 
+                    className="md:hidden fixed top-0 left-0 right-0 bg-gray-900/90 backdrop-blur-sm border-b border-gray-700/50 px-6 py-4 z-40"
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    <div className="flex items-center justify-between">
+                        {/* Logo */}
+                        <div className="flex items-center">
+                            <Image
+                                src="/logo_colored.svg"
+                                alt="DMAC on the Sax"
+                                width={120}
+                                height={40}
+                                className="h-8 w-auto"
+                                priority
+                            />
+                        </div>
+                        
+                        {/* Hamburger Menu */}
+                        <motion.button
+                            onClick={toggleMobileMenu}
+                            className="w-8 h-8 flex flex-col justify-center items-center cursor-pointer"
+                            aria-label="Toggle mobile menu"
+                            aria-expanded={isMobileMenuOpen}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                        >
+                            <motion.span
+                                className="w-6 h-0.5 bg-white block absolute"
+                                animate={isMobileMenuOpen ? { rotate: 45, y: 0 } : { rotate: 0, y: -6 }}
+                                transition={{ duration: 0.3, ease: "easeInOut" }}
+                            />
+                            <motion.span
+                                className="w-6 h-0.5 bg-white block absolute"
+                                animate={isMobileMenuOpen ? { opacity: 0, y: 0 } : { opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3, ease: "easeInOut" }}
+                            />
+                            <motion.span
+                                className="w-6 h-0.5 bg-white block absolute"
+                                animate={isMobileMenuOpen ? { rotate: -45, y: 0 } : { rotate: 0, y: 6 }}
+                                transition={{ duration: 0.3, ease: "easeInOut" }}
+                            />
+                        </motion.button>
+                    </div>
+                </motion.header>
             )}
 
             {/* Mobile Navigation Overlay */}

@@ -11,11 +11,8 @@ jest.mock('@/lib/postMessage', () => ({
   postMessage: mockPostMessage
 }))
 
-// Mock the useForm hook
-const mockUseForm = jest.fn()
-
 // Mock the form components with proper state management
-const DefaultStateContactForm = ({ onSubmit, form }: any) => (
+const DefaultStateContactForm = ({ onSubmit }: any) => (
   <div data-testid="default-state-form">
     <form 
       onSubmit={(e) => {
