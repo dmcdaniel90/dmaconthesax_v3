@@ -38,7 +38,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Run ESLint
         run: pnpm lint
@@ -73,7 +73,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Run tests
         run: pnpm test:ci
@@ -114,7 +114,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build application
         run: pnpm build
@@ -160,7 +160,7 @@ jobs:
           version: ${{ env.PNPM_VERSION }}
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Run security audit
         run: pnpm audit --audit-level moderate
@@ -187,7 +187,7 @@ jobs:
           version: ${{ env.PNPM_VERSION }}
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build application
         run: pnpm build
@@ -228,7 +228,7 @@ jobs:
           version: ${{ env.PNPM_VERSION }}
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build application
         run: pnpm build
@@ -268,7 +268,7 @@ jobs:
           version: ${{ env.PNPM_VERSION }}
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build application
         run: pnpm build
