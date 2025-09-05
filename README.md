@@ -345,8 +345,11 @@ DEBUG_CLOUDINARY=true
 ## 📚 **Documentation**
 
 ### **Technical Guides**
-- [Performance Testing Guide](./PERFORMANCE_TESTING_GUIDE.md) - Comprehensive guide for developers
-- [Performance Analysis](./PERFORMANCE_ANALYSIS.md) - Detailed performance metrics and analysis
+- [📁 Complete Documentation](./docs/) - All project documentation
+- [Build & CI/CD Strategy](./docs/BUILD_STRATEGY.md) - Deployment and build configuration
+- [Performance Testing Guide](./docs/PERFORMANCE_TESTING_GUIDE.md) - Comprehensive guide for developers
+- [Performance Analysis](./docs/PERFORMANCE_ANALYSIS.md) - Detailed performance metrics and analysis
+- [Cloudinary Features](./docs/CLOUDINARY_FEATURES.md) - Cloudinary integration details
 - [Cloudinary Documentation](https://cloudinary.com/documentation) - Official Cloudinary guides
 
 ### **API Reference**
@@ -363,26 +366,30 @@ git clone <repository-url>
 cd dmaconthesax_v3
 
 # Install dependencies
-npm install
+pnpm install
 
 # Set up environment variables
 cp .env.example .env.local
 
 # Start development server
-npm run dev
+pnpm dev
 ```
+
+**📚 For detailed setup instructions, see [Build Strategy](./docs/BUILD_STRATEGY.md)**
 
 ### **Testing**
 ```bash
 # Run tests
-npm test
+pnpm test
 
 # Run tests with coverage
-npm run test:coverage
+pnpm test:coverage
 
 # Run performance tests
-npm run test:performance
+pnpm test:ci
 ```
+
+**📚 For comprehensive testing procedures, see [Performance Testing Guide](./docs/PERFORMANCE_TESTING_GUIDE.md)**
 
 ### **Code Quality**
 - **TypeScript**: Strict type checking enabled

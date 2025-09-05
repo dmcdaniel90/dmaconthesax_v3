@@ -159,7 +159,7 @@ export default function VideoList({
         <div ref={containerRef} className={`bg-gray-900/50 px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12 w-full`}>
             <h2 className="text-2xl sm:text-3xl text-white mb-4">Videos</h2>
             <Button 
-                className="hidden md:block bg-[#02ACAC] mt-4 mb-6 sm:mb-8 cursor-pointer hover:bg-background hover:text-foreground transition-colors text-sm sm:text-base px-3 sm:px-4 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900" 
+                className="w-[200px] h-[48px] hidden md:block bg-[#02ACAC] mt-4 mb-8 cursor-pointer hover:bg-background hover:text-foreground transition-colors text-base px-8 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
                 onClick={() => {
                     // Don't allow view changes on small devices
                     if (isSmallDevice) return;
@@ -202,6 +202,7 @@ export default function VideoList({
                             >
                                 <CloudinaryPlayer
                                     publicId={video.publicId}
+                                    videoUrl={video.secureUrl}
                                     cloudName="dllh8yqz8"
                                     profile="dmac-website-gallery"
                                     className="w-full h-full"

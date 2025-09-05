@@ -354,10 +354,12 @@ export default function AdvancedVideoPlayer({
         Custom Transform
       </button>
 
-      {/* Current Quality Indicator */}
-      <div className="absolute top-4 left-4 bg-black/60 text-white px-2 py-1 rounded text-xs z-20">
-        {currentQuality.label}
-      </div>
+      {/* Current Quality Indicator (development only) */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="absolute top-4 left-4 bg-black/60 text-white px-2 py-1 rounded text-xs z-20">
+          {currentQuality.label}
+        </div>
+      )}
     </div>
   );
 }

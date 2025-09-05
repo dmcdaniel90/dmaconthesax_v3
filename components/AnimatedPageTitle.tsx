@@ -21,11 +21,9 @@ export default function AnimatedPageTitle({
   delay = 0
 }: AnimatedPageTitleProps) {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [isClient, setIsClient] = useState(false);
   
   // Check for reduced motion preference
   useEffect(() => {
-    setIsClient(true);
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
     setPrefersReducedMotion(mediaQuery.matches)
 
@@ -46,11 +44,11 @@ export default function AnimatedPageTitle({
         {/* Decorative line */}
         <motion.div
           className="w-24 h-1 bg-gradient-to-r from-transparent via-[#02ACAC] to-transparent mx-auto mb-8"
-          initial={!isClient || prefersReducedMotion ? { opacity: 0 } : { scaleX: 0, opacity: 0 }}
+          initial={prefersReducedMotion ? { opacity: 0 } : { scaleX: 0, opacity: 0 }}
           animate={{ scaleX: 1, opacity: 1 }}
           transition={{ 
-            duration: !isClient || prefersReducedMotion ? 0 : 0.8, 
-            delay: !isClient || prefersReducedMotion ? 0 : delay + 0.2,
+            duration: prefersReducedMotion ? 0 : 0.8, 
+            delay: prefersReducedMotion ? 0 : delay + 0.2,
             ease: [0.4, 0.0, 0.2, 1]
           }}
         />
@@ -60,7 +58,7 @@ export default function AnimatedPageTitle({
           className={`text-4xl sm:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-black tracking-tight leading-tight mb-6 text-white ${titleClassName}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: !isClient || prefersReducedMotion ? 0 : 0.3, delay: !isClient || prefersReducedMotion ? 0 : delay + 0.4 }}
+          transition={{ duration: prefersReducedMotion ? 0 : 0.3, delay: prefersReducedMotion ? 0 : delay + 0.4 }}
         >
           <span className="drop-shadow-lg">
             {titleWords.map((word, index) => (
@@ -74,19 +72,19 @@ export default function AnimatedPageTitle({
                   backgroundClip: 'text',
                   color: 'transparent'
                 }}
-                initial={!isClient || prefersReducedMotion ? { opacity: 0 } : { 
-                  x: -100, 
+                initial={prefersReducedMotion ? { opacity: 0 } : { 
                   opacity: 0,
+                  x: -100,
                   clipPath: 'inset(0 100% 0 0)'
                 }}
                 animate={{ 
-                  x: 0, 
                   opacity: 1,
+                  x: 0,
                   clipPath: 'inset(0 0% 0 0)'
                 }}
                 transition={{ 
-                  duration: !isClient || prefersReducedMotion ? 0 : 0.8,
-                  delay: !isClient || prefersReducedMotion ? 0 : delay + 0.5 + (index * 0.1),
+                  duration: prefersReducedMotion ? 0 : 0.8,
+                  delay: prefersReducedMotion ? 0 : delay + 0.5 + (index * 0.1),
                   ease: [0.4, 0.0, 0.2, 1]
                 }}
               >
@@ -100,7 +98,7 @@ export default function AnimatedPageTitle({
         {subtitle && (
           <motion.p 
             className={`text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-gray-300 max-w-3xl mx-auto leading-relaxed ${subtitleClassName}`}
-            initial={!isClient || prefersReducedMotion ? { opacity: 0 } : { 
+            initial={prefersReducedMotion ? { opacity: 0 } : { 
               x: -50, 
               opacity: 0 
             }}
@@ -109,8 +107,8 @@ export default function AnimatedPageTitle({
               opacity: 1 
             }}
             transition={{ 
-              duration: !isClient || prefersReducedMotion ? 0 : 0.6,
-              delay: !isClient || prefersReducedMotion ? 0 : delay + 0.8 + (titleWords.length * 0.1),
+              duration: prefersReducedMotion ? 0 : 0.6,
+              delay: prefersReducedMotion ? 0 : delay + 0.8 + (titleWords.length * 0.1),
               ease: [0.4, 0.0, 0.2, 1]
             }}
           >

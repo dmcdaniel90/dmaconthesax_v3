@@ -7,6 +7,11 @@ export default function PerformanceTest() {
   const [metrics, setMetrics] = useState<PerformanceMetrics | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
+  // Only render in development mode
+  if (process.env.NODE_ENV === 'production') {
+    return null;
+  }
+
   useEffect(() => {
     // Wait for page to fully load
     const timer = setTimeout(() => {

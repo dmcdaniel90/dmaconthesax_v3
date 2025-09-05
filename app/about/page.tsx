@@ -25,14 +25,14 @@ export default function About() {
                             {/* Hero Section with Image and Introduction */}
                             <ScaleIn delay={0.2}>
                                 <div className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-700/20 hover:border-[#02ACAC]/30 transition-all duration-500 hover:shadow-[#02ACAC]/10 overflow-hidden">
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 h-[500px] lg:h-[600px]">
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 h-auto">
                                         {/* Image Section */}
                                         <FadeInLeft delay={0.4}>
                                             <div className="relative order-2 lg:order-1">
                                                 <div className="absolute inset-0 bg-gradient-to-br from-[#02ACAC]/10 via-transparent to-gray-900/20 z-10"></div>
                                                 <div className="w-full h-full aspect-[4/5] relative">
                                                     <ResponsiveImage
-                                                        imageName="cruises_001_x335rh"
+                                                        imageName="festival_001_tkjagl"
                                                         fallbackSrc="/sax_portrait_3.jpg"
                                                         alt="DMAC on the Sax - Professional Saxophonist"
                                                         className="w-full h-full object-cover"
@@ -97,7 +97,7 @@ export default function About() {
                                             </div>
                                         </FadeInUp>
  
-                                        <StaggerContainer staggerDelay={0.2}>
+                                        <StaggerContainer staggerDelay={0.2} className="flex flex-col gap-4">
                                             <StaggerItem direction="up" delay={0}>
                                                 <div className="relative min-h-[120px]">
                                                     <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#02ACAC] via-[#02ACAC]/50 to-transparent"></div>
@@ -108,7 +108,7 @@ export default function About() {
                                                         </div>
                                                         <h4 className="text-xl font-semibold text-white mb-3">University of Texas Jazz Studies</h4>
                                                         <p className="text-gray-300 leading-relaxed">
-                                                            Devin graduated from the famous University of Texas Jazz Studies program, which has produced artists like Norah Jones and Tom &apos;Bones&apos; Malone. While studying, he played with various ensembles, including the UNT Lab Bands, the UNT Symphonic Band, and the Latin Jazz Ensemble, recording albums with both.
+                                                            Devin graduated from the famous University of Texas Jazz Studies program, who produced artists including Norah Jones and Tom &apos;Bones&apos; Malone. While studying, he played with various ensembles, including the UNT Lab Bands, the UNT Symphonic Band, and the Latin Jazz Ensemble, recording albums with the latter two and recording two small group EPs.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -140,7 +140,7 @@ export default function About() {
                                                         </div>
                                                         <h4 className="text-xl font-semibold text-white mb-3">UK Festival & Event Scene</h4>
                                                         <p className="text-gray-300 leading-relaxed">
-                                                            In the UK Southwest, DMAC has rocked festivals like My Dad Is Bigger Than Your Dad, WRDE UP, and Radfest. He&apos;s also played at private and corporate events for Greene King Pubs, The Royal International Air Tattoo, and several entertainment agencies.
+                                                            In the UK Southwest, DMAC has rocked festivals like My Dad Is Bigger Than Your Dad, WRDE UP, and Radfest with artists including Joli Soul, Clyve's Blue Eyed Soul Band, and DJ Brandon Block. He&apos;s also played at private and corporate events for Greene King Pubs, The Royal International Air Tattoo, and several local and regional entertainment agencies.
                                                         </p>
                                                     </div>
                                                 </div>

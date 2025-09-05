@@ -165,7 +165,7 @@ export default function PhotoGallery({ images, itemsPerPage, type = "carousel", 
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl sm:text-2xl md:text-3xl text-white px-2 sm:px-4 md:px-8 lg:px-12">Photos</h2>
                 <Button 
-                    className="bg-[#02ACAC] px-3 sm:px-4 md:px-8 lg:px-12 cursor-pointer hover:bg-background hover:text-foreground transition-all duration-300 mb-4 sm:mb-6 md:mb-8 text-sm sm:text-base focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 disabled:opacity-50" 
+                    className="w-[200px] h-[48px] hidden md:block bg-[#02ACAC] mt-4 mb-8 cursor-pointer hover:bg-background hover:text-foreground transition-colors text-base px-8 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
                     onClick={handleViewChange}
                     disabled={isViewChanging}
                     aria-label={`Switch to ${view === "grid" ? "Carousel" : "Grid"} View`}

@@ -62,7 +62,7 @@ export default function RootLayout({
           <main className="landscape-mobile-content">
             {children}
           </main>
-          <PerformanceMonitor />
+          {process.env.NODE_ENV === 'development' && <PerformanceMonitor />}
         </body>
       </html>
     </HeaderProvider>

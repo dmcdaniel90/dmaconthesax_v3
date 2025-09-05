@@ -117,7 +117,7 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl sm:text-3xl text-white">Upcoming Events</h2>
                 <Button 
-                    className="hidden md:block cursor-pointer font-bold bg-[#02ACAC] hover:bg-[#005C5C] hover:text-white transition-all duration-300 text-sm sm:text-base focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 disabled:opacity-50" 
+                    className="w-[200px] h-[48px] hidden md:block bg-[#02ACAC] mt-4 mb-8 cursor-pointer hover:bg-background hover:text-foreground transition-colors text-base px-8 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
                     onClick={handleViewChange}
                     disabled={isViewChanging}
                     aria-label={`Switch to ${view === "grid" ? "List" : "Grid"} View`}

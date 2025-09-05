@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 
 interface CloudinaryPlayerProps {
   publicId: string;
+  videoUrl?: string; // Add optional direct video URL
   cloudName?: string;
   profile?: string;
   className?: string;
@@ -12,6 +13,7 @@ interface CloudinaryPlayerProps {
 
 export default function CloudinaryPlayer({
   publicId,
+  videoUrl,
   cloudName = 'dllh8yqz8',
   profile = 'dmac-website-gallery',
   className = '',
@@ -84,37 +86,27 @@ export default function CloudinaryPlayer({
           // Store reference for cleanup
           videoElementRef.current = videoElement;
 
-          // Initialize Cloudinary Player with fullscreen and mobile optimizations
+          // Initialize player and set source with proper configuration
+          console.log('Initializing CloudinaryPlayer with:', { cloudName, publicId });
+          
           const player = window.cloudinary.videoPlayer(videoElement, {
             cloudName,
-            publicId,
             controls: true,
             muted: false,
-            autoplay: false,
-            preload: 'metadata',
-            sourceTypes: ['mp4'],
-            posterOptions: {
-              transformation: {
-                startOffset: 'auto'
-              }
-            },
-            // Ensure controls are always visible
-            controlBar: {
-              playToggle: true,
-              volumePanel: true,
-              currentTimeDisplay: true,
-              timeDivider: true,
-              durationDisplay: true,
-              progressControl: true,
-              fullscreenToggle: true
-            },
-            // Mobile-specific settings
-            playsinline: true,
-            // Fullscreen settings
-            fullscreen: {
-              iosNative: true // Use native fullscreen on iOS
-            }
+            autoplay: false
           });
+          
+          // Set the source - use direct URL if provided, otherwise use publicId
+          if (videoUrl) {
+            // Use the direct video URL with version number
+            player.source(videoUrl);
+          } else {
+            // Fallback to publicId method
+            player.source({
+              publicId: publicId,
+              sourceTypes: ['mp4']
+            });
+          }
 
           playerRef.current = player;
 
