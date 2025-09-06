@@ -15,7 +15,7 @@
 
 [dev]
   command = "./dev.sh"
-  port = 3000
+  port = 8888
 
 [context.production]
   command = "pnpm run build"
