@@ -1,5 +1,5 @@
 [build]
-  command = "pnpm build"
+  command = "pnpm run build"
   publish = ".next"
 
 [build.environment]
@@ -7,18 +7,24 @@
   NPM_FLAGS = "--version"
   PNPM_VERSION = "8"
   NETLIFY_USE_PNPM = "true"
+  NETLIFY_USE_PNPM_WORKSPACE = "false"
+  NETLIFY_DEV_COMMAND = "pnpm run dev"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
+[dev]
+  command = "./dev.sh"
+  port = 3000
+
 [context.production]
-  command = "pnpm build"
+  command = "pnpm run build"
 
 [context.deploy-preview]
-  command = "pnpm build"
+  command = "pnpm run build"
 
 [context.branch-deploy]
-  command = "pnpm build"
+  command = "pnpm run build"
 
 [[headers]]
   for = "/*"

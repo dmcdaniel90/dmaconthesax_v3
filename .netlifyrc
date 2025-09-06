@@ -1,0 +1,9 @@
+{
+  "dev": {
+    "command": "pnpm run dev",
+    "port": 3000
+  },
+  "build": {
+    "command": "pnpm run build"
+  }
+}
