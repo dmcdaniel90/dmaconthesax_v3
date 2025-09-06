@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import ResponsiveImage from "@/components/ResponsiveImage";
 import { extractPublicIdFromUrl } from "@/lib/cloudinary";
+import Image from "next/image";
 
 export function useLightbox() {
     const [isOpen, setIsOpen] = useState(false);
@@ -100,9 +101,9 @@ export function useLightbox() {
                             />
                         );
                     } else {
-                        // Fallback to regular img tag for non-Cloudinary URLs
+                        // Fallback to Next.js Image for non-Cloudinary URLs
                         return (
-                            <img 
+                            <Image 
                                 src={currentImageUrl} 
                                 alt={`Lightbox image ${currentIndex + 1} of ${images.length}`} 
                                 className={`max-w-full max-h-full w-auto h-auto object-contain rounded-lg shadow-2xl transition-all duration-300 ease-in-out ${isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}
@@ -112,6 +113,9 @@ export function useLightbox() {
                                     width: 'auto',
                                     height: 'auto'
                                 }}
+                                width={800}
+                                height={600}
+                                unoptimized
                             />
                         );
                     }

@@ -10,7 +10,6 @@ import MobileNav from "@/components/MobileNav";
 import AnimatedNavigation from "@/components/AnimatedNavigation";
 import HomeScrollTrigger from "@/components/HomeScrollTrigger";
 import { motion } from "framer-motion";
-import Link from "next/link";
 
 const SOCIAL_LINKS = {
     facebook: `https://www.facebook.com/dmaconthesax`,

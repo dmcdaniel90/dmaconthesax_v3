@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react'
 import { useBookingForm, formSchema } from '@/hooks/useBookingForm'
+import { useForm } from 'react-hook-form'
 import '@testing-library/jest-dom'
 
 // Mock react-hook-form
@@ -9,7 +10,7 @@ jest.mock('react-hook-form', () => ({
 }))
 
 describe('useBookingForm', () => {
-  const mockUseForm = jest.requireActual('react-hook-form').useForm
+  const mockUseForm = jest.mocked(useForm)
 
   beforeEach(() => {
     jest.clearAllMocks()

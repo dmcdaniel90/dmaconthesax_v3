@@ -29,7 +29,7 @@ export default function VideoList({
     const containerRef = useRef<HTMLDivElement>(null);
 
     // Embla carousel for tablet gesture support
-    const [emblaRef, emblaApi] = useEmblaCarousel({
+    const [, emblaApi] = useEmblaCarousel({
         slidesToScroll: 1,
         containScroll: 'trimSnaps',
         dragFree: false,
