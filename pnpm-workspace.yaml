@@ -5,3 +5,6 @@ onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - sharp
   - unrs-resolver
+
+# Disable workspace filtering for single-package projects
+prefer-workspace-packages: false

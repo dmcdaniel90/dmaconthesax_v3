@@ -6,6 +6,7 @@
   NODE_VERSION = "20"
   NPM_FLAGS = "--version"
   PNPM_VERSION = "8"
+  NETLIFY_USE_PNPM = "true"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
