@@ -18,6 +18,9 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['next-cloudinary'],
   },
+  // Ensure proper static asset handling
+  trailingSlash: false,
+  generateEtags: false,
   async redirects() {
     return [
       {

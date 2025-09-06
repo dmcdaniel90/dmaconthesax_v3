@@ -1,0 +1,11 @@
+# Next.js static assets - must come before catch-all
+/_next/static/* /_next/static/:splat 200
+
+# API routes
+/api/* /api/:splat 200
+
+# Home redirect
+/home / 301
+
+# Fallback for client-side routing
+/* /index.html 200
