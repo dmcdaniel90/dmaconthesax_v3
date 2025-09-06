@@ -18,7 +18,23 @@ describe('useBookingForm', () => {
 
   it('returns form, isSuccess, and setIsSuccess', () => {
     const mockForm = {
-      formState: { errors: {} },
+      formState: { 
+        errors: {},
+        isDirty: false,
+        isLoading: false,
+        isSubmitted: false,
+        isSubmitSuccessful: false,
+        isValid: true,
+        isValidating: false,
+        touchedFields: {},
+        dirtyFields: {},
+        defaultValues: {},
+        submitCount: 0,
+        isSubmitting: false,
+        disabled: false,
+        validatingFields: {},
+        isReady: true
+      },
       register: jest.fn(),
       handleSubmit: jest.fn(),
       watch: jest.fn(),
@@ -27,11 +43,13 @@ describe('useBookingForm', () => {
       setError: jest.fn(),
       clearErrors: jest.fn(),
       reset: jest.fn(),
-      control: {},
+      control: {} as any,
       trigger: jest.fn(),
       resetField: jest.fn(),
       setFocus: jest.fn(),
-      getFieldState: jest.fn()
+      getFieldState: jest.fn(),
+      unregister: jest.fn(),
+      subscribe: jest.fn()
     }
 
     mockUseForm.mockReturnValue(mockForm)
@@ -45,7 +63,23 @@ describe('useBookingForm', () => {
 
   it('initializes with correct default values', () => {
     const mockForm = {
-      formState: { errors: {} },
+      formState: { 
+        errors: {},
+        isDirty: false,
+        isLoading: false,
+        isSubmitted: false,
+        isSubmitSuccessful: false,
+        isValid: true,
+        isValidating: false,
+        touchedFields: {},
+        dirtyFields: {},
+        defaultValues: {},
+        submitCount: 0,
+        isSubmitting: false,
+        disabled: false,
+        validatingFields: {},
+        isReady: true
+      },
       register: jest.fn(),
       handleSubmit: jest.fn(),
       watch: jest.fn(),
@@ -54,11 +88,13 @@ describe('useBookingForm', () => {
       setError: jest.fn(),
       clearErrors: jest.fn(),
       reset: jest.fn(),
-      control: {},
+      control: {} as any,
       trigger: jest.fn(),
       resetField: jest.fn(),
       setFocus: jest.fn(),
-      getFieldState: jest.fn()
+      getFieldState: jest.fn(),
+      unregister: jest.fn(),
+      subscribe: jest.fn()
     }
 
     mockUseForm.mockReturnValue(mockForm)
@@ -84,7 +120,23 @@ describe('useBookingForm', () => {
 
   it('initializes isSuccess as false', () => {
     const mockForm = {
-      formState: { errors: {} },
+      formState: { 
+        errors: {},
+        isDirty: false,
+        isLoading: false,
+        isSubmitted: false,
+        isSubmitSuccessful: false,
+        isValid: true,
+        isValidating: false,
+        touchedFields: {},
+        dirtyFields: {},
+        defaultValues: {},
+        submitCount: 0,
+        isSubmitting: false,
+        disabled: false,
+        validatingFields: {},
+        isReady: true
+      },
       register: jest.fn(),
       handleSubmit: jest.fn(),
       watch: jest.fn(),
@@ -93,11 +145,13 @@ describe('useBookingForm', () => {
       setError: jest.fn(),
       clearErrors: jest.fn(),
       reset: jest.fn(),
-      control: {},
+      control: {} as any,
       trigger: jest.fn(),
       resetField: jest.fn(),
       setFocus: jest.fn(),
-      getFieldState: jest.fn()
+      getFieldState: jest.fn(),
+      unregister: jest.fn(),
+      subscribe: jest.fn()
     }
 
     mockUseForm.mockReturnValue(mockForm)
