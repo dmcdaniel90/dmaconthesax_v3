@@ -19,6 +19,7 @@ const eslintConfig = [
       "build/**",
       "coverage/**",
       "node_modules/**",
+      ".netlify/**",
       "*.config.js",
       "*.config.mjs",
       "jest.setup.js",

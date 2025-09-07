@@ -119,12 +119,12 @@ export default function MobileNav({ isOpen, onToggle }: MobileNavProps) {
 
                                 {/* CTA Buttons */}
                                 <motion.div
-                                    className="mt-12 space-y-4"
+                                    className="mt-12 space-y-4 pb-[72px]"
                                     initial={{ y: 20, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
                                     transition={{ duration: 0.4, ease: "easeOut", delay: 0.6 }}
                                 >
-                                    <Link href="/booking">
+                                    <Link href="/booking" onClick={onToggle}>
                                         <button className="w-full bg-[#02ACAC] hover:bg-[#02ACAC]/90 text-white py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 cursor-pointer">
                                             Book Now
                                         </button>

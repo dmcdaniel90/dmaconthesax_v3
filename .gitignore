@@ -42,3 +42,5 @@ next-env.d.ts
 
 # gcp oauth credentials
 gcp-oauth.keys.json
+# Local Netlify folder
+.netlify
