@@ -121,7 +121,16 @@ export const getCloudinaryVideoUrl = (
     height: number = 450,
     cloudName: string = 'dllh8yqz8'
 ): string => {
-    return `https://res.cloudinary.com/${cloudName}/video/upload/w_${width},h_${height},c_fill,q_auto,f_auto/${video.public_id}.${video.format}`;
+    // Detect if we're on iPhone/iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    
+    if (isIOS) {
+        // iPhone-specific video URL with H.264 codec and optimized settings
+        return `https://res.cloudinary.com/${cloudName}/video/upload/w_${width},h_${height},c_fill,q_auto,f_mp4,vc_h264/${video.public_id}.${video.format}`;
+    } else {
+        // Standard video URL for other devices
+        return `https://res.cloudinary.com/${cloudName}/video/upload/w_${width},h_${height},c_fill,q_auto,f_auto/${video.public_id}.${video.format}`;
+    }
 };
 
 export const getCloudinaryVideoPoster = (

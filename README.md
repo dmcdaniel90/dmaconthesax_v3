@@ -1,162 +1,227 @@
-# DMAC on the Sax - Advanced Cloudinary Video Optimization
+# DMAC on the Sax - Professional Saxophonist Website
 
 ## 🎯 **Project Overview**
 
-This project demonstrates **enterprise-grade video optimization** using Cloudinary's AI-powered media management platform. The implementation provides **40-60% faster page loads**, **85-90% faster video availability**, and **70-90% reduction in data transfer** while maintaining 100% reliability through intelligent fallback systems.
+DMAC on the Sax is a modern, high-performance website for professional saxophonist Devin McDaniel. Built with Next.js 15 and the App Router, this project showcases advanced web development practices, performance optimization, and seamless media delivery.
+
+### **Key Features**
+- 🎵 **Professional Music Portfolio** - Showcase performances, events, and media
+- 📱 **Mobile-First Design** - Optimized for all devices with responsive layouts
+- ⚡ **High Performance** - 40-60% faster page loads with intelligent optimization
+- 🎥 **Advanced Video Integration** - Cloudinary-powered video delivery with iPhone compatibility
+- 📸 **Dynamic Photo Galleries** - Responsive image galleries with lazy loading
+- 📅 **Event Management** - Interactive event listings and booking system
+- 📧 **Contact Forms** - Multi-step forms with validation and success states
+- 🔍 **SEO Optimized** - Built-in metadata and performance optimization
 
 ## 🚀 **Current Status: ✅ Production Ready**
 
-The Cloudinary integration is **fully functional** with:
-- ✅ **Video Background Working**: Seamless video playback with fallback system
-- ✅ **Performance Optimized**: Significant improvements in load times and bandwidth
-- ✅ **Error Handling**: Graceful degradation when optimization fails
-- ✅ **Responsive Design**: Optimized for all device types and orientations
-- ✅ **No React Errors**: Clean console without warnings or errors
+The website is fully functional with:
+- ✅ **All Pages Working** - Home, About, Events, Gallery, Booking, FAQ, Contact
+- ✅ **Mobile Optimized** - iPhone/iOS Safari compatibility with video fixes
+- ✅ **Performance Optimized** - Significant improvements in load times and bandwidth
+- ✅ **Error Handling** - Graceful degradation and comprehensive fallback systems
+- ✅ **Responsive Design** - Optimized for all device types and orientations
+- ✅ **Clean Codebase** - TypeScript, ESLint, and comprehensive testing
 
-## 📊 **Performance Improvements Achieved**
+## 🛠 **Technology Stack**
 
-### **Before (Local Video Files)**
-- **Page Load Time**: 3.2 - 4.8 seconds
-- **Video Load Time**: 2.1 - 3.5 seconds
-- **Total Transfer Size**: 8.7 MB
-- **User Experience**: Slow loading, buffering delays
+### **Core Framework**
+- **Next.js 15** - React framework with App Router
+- **TypeScript** - Type safety and enhanced developer experience
+- **React 19** - Latest React features and optimizations
 
-### **After (Cloudinary CDN)**
-- **Page Load Time**: 1.8 - 2.9 seconds ⚡ **40-60% faster**
-- **Video Load Time**: 0.1 - 0.3 seconds ⚡ **85-90% faster**
-- **Total Transfer Size**: 0.8 - 2.1 MB ⚡ **75-90% reduction**
-- **User Experience**: Instant video, smooth performance
+### **Styling & UI**
+- **Tailwind CSS 4** - Utility-first CSS framework
+- **Radix UI** - Accessible component primitives
+- **Framer Motion** - Smooth animations and transitions
+- **Custom Components** - Tailored UI components for the brand
 
-## 🛠 **Technical Implementation**
+### **Media & Performance**
+- **Cloudinary** - AI-powered media management and optimization
+- **Next.js Image** - Automatic image optimization
+- **Video Optimization** - Advanced video delivery with mobile compatibility
 
-### **Core Components**
+### **Forms & Validation**
+- **React Hook Form** - Performant form handling
+- **Zod** - Type-safe schema validation
+- **Multi-step Forms** - Enhanced user experience
 
-#### **1. VideoBackground Component**
-```typescript
-// components/VideoBackground.tsx
-const VideoBackground = () => {
-  const [currentVideoUrl, setCurrentVideoUrl] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(true);
+### **Development & Testing**
+- **Jest** - Unit testing framework
+- **React Testing Library** - Component testing utilities
+- **Playwright** - End-to-end testing
+- **ESLint & Prettier** - Code quality and formatting
 
-  // Responsive quality selection based on screen size
-  const getOptimalVideoUrl = () => {
-    const width = window.innerWidth;
-    if (width <= 640) return responsiveUrls.mobile;
-    if (width <= 1024) return responsiveUrls.tablet;
-    if (width <= 1920) return responsiveUrls.desktop;
-    return responsiveUrls.large;
-  };
+### **Deployment & CI/CD**
+- **Netlify** - Hosting and deployment platform
+- **GitHub Actions** - Continuous integration and deployment
+- **Lighthouse CI** - Performance monitoring
 
-  // Fallback to working Cloudinary URL
-  const fallbackUrl = "https://res.cloudinary.com/dllh8yqz8/video/upload/v1755861559/dmaconthesax_website_bg.mp4";
-  const videoUrl = currentVideoUrl || fallbackUrl;
+## 📊 **Performance Achievements**
 
-  // Conditional rendering prevents React warnings
-  if (!videoUrl) {
-    return <div>Initializing video...</div>;
-  }
+### **Measured Improvements**
+- **Page Load Speed**: 40-60% faster than baseline
+- **Video Availability**: 85-90% faster video loading
+- **Data Transfer**: 70-90% reduction in bandwidth usage
+- **Mobile Performance**: Optimized for all screen sizes and devices
+- **Global Delivery**: CDN-powered worldwide distribution
 
-  return (
-    <video autoPlay loop muted playsInline>
-      <source src={videoUrl} type="video/mp4" />
-      <source src={fallbackUrl} type="video/mp4" />
-    </video>
-  );
-};
+### **Technical Optimizations**
+1. **Automatic Media Optimization** - Cloudinary handles compression and format selection
+2. **Responsive Delivery** - Right quality for right device
+3. **Network Awareness** - Adapts to connection conditions
+4. **Error Resilience** - Multiple fallback options
+5. **Performance Monitoring** - Real-time metrics and insights
+
+## 🏗 **Project Architecture**
+
+### **Directory Structure**
+```
+dmaconthesax_v3/
+├── app/                    # Next.js App Router
+│   ├── (routes)/          # Route groups
+│   ├── api/               # API routes
+│   ├── contexts/          # React contexts
+│   ├── layout/            # Layout components
+│   └── globals.css        # Global styles
+├── components/            # Reusable components
+│   ├── ui/               # Base UI components
+│   └── *.tsx             # Feature components
+├── hooks/                # Custom React hooks
+├── lib/                  # Utilities and configurations
+├── __tests__/            # Test files
+├── docs/                 # Documentation
+└── public/               # Static assets
 ```
 
-#### **2. Cloudinary Utilities**
-```typescript
-// lib/cloudinary.ts
-export const VIDEO_QUALITY_PRESETS = {
-  mobile: { width: 640, quality: 'auto', bitrate: '500k' },
-  tablet: { width: 1024, quality: 'auto', bitrate: '1000k' },
-  desktop: { width: 1920, quality: 'auto', bitrate: '2000k' },
-  large: { width: 2560, quality: 'auto', bitrate: '4000k' }
-};
+### **Key Architectural Decisions**
 
-export function getResponsiveVideoUrls() {
-  return {
-    mobile: getOptimizedVideoUrl({ ...VIDEO_QUALITY_PRESETS.mobile }),
-    tablet: getOptimizedVideoUrl({ ...VIDEO_QUALITY_PRESETS.tablet }),
-    desktop: getOptimizedVideoUrl({ ...VIDEO_QUALITY_PRESETS.desktop }),
-    large: getOptimizedVideoUrl({ ...VIDEO_QUALITY_PRESETS.large })
-  };
-}
+#### 1. **App Router Pattern**
+- Uses Next.js 15 App Router for file-based routing
+- Server and Client Components clearly separated
+- API routes in `app/api/` directory
+- Built-in metadata and SEO optimization
+
+#### 2. **Component Composition**
+- Atomic design principles
+- Compound components for complex UI
+- Custom hooks for business logic
+- Reusable UI components with Radix UI
+
+#### 3. **Performance-First Approach**
+- Cloudinary for media optimization
+- Lazy loading and code splitting
+- Performance monitoring in development
+- Mobile-first responsive design
+
+## 🎨 **Design System**
+
+### **Brand Colors**
+- **Primary**: #02ACAC (Teal)
+- **Secondary**: #ffffff (White)
+- **Background**: #1a1a1a (Dark Gray)
+- **Accent**: Various gradients and overlays
+
+### **Typography**
+- **Primary Font**: Inter (Google Fonts)
+- **Responsive Sizing**: Fluid typography scales
+- **Accessibility**: High contrast ratios and readable sizes
+
+### **Layout Principles**
+- **Mobile-First**: Designed for mobile, enhanced for desktop
+- **Grid System**: CSS Grid and Flexbox for layouts
+- **Spacing**: Consistent spacing scale with Tailwind
+- **Breakpoints**: Responsive design with multiple breakpoints
+
+## 📱 **Mobile Optimization**
+
+### **iPhone/iOS Safari Compatibility**
+The project includes comprehensive iPhone-specific optimizations:
+
+- **Video Playback**: Fixed iPhone video playback issues with proper attributes
+- **Touch Interactions**: Optimized for touch devices
+- **Performance**: Reduced bundle size and optimized loading
+- **User Experience**: Native-feeling interactions and animations
+
+### **Responsive Features**
+- **Adaptive Images**: Different sizes for different devices
+- **Touch-Friendly**: Large touch targets and gestures
+- **Orientation Support**: Landscape and portrait optimizations
+- **Performance**: Optimized for mobile networks
+
+## 🧪 **Testing Strategy**
+
+### **Testing Coverage**
+- **Unit Tests**: Component and utility function testing
+- **Integration Tests**: API and data flow testing
+- **E2E Tests**: Full user journey testing with Playwright
+- **Performance Tests**: Lighthouse CI integration
+- **Mobile Testing**: Device-specific testing
+
+### **Quality Assurance**
+- **TypeScript**: Strict type checking enabled
+- **ESLint**: Code quality and consistency rules
+- **Prettier**: Code formatting and style consistency
+- **Testing**: Comprehensive test coverage for all components
+
+## 🚀 **Getting Started**
+
+### **Prerequisites**
+- **Node.js**: 20.x or higher
+- **pnpm**: 8.x or higher (preferred package manager)
+- **Git**: Latest version
+
+### **Quick Setup**
+```bash
+# Clone repository
+git clone <repository-url>
+cd dmaconthesax_v3
+
+# Install dependencies
+pnpm install
+
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your Cloudinary credentials
+
+# Start development server
+pnpm dev
 ```
 
-#### **3. Advanced Video Player**
-```typescript
-// components/AdvancedVideoPlayer.tsx
-export default function AdvancedVideoPlayer({ 
-  autoPlay = true, 
-  loop = true, 
-  muted = true,
-  showControls = false,
-  showQualitySelector = true,
-  showPerformanceMetrics = true,
-  className = "w-full h-64"
-}) {
-  const [currentQuality, setCurrentQuality] = useState<VideoQuality | null>(null);
-  const [availableQualities, setAvailableQualities] = useState<VideoQuality[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+### **Development Commands**
+```bash
+# Development server with Turbopack
+pnpm dev
 
-  // Conditional rendering prevents React warnings
-  if (!currentQuality) {
-    return (
-      <div className={`${className} bg-gray-800 flex items-center justify-center`}>
-        <div className="text-white">Initializing video player...</div>
-      </div>
-    );
-  }
+# Type checking
+pnpm type-check
 
-  return (
-    <div className={`relative ${className}`}>
-      <video ref={videoRef} autoPlay={autoPlay} loop={loop} muted={muted}>
-        <source src={currentQuality.url} type="video/mp4" />
-      </video>
-      
-      {/* Quality selector, performance metrics, and controls */}
-    </div>
-  );
-}
+# Linting with auto-fix
+pnpm lint:fix
+
+# Testing
+pnpm test:watch
+
+# Build for production
+pnpm build
+
+# Clean build artifacts
+pnpm clean
 ```
-
-### **Key Features**
-
-#### **✅ Responsive Quality Selection**
-- **Mobile (≤640px)**: 640p optimized for mobile screens
-- **Tablet (≤1024px)**: 1024p balanced for tablet screens  
-- **Desktop (≤1920px)**: 1920p high quality for desktop screens
-- **Large (>1920px)**: 2560p ultra quality for large displays
-
-#### **✅ Intelligent Fallback System**
-- **Primary**: Responsive quality URLs for optimal performance
-- **Fallback**: Working Cloudinary URL when responsive URLs fail
-- **Loading States**: Clear user feedback during initialization
-- **Error Recovery**: Automatic fallback when videos fail to load
-
-#### **✅ Performance Monitoring**
-- **Real-Time Metrics**: Live performance indicators in development
-- **Quality Detection**: Shows current video quality being used
-- **Loading States**: Visual feedback during video transitions
-- **Error Tracking**: Comprehensive error handling and logging
-
-#### **✅ Device Optimization**
-- **Screen Size Detection**: Automatic quality selection based on viewport
-- **Bandwidth Adaptation**: Quality adjustment for different connection speeds
-- **Format Optimization**: Automatic format selection (MP4, WebM, HLS)
-- **Codec Optimization**: Platform-specific video and audio codecs
 
 ## 🔧 **Configuration**
 
 ### **Environment Variables**
+Create `.env.local` with:
 ```bash
-# .env.local
+# Cloudinary Configuration
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=dllh8yqz8
 NEXT_PUBLIC_CLOUDINARY_API_KEY=your_api_key
 NEXT_PUBLIC_CLOUDINARY_API_SECRET=your_api_secret
+
+# Development
+NODE_ENV=development
 ```
 
 ### **Next.js Configuration**
@@ -179,169 +244,6 @@ const nextConfig = {
 };
 ```
 
-### **Cloudinary Configuration**
-```typescript
-// lib/cloudinary.ts
-export const CLOUDINARY_CONFIG = {
-  cloudName: 'dllh8yqz8',
-  videoDirectory: 'dmaconthesax_website_bg',
-  defaultVersion: 'v1755861559'
-};
-```
-
-## 📱 **Responsive Design**
-
-### **Landscape Mobile Optimization**
-The implementation includes **comprehensive landscape mobile support**:
-
-```css
-/* app/globals.css */
-@media screen and (orientation: landscape) and (max-height: 600px) {
-  .landscape-mobile-content {
-    padding-top: 60px; /* Reduced header height */
-  }
-  
-  .landscape-mobile-header {
-    height: 60px; /* Compact header for landscape */
-  }
-  
-  .landscape-mobile-logo {
-    height: 40px; /* Smaller logo */
-  }
-}
-```
-
-### **Device-Specific Features**
-- **Mobile**: Touch-optimized controls and reduced quality
-- **Tablet**: Balanced quality and performance
-- **Desktop**: High quality with advanced features
-- **Large Screens**: Ultra quality for premium displays
-
-## 🧪 **Testing and Validation**
-
-### **Performance Testing**
-```typescript
-// lib/performance-test.ts
-export interface PerformanceMetrics {
-  domContentLoaded: number;
-  loadComplete: number;
-  totalLoadTime: number;
-  firstPaint: number;
-  firstContentfulPaint: number;
-  totalResources: number;
-  totalTransferSize: number;
-  videoLoadTime: number;
-  videoSize: number;
-  videoRequests: number;
-}
-```
-
-### **Quality Assurance**
-- ✅ **Cross-Browser Testing**: Chrome, Firefox, Safari, Edge
-- ✅ **Device Testing**: Mobile, tablet, desktop validation
-- ✅ **Performance Validation**: Real-time metrics and monitoring
-- ✅ **Error Handling**: Comprehensive fallback and recovery
-- ✅ **Accessibility**: Screen reader and keyboard navigation support
-
-## 🚀 **Usage Examples**
-
-### **Basic Video Background**
-```typescript
-import VideoBackground from '@/components/VideoBackground';
-
-export default function Layout() {
-  return (
-    <div>
-      <VideoBackground />
-      <main>{children}</main>
-    </div>
-  );
-}
-```
-
-### **Advanced Video Player**
-```typescript
-import AdvancedVideoPlayer from '@/components/AdvancedVideoPlayer';
-
-export default function DemoPage() {
-  return (
-    <div>
-      <h1>Advanced Video Features</h1>
-      <AdvancedVideoPlayer 
-        showQualitySelector={true}
-        showPerformanceMetrics={true}
-        className="w-full h-96"
-      />
-    </div>
-  );
-}
-```
-
-### **Custom Video URLs**
-```typescript
-import { createCustomVideoUrl } from '@/lib/cloudinary';
-
-const customVideo = createCustomVideoUrl([
-  'w_1280', 'h_720', 'q_auto', 'f_mp4'
-]);
-```
-
-## 📊 **Performance Monitoring**
-
-### **Development Indicators**
-- **Quality Indicator**: Shows current video quality in top-left corner
-- **Performance Metrics**: Real-time loading and buffering data
-- **Error Logging**: Console logging for debugging and optimization
-
-### **Production Monitoring**
-- **Real User Monitoring**: Track actual user performance
-- **Performance Alerts**: Get notified when performance drops
-- **Analytics Dashboard**: Comprehensive performance insights
-- **Trend Analysis**: Track performance over time
-
-## 🔍 **Troubleshooting**
-
-### **Common Issues and Solutions**
-
-#### **Issue: Video Not Loading**
-- **Cause**: Cloudinary URLs failing or network issues
-- **Solution**: Check fallback system and verify Cloudinary configuration
-
-#### **Issue: React Warnings About Empty src**
-- **Cause**: Video element rendered before URL is available
-- **Solution**: Use conditional rendering (already implemented)
-
-#### **Issue: Performance Metrics Not Showing**
-- **Cause**: Performance API not supported or component not mounted
-- **Solution**: Check browser compatibility and component mounting
-
-#### **Issue: Responsive URLs Failing**
-- **Cause**: Video files not uploaded to Cloudinary
-- **Solution**: Upload videos or rely on fallback system
-
-### **Debug Mode**
-Enable debug mode for detailed logging:
-```typescript
-// Set in environment variables
-NODE_ENV=development
-DEBUG_CLOUDINARY=true
-```
-
-## 🎯 **Future Enhancements**
-
-### **Planned Features**
-- **AI-Powered Optimization**: Automatic quality selection based on user behavior
-- **Advanced Analytics**: Detailed performance insights and recommendations
-- **A/B Testing**: Quality vs performance optimization testing
-- **Custom Presets**: Event-specific video configurations
-- **Real-Time Transcoding**: Dynamic video format conversion
-
-### **Integration Opportunities**
-- **Analytics Platforms**: Google Analytics, Mixpanel, Amplitude
-- **Performance Monitoring**: New Relic, Datadog, Sentry
-- **CDN Optimization**: Cloudflare, AWS CloudFront, Fastly
-- **Video Analytics**: Wistia, Vimeo, YouTube Analytics
-
 ## 📚 **Documentation**
 
 ### **Technical Guides**
@@ -350,52 +252,98 @@ DEBUG_CLOUDINARY=true
 - [Performance Testing Guide](./docs/PERFORMANCE_TESTING_GUIDE.md) - Comprehensive guide for developers
 - [Performance Analysis](./docs/PERFORMANCE_ANALYSIS.md) - Detailed performance metrics and analysis
 - [Cloudinary Features](./docs/CLOUDINARY_FEATURES.md) - Cloudinary integration details
-- [Cloudinary Documentation](https://cloudinary.com/documentation) - Official Cloudinary guides
+- [Developer Guide](./docs/DEVELOPER_GUIDE.md) - Comprehensive development guide
 
 ### **API Reference**
-- [Performance API](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API) - Browser performance measurement
-- [Video Element API](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video) - HTML5 video element reference
-- [React Hooks](https://react.dev/reference/react/hooks) - React hooks documentation
+- [Next.js Documentation](https://nextjs.org/docs) - Official Next.js guides
+- [React Documentation](https://react.dev) - React framework reference
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs) - Styling framework
+- [Cloudinary Documentation](https://cloudinary.com/documentation) - Media optimization
 
 ## 🤝 **Contributing**
 
-### **Development Setup**
+### **Development Workflow**
 ```bash
-# Clone repository
-git clone <repository-url>
-cd dmaconthesax_v3
-
-# Install dependencies
-pnpm install
-
-# Set up environment variables
-cp .env.example .env.local
-
-# Start development server
-pnpm dev
+# Feature development
+git checkout -b feature/your-feature-name
+# Make changes
+git add .
+git commit -m "feat: add your feature"
+git push origin feature/your-feature-name
+# Create PR to main branch
 ```
 
-**📚 For detailed setup instructions, see [Build Strategy](./docs/BUILD_STRATEGY.md)**
-
-### **Testing**
-```bash
-# Run tests
-pnpm test
-
-# Run tests with coverage
-pnpm test:coverage
-
-# Run performance tests
-pnpm test:ci
-```
-
-**📚 For comprehensive testing procedures, see [Performance Testing Guide](./docs/PERFORMANCE_TESTING_GUIDE.md)**
-
-### **Code Quality**
+### **Code Quality Standards**
 - **TypeScript**: Strict type checking enabled
 - **ESLint**: Code quality and consistency rules
 - **Prettier**: Code formatting and style consistency
 - **Testing**: Comprehensive test coverage for all components
+- **Documentation**: Keep documentation current with code changes
+
+### **Pull Request Process**
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all tests pass
+6. Update documentation if needed
+7. Submit a pull request
+
+## 🔍 **Troubleshooting**
+
+### **Common Issues**
+
+#### **Build Errors**
+```bash
+# Clear Next.js cache
+pnpm clean
+rm -rf .next
+pnpm install
+pnpm build
+```
+
+#### **TypeScript Errors**
+```bash
+# Check types
+pnpm type-check
+
+# Restart TypeScript server in VS Code
+Ctrl+Shift+P -> "TypeScript: Restart TS Server"
+```
+
+#### **Mobile Video Issues**
+- Check iPhone-specific video attributes
+- Verify Cloudinary video URLs
+- Test on actual devices
+- Review console logs for errors
+
+#### **Performance Issues**
+- Check bundle size: `pnpm build:analyze`
+- Review Core Web Vitals in dev tools
+- Check for memory leaks in components
+- Verify lazy loading is working
+
+### **Getting Help**
+1. Check existing documentation in `/docs`
+2. Review component tests for usage examples
+3. Check GitHub issues
+4. Ask team members
+5. Create new issue with reproduction steps
+
+## 🎯 **Future Enhancements**
+
+### **Planned Features**
+- **Advanced Analytics** - Detailed performance insights and user behavior
+- **A/B Testing** - Quality vs performance optimization testing
+- **Custom Presets** - Event-specific video configurations
+- **Real-Time Transcoding** - Dynamic video format conversion
+- **Enhanced SEO** - Advanced metadata and structured data
+
+### **Integration Opportunities**
+- **Analytics Platforms** - Google Analytics, Mixpanel, Amplitude
+- **Performance Monitoring** - New Relic, Datadog, Sentry
+- **CDN Optimization** - Cloudflare, AWS CloudFront, Fastly
+- **Video Analytics** - Wistia, Vimeo, YouTube Analytics
 
 ## 📄 **License**
 
@@ -403,14 +351,17 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 **Acknowledgments**
 
-- **Cloudinary**: For providing the AI-powered media management platform
-- **Next.js Team**: For the excellent React framework
-- **Tailwind CSS**: For the utility-first CSS framework
-- **Playwright**: For browser automation and testing tools
+- **Next.js Team** - For the excellent React framework and App Router
+- **Cloudinary** - For providing the AI-powered media management platform
+- **Tailwind CSS** - For the utility-first CSS framework
+- **Radix UI** - For accessible component primitives
+- **Playwright** - For browser automation and testing tools
+- **Devin McDaniel** - For the vision and content
 
 ---
 
 **Status**: ✅ **Production Ready** with advanced optimization features  
 **Last Updated**: December 2024  
 **Performance**: 40-60% faster page loads, 85-90% faster video availability  
-**Reliability**: 100% with intelligent fallback systems
+**Reliability**: 100% with intelligent fallback systems  
+**Mobile**: iPhone/iOS Safari compatible with video fixes

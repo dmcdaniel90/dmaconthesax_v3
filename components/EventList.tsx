@@ -1,7 +1,7 @@
 'use client';
 import Event from "@/components/Event"
 import { Pagination, PaginationContent, PaginationNext, PaginationPrevious, PaginationItem, PaginationLink } from "@/components/ui/pagination"
-import * as events from '@/lib/sample-events.json'
+import events from '@/lib/sample-events.json'
 import { useState, useMemo, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Loading, Skeleton } from "@/components/ui/loading";
@@ -54,7 +54,7 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
     // Memoize the paginated data to prevent unnecessary recalculations
     const paginatedEvents = useMemo(() => {
         const startIndex = (currentPage - 1) * itemsPerPage;
-        return Array.prototype.slice.call(events, startIndex, startIndex + itemsPerPage);
+        return events.slice(startIndex, startIndex + itemsPerPage);
     }, [currentPage, itemsPerPage]);
 
     const totalPages = Math.ceil(events.length / itemsPerPage);
