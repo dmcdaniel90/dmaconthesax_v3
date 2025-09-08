@@ -7,13 +7,12 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel"
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Image from "next/image"
-import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext } from "@/components/ui/pagination";
-import { useLightbox } from "../hooks/useLightbox";
+import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext, PaginationEllipsis } from "@/components/ui/pagination";
+// import { useLightbox } from "../hooks/useLightbox"; // Removed - hook was deleted
 import { useCloudinaryCollection, getCloudinaryUrl, getImageAlt } from "../hooks/useCloudinaryCollection";
-import useEmblaCarousel from 'embla-carousel-react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+// Removed unused imports: useEmblaCarousel, ChevronLeft, ChevronRight
 import { Loading, Skeleton } from "@/components/ui/loading";
 
 export default function PhotoGallery({ images, itemsPerPage, type = "carousel", useCloudinary = false, cloudinaryTag = "photo-gallery" }: { 
@@ -25,7 +24,6 @@ export default function PhotoGallery({ images, itemsPerPage, type = "carousel", 
 }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [view, setView] = useState<"grid" | "carousel">(type);
-    const [isViewChanging, setIsViewChanging] = useState(false);
     const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
     const [isPageLoading, setIsPageLoading] = useState(false);
     const [isSmallDevice, setIsSmallDevice] = useState(false);
@@ -47,22 +45,10 @@ export default function PhotoGallery({ images, itemsPerPage, type = "carousel", 
         enabled: useCloudinary
     });
 
-    // Embla carousel for tablet gesture support (not used on mobile)
-    const [emblaRef, emblaApi] = useEmblaCarousel({
-        slidesToScroll: 1,
-        containScroll: 'trimSnaps',
-        dragFree: false,
-        skipSnaps: false,
-        watchDrag: true,
-        watchResize: true,
-        breakpoints: {
-            '(min-width: 640px)': { slidesToScroll: 1 }, // Tablet: 1 slide at a time
-            '(min-width: 1024px)': { slidesToScroll: 2 }, // Desktop: 2 slides at a time
-        }
-    });
+    // Removed Embla carousel - not needed for simplified grid view
 
     // State for mobile image navigation
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    // Removed currentImageIndex - not needed for simplified grid view
 
     // Determine loading state
     const isLoading = useCloudinary ? isCloudinaryLoading : false;
@@ -76,10 +62,8 @@ export default function PhotoGallery({ images, itemsPerPage, type = "carousel", 
 
     const totalPages = Math.ceil((useCloudinary ? cloudinaryImages.length : (images?.length || 0)) / dynamicItemsPerPage);
     
-    // Calculate current page based on currentImageIndex for mobile navigation
-    const calculatedCurrentPage = isSmallDevice 
-        ? Math.floor(currentImageIndex / dynamicItemsPerPage) + 1
-        : currentPage;
+    // Use currentPage directly since we removed mobile navigation
+    const calculatedCurrentPage = currentPage;
 
     // Detect small devices and tablets
     useEffect(() => {
@@ -94,109 +78,41 @@ export default function PhotoGallery({ images, itemsPerPage, type = "carousel", 
         return () => window.removeEventListener('resize', checkDeviceSize);
     }, []);
 
-    // Reset currentImageIndex when the full collection changes
-    useEffect(() => {
-        setCurrentImageIndex(0);
-    }, [useCloudinary ? cloudinaryImages : images]);
+    // Removed currentImageIndex reset - not needed for simplified grid view
 
-    const { isOpen,
-        setImages,
-        handleOpen,
-        LightboxComponent
-    } = useLightbox();
+    // Lightbox functionality removed - useLightbox hook was deleted
+    const isOpen = false;
+    const setImages = () => {};
+    const handleOpen = () => {};
+    const LightboxComponent = () => null;
 
     const handlePageChange = async (page: number) => {
         setIsPageLoading(true);
         setCurrentPage(page);
-        setCurrentImageIndex(0); // Reset to first image on page change
         setLoadedImages(new Set()); // Reset loaded images on page change
         
         // Simulate loading delay for better UX
         setTimeout(() => {
             setIsPageLoading(false);
+            // Focus on the first image of the new page after loading
+            const firstImageElement = document.querySelector('.photo-gallery-grid img');
+            if (firstImageElement) {
+                (firstImageElement as HTMLElement).focus();
+                // Center the focused image in the viewport
+                firstImageElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center', 
+                    inline: 'center' 
+                });
+            }
         }, 500);
     };
 
-    const handleViewChange = () => {
-        setIsViewChanging(true);
-        setTimeout(() => {
-            setView(view === "grid" ? "carousel" : "grid");
-            setIsViewChanging(false);
-        }, 300);
-    };
+    // Removed handleViewChange - now using inline onClick handler
 
-    // Embla carousel navigation (for tablet)
-    const scrollPrev = useCallback(() => {
-        if (emblaApi) emblaApi.scrollPrev();
-    }, [emblaApi]);
+    // Removed Embla carousel navigation functions
 
-    const scrollNext = useCallback(() => {
-        if (emblaApi) emblaApi.scrollNext();
-    }, [emblaApi]);
-
-    // Mobile image navigation functions
-    const handlePrevImage = () => {
-        if (isSmallDevice) {
-            const allImages = useCloudinary ? cloudinaryImages : (images || []);
-            setCurrentImageIndex(prev => {
-                const newIndex = prev === 0 ? allImages.length - 1 : prev - 1;
-                // Update currentPage to match the new image index
-                const newPage = Math.floor(newIndex / dynamicItemsPerPage) + 1;
-                setCurrentPage(newPage);
-                return newIndex;
-            });
-        } else {
-            scrollPrev();
-        }
-    };
-
-    const handleNextImage = () => {
-        if (isSmallDevice) {
-            const allImages = useCloudinary ? cloudinaryImages : (images || []);
-            setCurrentImageIndex(prev => {
-                const newIndex = prev === allImages.length - 1 ? 0 : prev + 1;
-                // Update currentPage to match the new image index
-                const newPage = Math.floor(newIndex / dynamicItemsPerPage) + 1;
-                setCurrentPage(newPage);
-                return newIndex;
-            });
-        } else {
-            scrollNext();
-        }
-    };
-
-    // Touch gesture handling for mobile
-    const [touchStart, setTouchStart] = useState<number | null>(null);
-    const [touchEnd, setTouchEnd] = useState<number | null>(null);
-
-    const minSwipeDistance = 50;
-
-    const onTouchStart = (e: React.TouchEvent) => {
-        if (isSmallDevice) {
-            setTouchEnd(null);
-            setTouchStart(e.targetTouches[0].clientX);
-        }
-    };
-
-    const onTouchMove = (e: React.TouchEvent) => {
-        if (isSmallDevice) {
-            setTouchEnd(e.targetTouches[0].clientX);
-        }
-    };
-
-    const onTouchEnd = () => {
-        if (!isSmallDevice || !touchStart || !touchEnd) return;
-        
-        const distance = touchStart - touchEnd;
-        const isLeftSwipe = distance > minSwipeDistance;
-        const isRightSwipe = distance < -minSwipeDistance;
-
-        if (isLeftSwipe) {
-            handleNextImage();
-        } else if (isRightSwipe) {
-            handlePrevImage();
-        }
-    };
+    // Removed mobile navigation functions - grid view is only for tablet and larger
 
     const handleImageLoad = (index: number) => {
         setLoadedImages(prev => new Set(prev).add(index));
@@ -261,17 +177,16 @@ export default function PhotoGallery({ images, itemsPerPage, type = "carousel", 
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl sm:text-2xl md:text-3xl text-white px-2 sm:px-4 md:px-8 lg:px-12">Photos</h2>
                 <Button 
-                    className="w-[250px] h-[48px] hidden md:block bg-[#02ACAC] mt-4 mb-8 cursor-pointer hover:bg-background hover:text-foreground transition-colors text-base px-8 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
-                    onClick={handleViewChange}
-                    disabled={isViewChanging}
+                    className="w-[200px] h-[48px] hidden md:block bg-[#02ACAC] cursor-pointer hover:bg-background hover:text-foreground transition-colors text-base px-8 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+                    onClick={() => {
+                        // Don't allow view changes on small devices
+                        if (isSmallDevice) return;
+                        setView(view === "grid" ? "carousel" : "grid");
+                    }}
                     aria-label={`Switch to ${view === "grid" ? "Carousel" : "Grid"} View`}
                     tabIndex={0}
                 >
-                    {isViewChanging ? (
-                        <Loading variant="dots" size="sm" className="text-white" />
-                    ) : (
-                        view === "grid" ? "Switch to Carousel View" : "Switch to Grid View"
-                    )}
+                    {view === "grid" ? "Switch to Carousel View" : "Switch to Grid View"}
                 </Button>
             </div>
 
@@ -283,15 +198,7 @@ export default function PhotoGallery({ images, itemsPerPage, type = "carousel", 
                 view === "carousel" &&
                 <Carousel>
                     <CarouselContent className="px-1 sm:px-4 md:px-8 lg:px-12">
-                        {isViewChanging ? (
-                            // Show skeleton loaders during view change
-                            Array.from({ length: Math.min(6, (useCloudinary ? cloudinaryImages.length : (images?.length || 0))) }).map((_, i) => (
-                                <CarouselItem key={i} className="basis-full sm:basis-1/2 lg:basis-1/3">
-                                    <PhotoSkeleton />
-                                </CarouselItem>
-                            ))
-                        ) : (
-                            (useCloudinary ? cloudinaryImages : (images || [])).map((image, index) => {
+                        {(useCloudinary ? cloudinaryImages : (images || [])).map((image, index) => {
                                 const imageSrc = useCloudinary 
                                     ? getCloudinaryUrl(image as any)
                                     : image as string;
@@ -322,19 +229,16 @@ export default function PhotoGallery({ images, itemsPerPage, type = "carousel", 
                                     </CarouselItem>
                                 );
                             })
-                        )}
+                        }
                     </CarouselContent>
                     <CarouselNext className="cursor-pointer hover:opacity-80 w-[40px] h-[40px] sm:w-[50px] sm:h-[50px]" />
                     <CarouselPrevious className="cursor-pointer hover:opacity-80 w-[40px] h-[50px] sm:w-[50px] sm:h-[50px]" />
                 </Carousel>
             }
 
-            {/* Mobile-optimized Grid View with Gesture Support */}
-            {
-                view === "grid" &&
-                <>
-                    {/* Desktop Grid View */}
-                    <div className="hidden lg:grid lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 lg:gap-4">
+            {/* Desktop Grid View - Only for tablet sizes and larger */}
+            {view === "grid" && (
+                <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 photo-gallery-grid">
                         {isPageLoading ? (
                             // Show loading skeletons during page change
                             Array.from({ length: dynamicItemsPerPage }).map((_, i) => (
@@ -343,180 +247,64 @@ export default function PhotoGallery({ images, itemsPerPage, type = "carousel", 
                         ) : (
                             paginatedPhotos.map((image, index) => {
                                 const imageSrc = useCloudinary 
-                                    ? getCloudinaryUrl(image as any)
+                                ? getCloudinaryUrl(image as any, 800, 800)
                                     : image as string;
                                 const imageAlt = useCloudinary 
                                     ? getImageAlt(image as any, `Photo ${index + 1}`)
                                     : `Photo ${index + 1}`;
                                 
+                            // Skip rendering if imageSrc is empty or invalid
+                            if (!imageSrc || imageSrc === '') {
+                                return null;
+                            }
+                                
                                 return (
                                     <div 
                                         key={index}
-                                        className="relative group aspect-square overflow-hidden rounded-xl bg-gray-800/50"
+                                    className="relative aspect-square overflow-hidden rounded-lg bg-gray-800/50 cursor-pointer"
+                                    onClick={() => handleOpen(index)}
                                     >
                                         <Image
                                             src={imageSrc}
                                             alt={imageAlt}
-                                            width={400}
-                                            height={400}
+                                        fill
                                             style={{ objectFit: "cover" }}
-                                            className="w-full h-full cursor-pointer transition-all duration-300 group-hover:scale-105 active:scale-95"
-                                            onClick={() => handleOpen(index)}
+                                        className="w-full h-full transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#02ACAC] focus:ring-offset-2 focus:ring-offset-gray-900"
+                                        loading="lazy"
                                             draggable={false}
+                                            tabIndex={0}
+                                            onFocus={(e) => {
+                                                // Center the focused image in the viewport
+                                                e.currentTarget.scrollIntoView({ 
+                                                    behavior: 'smooth', 
+                                                    block: 'center', 
+                                                    inline: 'center' 
+                                                });
+                                            }}
                                         />
-                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-150 pointer-events-none" />
                                     </div>
                                 );
                             })
                         )}
                     </div>
+            )}
 
-                    {/* Mobile Single Image Display */}
-                    <div className="md:hidden">
-                        <div className="relative">
-                            {(() => {
-                                const allImages = useCloudinary ? cloudinaryImages : (images || []);
-                                return allImages.length > 0 && (
-                                    <div 
-                                        className="relative aspect-square overflow-hidden rounded-lg bg-gray-800/50"
-                                        onTouchStart={onTouchStart}
-                                        onTouchMove={onTouchMove}
-                                        onTouchEnd={onTouchEnd}
-                                    >
-                                        {(() => {
-                                            const currentImage = allImages[currentImageIndex];
-                                            const imageSrc = useCloudinary 
-                                                ? getCloudinaryUrl(currentImage as any)
-                                                : currentImage as string;
-                                            const imageAlt = useCloudinary 
-                                                ? getImageAlt(currentImage as any, `Photo ${currentImageIndex + 1}`)
-                                                : `Photo ${currentImageIndex + 1}`;
-                                            
-                                            return (
-                                                <Image
-                                                    src={imageSrc}
-                                                    alt={imageAlt}
-                                                    width={400}
-                                                    height={400}
-                                                    style={{ objectFit: "cover" }}
-                                                    className="w-full h-full cursor-pointer transition-all duration-300 active:scale-95 touch-manipulation select-none"
-                                                    onClick={() => handleOpen(currentImageIndex)}
-                                                    draggable={false}
-                                                />
-                                            );
-                                        })()}
-                                        {/* Touch feedback overlay for mobile */}
-                                        <div className="absolute inset-0 bg-black/0 active:bg-black/20 transition-colors duration-150 pointer-events-none" />
-                                    </div>
-                                );
-                            })()}
-                            
-                            {/* Mobile Navigation Buttons - Always show when there are multiple images */}
-                            {(() => {
-                                const allImages = useCloudinary ? cloudinaryImages : (images || []);
-                                return allImages.length > 1 && (
-                                    <>
-                                        <Button
-                                            variant="outline"
-                                            size="icon"
-                                            className="absolute left-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-gray-900/90 border-gray-600 text-white hover:bg-gray-800/90 active:bg-gray-700/90 z-10 touch-manipulation shadow-lg"
-                                            onClick={handlePrevImage}
-                                            aria-label="Previous photo"
-                                        >
-                                            <ChevronLeft className="h-5 w-5" />
-                                        </Button>
-                                        <Button
-                                            variant="outline"
-                                            size="icon"
-                                            className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-gray-900/90 border-gray-600 text-white hover:bg-gray-800/90 active:bg-gray-700/90 z-10 touch-manipulation shadow-lg"
-                                            onClick={handleNextImage}
-                                            aria-label="Next photo"
-                                        >
-                                            <ChevronRight className="h-5 w-5" />
-                                        </Button>
-                                    </>
-                                );
-                            })()}
-                        </div>
-                    </div>
-
-                    {/* Tablet Gesture Slider */}
-                    <div className="hidden md:block lg:hidden">
-                        <div className="relative">
-                            <div className="overflow-hidden" ref={emblaRef}>
-                                <div className="flex gap-2">
-                                    {paginatedPhotos.map((image, index) => {
-                                        const imageSrc = useCloudinary 
-                                            ? getCloudinaryUrl(image as any)
-                                            : image as string;
-                                        const imageAlt = useCloudinary 
-                                            ? getImageAlt(image as any, `Photo ${index + 1}`)
-                                            : `Photo ${index + 1}`;
-                                        
-                                        return (
-                                            <div 
-                                                key={index}
-                                                className="relative flex-[0_0_calc(50%-4px)] aspect-square overflow-hidden rounded-lg bg-gray-800/50"
-                                            >
-                                                <Image
-                                                    src={imageSrc}
-                                                    alt={imageAlt}
-                                                    width={400}
-                                                    height={400}
-                                                    style={{ objectFit: "cover" }}
-                                                    className="w-full h-full cursor-pointer transition-all duration-300 active:scale-95 touch-manipulation select-none"
-                                                    onClick={() => handleOpen(index)}
-                                                    draggable={false}
-                                                />
-                                                {/* Touch feedback overlay for tablet */}
-                                                <div className="absolute inset-0 bg-black/0 active:bg-black/20 transition-colors duration-150 pointer-events-none" />
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                            
-                            {/* Tablet Navigation Buttons - Always show when there are multiple photos */}
-                            {(paginatedPhotos.length > 1 || totalPages > 1) && (
-                                <>
-                                    <Button
-                                        variant="outline"
-                                        size="icon"
-                                        className="absolute left-2 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full bg-gray-900/90 border-gray-600 text-white hover:bg-gray-800/90 active:bg-gray-700/90 z-10 touch-manipulation shadow-lg"
-                                        onClick={scrollPrev}
-                                        aria-label="Previous photo"
-                                    >
-                                        <ChevronLeft className="h-6 w-6" />
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        size="icon"
-                                        className="absolute right-2 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full bg-gray-900/90 border-gray-600 text-white hover:bg-gray-800/90 active:bg-gray-700/90 z-10 touch-manipulation shadow-lg"
-                                        onClick={scrollNext}
-                                        aria-label="Next photo"
-                                    >
-                                        <ChevronRight className="h-6 w-6" />
-                                    </Button>
-                                </>
-                            )}
-                        </div>
-                    </div>
-                    
-                    {/* Mobile-optimized Pagination - Smart pagination with ellipsis */}
-                    <Pagination className="mt-4 sm:mt-6 md:mt-8 text-white">
+            {/* Pagination - Only show for grid view */}
+            {view === "grid" && totalPages > 1 && (
+                <Pagination className="mt-6 sm:mt-8 text-white">
                         <PaginationContent className="flex flex-wrap justify-center gap-1 sm:gap-2 max-w-full overflow-hidden">
-                            {/* Hide Previous button on small screens to prevent overflow */}
-                            <PaginationItem className="hidden sm:block">
+                        <PaginationItem className="!hidden md:!block">
                                 <PaginationPrevious 
                                     onClick={() => handlePageChange(Math.max(1, calculatedCurrentPage - 1))}
-                                    className={`cursor-pointer text-sm sm:text-base p-2 sm:p-3 touch-manipulation ${calculatedCurrentPage === 1 ? 'pointer-events-none opacity-50' : 'hover:bg-gray-700/50 active:bg-gray-600/50'}`}
+                                className={`cursor-pointer text-sm sm:text-base ${calculatedCurrentPage === 1 ? 'pointer-events-none opacity-50' : ''}`}
+                                aria-label="Go to previous page"
                                 />
                             </PaginationItem>
                             
-                            {/* Smart pagination - limit visible pages to prevent overflow */}
+                        {/* Page numbers - limit visible pages to prevent overflow */}
                             {(() => {
                                 const pages = [];
-                                const maxVisiblePages = isSmallDevice ? 5 : 7; // Show fewer pages on mobile
+                            const maxVisiblePages = 7; // Show max 7 page numbers
                                 
                                 if (totalPages <= maxVisiblePages) {
                                     // Show all pages if total is small
@@ -525,16 +313,16 @@ export default function PhotoGallery({ images, itemsPerPage, type = "carousel", 
                                     }
                                 } else {
                                     // Show smart pagination for large numbers
-                                    if (calculatedCurrentPage <= 3) {
-                                        // Show first 3 pages + ellipsis + last page
-                                        for (let i = 1; i <= 3; i++) pages.push(i);
+                                if (calculatedCurrentPage <= 4) {
+                                    // Show first 5 pages + ellipsis + last page
+                                    for (let i = 1; i <= 5; i++) pages.push(i);
                                         pages.push('...');
                                         pages.push(totalPages);
-                                    } else if (calculatedCurrentPage >= totalPages - 2) {
-                                        // Show first page + ellipsis + last 3 pages
+                                } else if (calculatedCurrentPage >= totalPages - 3) {
+                                    // Show first page + ellipsis + last 5 pages
                                         pages.push(1);
                                         pages.push('...');
-                                        for (let i = totalPages - 2; i <= totalPages; i++) pages.push(i);
+                                    for (let i = totalPages - 4; i <= totalPages; i++) pages.push(i);
                                     } else {
                                         // Show first + ellipsis + current ±1 + ellipsis + last
                                         pages.push(1);
@@ -548,12 +336,12 @@ export default function PhotoGallery({ images, itemsPerPage, type = "carousel", 
                                 return pages.map((page, index) => (
                                     <PaginationItem key={`${page}-${index}`}>
                                         {page === '...' ? (
-                                            <span className="px-2 py-1 text-gray-400">...</span>
+                                            <PaginationEllipsis />
                                         ) : (
                                             <PaginationLink
                                                 onClick={() => handlePageChange(page as number)}
                                                 isActive={calculatedCurrentPage === page}
-                                                className={`cursor-pointer text-sm sm:text-base px-2 sm:px-3 py-1 sm:py-2 touch-manipulation rounded-md transition-colors ${calculatedCurrentPage === page ? 'text-black bg-[#02ACAC]' : 'hover:bg-gray-700/50 active:bg-gray-600/50'}`}
+                                                className={`cursor-pointer text-sm sm:text-base px-2 sm:px-3 py-1 ${calculatedCurrentPage === page ? 'text-black' : ''}`}
                                             >
                                                 {page}
                                             </PaginationLink>
@@ -562,17 +350,16 @@ export default function PhotoGallery({ images, itemsPerPage, type = "carousel", 
                                 ));
                             })()}
                             
-                            {/* Hide Next button on small screens to prevent overflow */}
-                            <PaginationItem className="hidden sm:block">
+                        <PaginationItem className="!hidden md:!block">
                                 <PaginationNext 
                                     onClick={() => handlePageChange(Math.min(totalPages, calculatedCurrentPage + 1))}
-                                    className={`cursor-pointer text-sm sm:text-base p-2 sm:p-3 touch-manipulation ${calculatedCurrentPage === totalPages ? 'pointer-events-none opacity-50' : 'hover:bg-gray-700/50 active:bg-gray-600/50'}`}
+                                className={`cursor-pointer text-sm sm:text-base ${calculatedCurrentPage === totalPages ? 'pointer-events-none opacity-50' : ''}`}
+                                aria-label="Go to next page"
                                 />
                             </PaginationItem>
                         </PaginationContent>
                     </Pagination>
-                </>
-            }
+            )}
         </div>
     )
 }

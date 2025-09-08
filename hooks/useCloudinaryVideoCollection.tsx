@@ -74,20 +74,20 @@ export function useCloudinaryVideoCollection({
             console.log('Cloudinary Video API response:', data);
 
             const transformedVideos = data.resources?.map((resource: any) => ({
-                publicId: resource.publicId,
-                public_id: resource.publicId, // Keep both for compatibility
+                publicId: resource.public_id || resource.publicId,
+                public_id: resource.public_id || resource.publicId, // Keep both for compatibility
                 format: resource.format,
                 width: resource.width,
                 height: resource.height,
                 bytes: resource.bytes,
                 url: resource.url,
-                secure_url: resource.secureUrl,
-                secureUrl: resource.secureUrl, // Keep both for compatibility
+                secure_url: resource.secure_url || resource.secureUrl,
+                secureUrl: resource.secure_url || resource.secureUrl, // Keep both for compatibility
                 tags: resource.tags,
-                asset_folder: resource.assetFolder,
-                assetFolder: resource.assetFolder, // Keep both for compatibility
-                display_name: resource.displayName,
-                displayName: resource.displayName, // Keep both for compatibility
+                asset_folder: resource.asset_folder || resource.assetFolder,
+                assetFolder: resource.asset_folder || resource.assetFolder, // Keep both for compatibility
+                display_name: resource.display_name || resource.displayName,
+                displayName: resource.display_name || resource.displayName, // Keep both for compatibility
                 assetId: resource.assetId,
                 duration: resource.duration
             })) || [];

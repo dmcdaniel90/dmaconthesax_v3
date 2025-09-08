@@ -1,19 +1,47 @@
-import VideoList from "../../components/VideoList"
-import PhotoGallery from "../../components/PhotoGallery"
+'use client';
+
+import SwiperVideoPlayer from "../../components/SwiperVideoPlayer"
+import SwiperPhotoGallery from "../../components/SwiperPhotoGallery"
 import Footer from "../layout/Footer"
 import AnimatedPageTitle from "@/components/AnimatedPageTitle"
 import { FadeInUp } from "@/components/ScrollReveal"
+import { useCloudinaryVideoCollection } from "../../hooks/useCloudinaryVideoCollection"
+import { useState, useEffect } from "react"
 
-const videoUrls = [
-    "https://www.youtube.com/embed/MYuQiALRgg4?si=oybKsG8RzUXBYmcz",
-    "https://www.youtube.com/embed/MYuQiALRgg4?si=oybKsG8RzUXBYmcz",
-    "https://www.youtube.com/embed/MYuQiALRgg4?si=oybKsG8RzUXBYmcz",
-    "https://www.youtube.com/embed/MYuQiALRgg4?si=oybKsG8RzUXBYmcz",
-    "https://www.youtube.com/embed/MYuQiALRgg4?si=oybKsG8RzUXBYmcz",
-    "https://www.youtube.com/embed/MYuQiALRgg4?si=oybKsG8RzUXBYmcz",
-    "https://www.youtube.com/embed/MYuQiALRgg4?si=oybKsG8RzUXBYmcz",
-]
 export default function Gallery() {
+    // Grid view state management
+    const [isGridView, setIsGridView] = useState(false);
+    const [isPhotoGridView, setIsPhotoGridView] = useState(false);
+
+    // Get videos from Cloudinary
+    const { videos: cloudinaryVideos, isLoading: videosLoading } = useCloudinaryVideoCollection({
+        cloudName: 'dllh8yqz8',
+        tag: 'video-gallery',
+        maxResults: 10
+    });
+
+    // Transform Cloudinary videos for SwiperVideoPlayer
+    const [videos, setVideos] = useState<Array<{
+        id: string;
+        publicId: string;
+        videoUrl?: string;
+        title?: string;
+        description?: string;
+    }>>([]);
+
+
+    useEffect(() => {
+        if (cloudinaryVideos.length > 0) {
+            const transformedVideos = cloudinaryVideos.map((video, index) => ({
+                id: video.public_id || `video-${index}`,
+                publicId: video.public_id || '',
+                videoUrl: video.secure_url,
+                title: `Performance ${index + 1}`,
+                description: `Live performance video ${index + 1}`
+            }));
+            setVideos(transformedVideos);
+        }
+    }, [cloudinaryVideos]);
     return (
         <>
             <main className="pt-20 sm:pt-24 md:pt-32 min-h-screen bg-gradient-to-br from-gray-900/80 via-gray-800/60 via-[#02ACAC]/10 to-gray-900/90">
@@ -39,13 +67,30 @@ export default function Gallery() {
                     <div className="max-w-7xl mx-auto">
                         <FadeInUp delay={0.2}>
                             <div className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/95 backdrop-blur-xl rounded-3xl py-8 sm:p-10 lg:p-12 border border-gray-700/20 hover:border-[#02ACAC]/30 transition-all duration-500 hover:shadow-[#02ACAC]/10 shadow-2xl">
-                                <VideoList 
-                                    type="grid" 
-                                    itemsPerPage={3} 
-                                    videos={videoUrls}
-                                    useCloudinary={true}
-                                    cloudinaryTag="video-gallery"
-                                />
+                                <div className="mb-6">
+                                    <h2 className="text-2xl sm:text-3xl text-white mb-2">Videos</h2>
+                                    <p className="text-gray-300">Watch live performances and behind-the-scenes content</p>
+                                </div>
+                                {videosLoading ? (
+                                    <div className="flex items-center justify-center py-12">
+                                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#02ACAC]"></div>
+                                    </div>
+                                ) : videos.length > 0 ? (
+                                    <SwiperVideoPlayer
+                                        videos={videos}
+                                        cloudName="dllh8yqz8"
+                                        autoplay={false}
+                                        loop={true}
+                                        showControls={true}
+                                        className="h-[400px] sm:h-[500px] lg:h-[600px]"
+                                        isGridView={isGridView}
+                                        onGridViewToggle={() => setIsGridView(!isGridView)}
+                                    />
+                                ) : (
+                                    <div className="text-center py-12">
+                                        <p className="text-gray-400">No videos available at the moment</p>
+                                    </div>
+                                )}
                             </div>
                         </FadeInUp>
                     </div>
@@ -58,10 +103,20 @@ export default function Gallery() {
                     <div className="max-w-7xl mx-auto">
                         <FadeInUp delay={0.4}>
                             <div className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/95 backdrop-blur-xl rounded-3xl py-8 sm:p-10 lg:p-12 border border-gray-700/20 hover:border-[#02ACAC]/30 transition-all duration-500 hover:shadow-[#02ACAC]/10 shadow-2xl">
-                                <PhotoGallery
+                                <SwiperPhotoGallery
                                     useCloudinary={true}
                                     cloudinaryTag="production"
-                                    type="grid"
+                                    cloudName="dllh8yqz8"
+                                    itemsPerView={{
+                                        mobile: 1,
+                                        tablet: 2,
+                                        desktop: 3
+                                    }}
+                                    showThumbs={true}
+                                    autoplay={false}
+                                    effect="slide"
+                                    isGridView={isPhotoGridView}
+                                    onGridViewToggle={() => setIsPhotoGridView(!isPhotoGridView)}
                                 />
                             </div>
                         </FadeInUp>

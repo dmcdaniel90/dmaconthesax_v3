@@ -71,16 +71,16 @@ export function useCloudinaryCollection({
             
             // Transform the response to match our interface
             const transformedImages = data.resources?.map((resource: any) => ({
-                public_id: resource.publicId,
+                public_id: resource.public_id || resource.publicId,
                 format: resource.format,
                 width: resource.width,
                 height: resource.height,
                 bytes: resource.bytes,
                 url: resource.url,
-                secure_url: resource.secureUrl,
+                secure_url: resource.secure_url || resource.secureUrl,
                 tags: resource.tags,
-                asset_folder: resource.assetFolder,
-                display_name: resource.displayName,
+                asset_folder: resource.asset_folder || resource.assetFolder,
+                display_name: resource.display_name || resource.displayName,
                 assetId: resource.assetId
             })) || [];
             

@@ -517,3 +517,42 @@ export function getResponsiveImageUrl(imageName: string, preset: keyof typeof IM
   const presets = getResponsiveImageUrls(imageName);
   return presets[preset];
 }
+
+/**
+ * Generate a Cloudinary URL that preserves aspect ratio for PhotoSwipe
+ * Uses the original image dimensions and scales appropriately for lightbox display
+ */
+export function getPhotoSwipeImageUrl(
+  image: { public_id: string; format: string; width: number; height: number },
+  maxWidth: number = 2048,
+  maxHeight: number = 1536,
+  cloudName: string = 'dllh8yqz8'
+): string {
+  const { public_id, format, width: originalWidth, height: originalHeight } = image;
+
+  // Calculate aspect ratio
+  const aspectRatio = originalWidth / originalHeight;
+
+  let targetWidth = maxWidth;
+  let targetHeight = maxHeight;
+
+  // Adjust target dimensions to fit within maxWidth/maxHeight while preserving aspect ratio
+  if (originalWidth > maxWidth || originalHeight > maxHeight) {
+    if (aspectRatio > (maxWidth / maxHeight)) {
+      // Image is wider than target, limit by width
+      targetHeight = Math.round(maxWidth / aspectRatio);
+      targetWidth = maxWidth;
+    } else {
+      // Image is taller than target, limit by height
+      targetWidth = Math.round(maxHeight * aspectRatio);
+      targetHeight = maxHeight;
+    }
+  } else {
+    // Image is smaller than or fits within max dimensions, use original size
+    targetWidth = originalWidth;
+    targetHeight = originalHeight;
+  }
+
+  // Use c_limit to ensure the image fits within the specified dimensions without cropping
+  return `https://res.cloudinary.com/${cloudName}/image/upload/c_limit,w_${targetWidth},h_${targetHeight},q_auto,f_auto/${public_id}.${format}`;
+}

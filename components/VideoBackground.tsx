@@ -69,6 +69,7 @@ const VideoBackground = () => {
         muted
         playsInline
         preload="metadata"
+        webkit-playsinline="true"
         className="absolute inset-0 w-full h-full object-cover object-center max-w-full max-h-full"
         style={{
           objectPosition: 'center 30%', // Position video to keep performer visible

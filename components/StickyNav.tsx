@@ -33,16 +33,16 @@ export default function StickyNav() {
                                     priority 
                                     className="w-full h-full object-contain" 
                                     src="/logo_white.svg" 
-                                    width={64} 
-                                    height={64} 
+                                    width={100} 
+                                    height={100} 
                                     alt="DMAC on the Sax Logo" 
                                 />
                                 <Image
                                     priority
                                     className="absolute inset-0 w-full h-full object-contain transition-all duration-1000 ease-in-out mask-animation"
                                     src="/logo_colored.svg"
-                                    width={64}
-                                    height={64}
+                                    width={100}
+                                    height={100}
                                     alt="DMAC on the Sax Logo"
                                 />
                             </div>
