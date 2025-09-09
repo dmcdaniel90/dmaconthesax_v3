@@ -122,17 +122,16 @@ jobs:
           NODE_ENV: production
 
       - name: Test production build
-        run: pnpm start &
+        run: pnpm start:ci &
         env:
           NODE_ENV: production
-          PORT: 3000
 
       - name: Wait for server to start
         run: sleep 10
 
       - name: Test production build health
         run: |
-          curl -f http://localhost:3000 || exit 1
+          curl -f http://localhost:3001 || exit 1
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -274,10 +273,9 @@ jobs:
         run: pnpm build
 
       - name: Start application
-        run: pnpm start &
+        run: pnpm start:ci &
         env:
           NODE_ENV: production
-          PORT: 3000
 
       - name: Wait for server
         run: sleep 10
