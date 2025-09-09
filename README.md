@@ -18,7 +18,7 @@ DMAC on the Sax is a modern, high-performance website for professional saxophoni
 
 The website is fully functional with:
 - ✅ **All Pages Working** - Home, About, Events, Gallery, Booking, FAQ, Contact
-- ✅ **Mobile Optimized** - iPhone/iOS Safari compatibility with video fixes
+- ✅ **Mobile Optimized** - iPhone/iOS Safari compatibility with native HTML5 video
 - ✅ **Performance Optimized** - Significant improvements in load times and bandwidth
 - ✅ **Error Handling** - Graceful degradation and comprehensive fallback systems
 - ✅ **Responsive Design** - Optimized for all device types and orientations
@@ -40,7 +40,9 @@ The website is fully functional with:
 ### **Media & Performance**
 - **Cloudinary** - AI-powered media management and optimization
 - **Next.js Image** - Automatic image optimization
-- **Video Optimization** - Advanced video delivery with mobile compatibility
+- **Swiper.js** - Advanced touch slider for galleries and videos
+- **PhotoSwipe** - Professional lightbox with smooth transitions
+- **Video Optimization** - Native HTML5 video with mobile compatibility
 
 ### **Forms & Validation**
 - **React Hook Form** - Performant form handling
@@ -87,7 +89,9 @@ dmaconthesax_v3/
 │   └── globals.css        # Global styles
 ├── components/            # Reusable components
 │   ├── ui/               # Base UI components
-│   └── *.tsx             # Feature components
+│   ├── SwiperPhotoGallery.tsx  # Advanced photo gallery with PhotoSwipe
+│   ├── SwiperVideoPlayer.tsx   # Video player with Swiper.js
+│   └── *.tsx             # Other feature components
 ├── hooks/                # Custom React hooks
 ├── lib/                  # Utilities and configurations
 ├── __tests__/            # Test files

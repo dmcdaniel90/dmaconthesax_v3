@@ -42,11 +42,6 @@ export default function SwiperPhotoGallery({
   useCloudinary = false,
   cloudinaryTag = 'photo-gallery',
   cloudName = 'dllh8yqz8',
-  itemsPerView = {
-    mobile: 1,
-    tablet: 2,
-    desktop: 3
-  },
   showThumbs = true,
   isGridView = false,
   autoplay = false,
@@ -163,8 +158,16 @@ export default function SwiperPhotoGallery({
           mainSwiper.slideNext();
         }
       } else if (currentPage < totalPages) {
-        // Go to next page
-        handlePageChange(currentPage + 1);
+        // Go to next page and reset to first slide
+        const newPage = currentPage + 1;
+        handlePageChange(newPage);
+        setCurrentSlideIndex(0);
+        // Update swiper to show first slide of new page
+        setTimeout(() => {
+          if (mainSwiper) {
+            mainSwiper.slideTo(0);
+          }
+        }, 100);
       }
     }
   };
@@ -257,8 +260,11 @@ export default function SwiperPhotoGallery({
       closeOnScroll: true,
       history: false,
       focus: true,
-      showAnimationDuration: 300,
-      hideAnimationDuration: 300,
+      showAnimationDuration: 400,
+      hideAnimationDuration: 400,
+      // Enhanced transition settings for smoother image changes
+      transitionDuration: 300,
+      easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
       // Hide default navigation buttons
       arrowPrev: false,
       arrowNext: false
@@ -270,8 +276,8 @@ export default function SwiperPhotoGallery({
 
     photoSwipeRef.current = new PhotoSwipe(options);
     
-    // Add custom Lucide icon buttons after initialization
-    photoSwipeRef.current.on('uiRegister', () => {
+    // Add custom navigation buttons after PhotoSwipe is initialized
+    const addCustomButtons = () => {
       // Hide default navigation buttons
       const defaultPrevButton = document.querySelector('.pswp__button--arrow--prev');
       const defaultNextButton = document.querySelector('.pswp__button--arrow--next');
@@ -281,6 +287,12 @@ export default function SwiperPhotoGallery({
       if (defaultNextButton) {
         (defaultNextButton as HTMLElement).style.display = 'none';
       }
+
+      // Remove existing custom buttons if they exist
+      const existingPrev = document.querySelector('.pswp__button--custom-prev');
+      const existingNext = document.querySelector('.pswp__button--custom-next');
+      if (existingPrev) existingPrev.remove();
+      if (existingNext) existingNext.remove();
 
       // Create custom previous button
       const prevButton = document.createElement('button');
@@ -307,8 +319,9 @@ export default function SwiperPhotoGallery({
         align-items: center;
         justify-content: center;
         color: white;
-        transition: all 0.2s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 1000;
+        opacity: 0.8;
       `;
       
       // Create custom next button
@@ -336,8 +349,9 @@ export default function SwiperPhotoGallery({
         align-items: center;
         justify-content: center;
         color: white;
-        transition: all 0.2s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 1000;
+        opacity: 0.8;
       `;
       
       // Add hover effects
@@ -345,10 +359,12 @@ export default function SwiperPhotoGallery({
         button.addEventListener('mouseenter', () => {
           button.style.background = 'rgba(0, 0, 0, 0.8)';
           button.style.transform = 'translateY(-50%) scale(1.1)';
+          button.style.opacity = '1';
         });
         button.addEventListener('mouseleave', () => {
           button.style.background = 'rgba(0, 0, 0, 0.5)';
           button.style.transform = 'translateY(-50%) scale(1)';
+          button.style.opacity = '0.8';
         });
       };
       
@@ -368,12 +384,34 @@ export default function SwiperPhotoGallery({
         photoSwipeRef.current?.next();
       });
       
-      // Add buttons directly to PhotoSwipe container
-      const pswpContainer = photoSwipeRef.current?.container;
-      if (pswpContainer) {
+      // Add buttons to the PhotoSwipe container (fallback if UI container doesn't exist)
+      const pswpUI = document.querySelector('.pswp__ui');
+      const pswpContainer = document.querySelector('.pswp');
+      
+      if (pswpUI) {
+        pswpUI.appendChild(prevButton);
+        pswpUI.appendChild(nextButton);
+      } else if (pswpContainer) {
+        // Fallback: add directly to PhotoSwipe container
         pswpContainer.appendChild(prevButton);
         pswpContainer.appendChild(nextButton);
       }
+    };
+
+    // Add buttons after PhotoSwipe is ready
+    photoSwipeRef.current.on('uiRegister', addCustomButtons);
+    
+    // Also add buttons after a short delay to ensure DOM is ready
+    setTimeout(addCustomButtons, 100);
+    
+    // Add buttons directly to PhotoSwipe container as fallback
+    photoSwipeRef.current.on('init', () => {
+      setTimeout(() => {
+        const pswpContainer = document.querySelector('.pswp');
+        if (pswpContainer && !document.querySelector('.pswp__button--custom-prev')) {
+          addCustomButtons();
+        }
+      }, 200);
     });
     
     photoSwipeRef.current.init();
@@ -448,7 +486,10 @@ export default function SwiperPhotoGallery({
   return (
     <div className={`swiper-photo-gallery ${className}`}>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl sm:text-2xl md:text-3xl text-white">Photos</h2>
+        <div>
+          <h2 className="px-8 sm:px-0 text-xl sm:text-2xl md:text-3xl text-white mb-2 font-bold">Photos</h2>
+          <p className="px-8 sm:px-0 text-gray-400">View photos from our performances and events</p>
+        </div>
         <div className="flex items-center gap-2">
           <Button
             className="w-[200px] h-[48px] hidden md:block bg-[#02ACAC] cursor-pointer hover:bg-background hover:text-foreground transition-colors text-base px-8 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
@@ -503,7 +544,7 @@ export default function SwiperPhotoGallery({
                     alt={imageAlt}
                     fill
                     style={{ objectFit: "cover" }}
-                    className="w-full h-full transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#02ACAC] focus:ring-offset-2 focus:ring-offset-gray-900"
+                    className="w-full h-full max-w-[750px] max-h-[500px] transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#02ACAC] focus:ring-offset-2 focus:ring-offset-gray-900"
                     loading="lazy"
                     draggable={false}
                     tabIndex={0}
@@ -677,7 +718,7 @@ export default function SwiperPhotoGallery({
           size="icon"
           onClick={handlePrevious}
           disabled={currentPage === 1 && currentSlideIndex === 0}
-          className="absolute left-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-gray-900/90 border-gray-600 text-white hover:bg-gray-800/90 active:bg-gray-700/90 z-10 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          className="absolute left-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-gray-900/90 border-gray-600 text-white hover:bg-gray-800/90 active:bg-gray-700/90 z-10 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           aria-label="Previous photo"
         >
           <ChevronLeft className="h-5 w-5" />
@@ -687,7 +728,7 @@ export default function SwiperPhotoGallery({
           size="icon"
           onClick={handleNext}
           disabled={currentPage === totalPages && currentSlideIndex === paginatedImages.length - 1}
-          className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-gray-900/90 border-gray-600 text-white hover:bg-gray-800/90 active:bg-gray-700/90 z-10 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-gray-900/90 border-gray-600 text-white hover:bg-gray-800/90 active:bg-gray-700/90 z-10 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           aria-label="Next photo"
         >
           <ChevronRight className="h-5 w-5" />

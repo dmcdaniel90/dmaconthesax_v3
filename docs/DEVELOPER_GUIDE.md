@@ -305,8 +305,8 @@ className={cn(
 - `app/contact/page.tsx` - Contact page
 
 #### 3. **Feature Components**
-- `components/PhotoGallery.tsx` - Image gallery
-- `components/VideoList.tsx` - Video collection
+- `components/SwiperPhotoGallery.tsx` - Advanced image gallery with PhotoSwipe lightbox
+- `components/SwiperVideoPlayer.tsx` - Video player with Swiper.js integration
 - `components/EventList.tsx` - Event listings
 
 #### 4. **UI Components**
@@ -316,25 +316,40 @@ className={cn(
 
 ### Component Patterns
 
-#### Compound Components
+#### Swiper-Based Components
 ```typescript
-// components/PhotoGallery.tsx
-export default function PhotoGallery({ children, ...props }) {
-  return <div {...props}>{children}</div>;
+// components/SwiperPhotoGallery.tsx
+export default function SwiperPhotoGallery({
+  images = [],
+  useCloudinary = false,
+  cloudinaryTag = 'photo-gallery',
+  isGridView = false,
+  onGridViewToggle
+}: SwiperPhotoGalleryProps) {
+  // Advanced gallery with PhotoSwipe lightbox integration
+  // Supports both carousel and grid views
+  // Includes pagination and smooth transitions
 }
 
-PhotoGallery.Grid = function Grid({ images }) {
-  return <div className="grid">{/* Grid implementation */}</div>;
-};
-
-PhotoGallery.Carousel = function Carousel({ images }) {
-  return <div className="carousel">{/* Carousel implementation */}</div>;
-};
+// components/SwiperVideoPlayer.tsx
+export default function SwiperVideoPlayer({
+  videos,
+  cloudName = 'dllh8yqz8',
+  isGridView = false,
+  onGridViewToggle
+}: SwiperVideoPlayerProps) {
+  // Video player with Swiper.js integration
+  // Supports both carousel and grid views
+  // Includes fullscreen support for mobile/tablet
+}
 
 // Usage
-<PhotoGallery>
-  <PhotoGallery.Grid images={images} />
-</PhotoGallery>
+<SwiperPhotoGallery 
+  useCloudinary={true}
+  cloudinaryTag="photo-gallery"
+  isGridView={isGridView}
+  onGridViewToggle={() => setIsGridView(!isGridView)}
+/>
 ```
 
 #### Render Props Pattern
@@ -461,21 +476,30 @@ export async function GET(request: Request) {
 
 ### Testing Patterns
 ```typescript
-// __tests__/components/PhotoGallery.test.tsx
+// __tests__/components/SwiperPhotoGallery.test.tsx
 import { render, screen } from '@testing-library/react';
-import PhotoGallery from '@/components/PhotoGallery';
+import SwiperPhotoGallery from '@/components/SwiperPhotoGallery';
 
-describe('PhotoGallery', () => {
+describe('SwiperPhotoGallery', () => {
   it('renders gallery with images', () => {
     const mockImages = ['image1.jpg', 'image2.jpg'];
-    render(<PhotoGallery images={mockImages} />);
+    render(<SwiperPhotoGallery images={mockImages} />);
     
     expect(screen.getByRole('img')).toBeInTheDocument();
   });
   
   it('handles empty state', () => {
-    render(<PhotoGallery images={[]} />);
-    expect(screen.getByText('No images available')).toBeInTheDocument();
+    render(<SwiperPhotoGallery images={[]} />);
+    expect(screen.getByText('No photos available')).toBeInTheDocument();
+  });
+  
+  it('toggles between grid and carousel view', () => {
+    const mockToggle = jest.fn();
+    render(<SwiperPhotoGallery images={[]} onGridViewToggle={mockToggle} />);
+    
+    const toggleButton = screen.getByRole('button', { name: /grid view/i });
+    toggleButton.click();
+    expect(mockToggle).toHaveBeenCalled();
   });
 });
 ```

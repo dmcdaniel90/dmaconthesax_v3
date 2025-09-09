@@ -25,7 +25,7 @@ export default function FAQPage() {
 
             {/* FAQ Section */}
             <section className="relative z-10 pb-20 sm:pb-24 lg:pb-32 xl:pb-40">
-                <div className="container mx-auto px-6 sm:px-8 md:px-12 lg:px-16">
+                <div className="container mx-auto px-0 sm:px-8 md:px-12 lg:px-16">
                     <div className="max-w-7xl mx-auto">
                         <FadeInUp delay={0.2}>
                             <div className="bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/95 backdrop-blur-xl rounded-3xl p-8 sm:p-10 lg:p-12 border border-gray-700/20 hover:border-[#02ACAC]/30 transition-all duration-500 hover:shadow-[#02ACAC]/10 shadow-2xl">

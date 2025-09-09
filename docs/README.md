@@ -11,10 +11,10 @@ This directory contains comprehensive documentation for the DMAC on the Sax webs
 
 ### ☁️ **Media & Optimization**
 - **[Cloudinary Features](./CLOUDINARY_FEATURES.md)** - Cloudinary integration features and capabilities
-- **[iPhone Video Fixes](./IPHONE_VIDEO_FIXES.md)** - Mobile video playback solutions and optimizations
 
 ### 🧑‍💻 **Development**
 - **[Developer Guide](./DEVELOPER_GUIDE.md)** - Comprehensive guide for new developers
+- **[SwiperPhotoGallery](./SWIPER_PHOTO_GALLERY.md)** - Advanced photo gallery component documentation
 - **[Development Notes](./notes.md)** - Development notes and observations
 
 ## 🚀 **Quick Start Guide**
