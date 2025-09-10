@@ -7,7 +7,7 @@
     "build": "NODE_ENV=production next build",
     "start": "next start",
     "start:ci": "PORT=3001 next start",
-    "start:ci-robust": "node scripts/start-server-ci.js",
+    "start:ci-robust": "node scripts/start-server-ci.mjs",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
     "test": "jest",
