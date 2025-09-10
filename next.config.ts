@@ -12,6 +12,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "res.cloudinary.com",
       },
+      {
+        protocol: "https",
+        hostname: "dmaconthesax.com",
+      },
+      {
+        protocol: "https",
+        hostname: "n8n.devsdev.space",
+      },
     ],
   },
   // Enable experimental features for better video performance
