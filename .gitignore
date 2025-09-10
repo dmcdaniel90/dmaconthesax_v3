@@ -48,6 +48,7 @@ gcp-oauth.keys.json
 
 # MCP Files
 .playwright-mcp/*
+.playwright-mcp
 
 .env.local
 .env.*
