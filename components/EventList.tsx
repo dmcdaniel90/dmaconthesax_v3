@@ -1,10 +1,11 @@
 'use client';
 import Event from "@/components/Event"
 import { Pagination, PaginationContent, PaginationNext, PaginationPrevious, PaginationItem, PaginationLink } from "@/components/ui/pagination"
-import events from '@/lib/sample-events.json'
+// import events from '@/lib/sample-events.json' // Replaced with Google Calendar API
 import { useState, useMemo, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Loading, Skeleton } from "@/components/ui/loading";
+import { useGoogleCalendar } from "@/hooks/useGoogleCalendar";
 
 type MusicEvents = {
     eventName: string;
@@ -13,7 +14,6 @@ type MusicEvents = {
     year: number;
     time?: string;
     location?: string;
-    ticketPrice?: number;
     imgSrc?: string;
     imgAltText?: string;
 }
@@ -21,24 +21,17 @@ type MusicEvents = {
 export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPerPage?: number, type?: "grid" | "list" }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [view, setView] = useState<"grid" | "list">(type);
-    const [isLoading, setIsLoading] = useState(true);
     const [isViewChanging, setIsViewChanging] = useState(false);
     const [isSmallDevice, setIsSmallDevice] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
-
-    // Simulate loading time for better UX
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 800);
-
-        return () => clearTimeout(timer);
-    }, []);
+    
+    // Use the Google Calendar hook
+    const { events, isLoading, error, refetch } = useGoogleCalendar();
 
     // Detect small devices and set view to list
     useEffect(() => {
         const checkDeviceSize = () => {
-            const isSmall = window.innerWidth < 768; // md breakpoint
+            const isSmall = window.innerWidth < 1024; // lg breakpoint (remove grid for tablets)
             setIsSmallDevice(isSmall);
             if (isSmall) {
                 setView("list");
@@ -55,7 +48,7 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
     const paginatedEvents = useMemo(() => {
         const startIndex = (currentPage - 1) * itemsPerPage;
         return events.slice(startIndex, startIndex + itemsPerPage);
-    }, [currentPage, itemsPerPage]);
+    }, [currentPage, itemsPerPage, events]);
 
     const totalPages = Math.ceil(events.length / itemsPerPage);
 
@@ -112,12 +105,34 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
         );
     }
 
+    if (error) {
+        return (
+            <div className="bg-gray-900/50 px-4 sm:px-8 md:px-16 lg:px-32 py-8 sm:py-12">
+                <div className="text-center">
+                    <h2 className="text-2xl sm:text-3xl text-white mb-4">Upcoming Events</h2>
+                    <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-4 mb-6">
+                        <p className="text-red-300 mb-2">⚠️ Unable to load events from Google Calendar</p>
+                        <p className="text-gray-300 text-sm">{error}</p>
+                        <p className="text-gray-400 text-xs mt-2">Showing sample events instead</p>
+                        <Button 
+                            onClick={refetch}
+                            className="mt-4 bg-[#02ACAC] hover:bg-[#02ACAC]/80 text-white"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? 'Retrying...' : 'Retry'}
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div ref={containerRef} className={`bg-gray-900/50 px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12`}>
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl sm:text-3xl text-white">Upcoming Events</h2>
                 <Button 
-                    className="w-[200px] h-[48px] hidden md:block bg-[#02ACAC] mt-4 mb-8 cursor-pointer hover:bg-background hover:text-foreground transition-colors text-base px-8 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+                    className="w-[200px] h-[48px] hidden lg:block bg-[#02ACAC] mt-4 mb-8 cursor-pointer hover:bg-background hover:text-foreground transition-colors text-base px-8 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
                     onClick={handleViewChange}
                     disabled={isViewChanging}
                     aria-label={`Switch to ${view === "grid" ? "List" : "Grid"} View`}
@@ -131,7 +146,7 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
                 </Button>
             </div>
             
-            <div className={`grid ${view === "grid" ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"} gap-4 sm:gap-6 transition-all duration-300`}>
+            <div className={`grid ${view === "grid" ? "grid-cols-1 lg:grid-cols-2" : "grid-cols-1"} gap-4 sm:gap-6 transition-all duration-300`}>
                 {isViewChanging ? (
                     // Show skeleton loaders during view change
                     Array.from({ length: itemsPerPage }).map((_, i) => (
@@ -147,7 +162,6 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
                             year={event.year} 
                             time={event.time || "TBA"} 
                             location={event.location || "TBA"} 
-                            ticketPrice={event.ticketPrice || 0} 
                             imgSrc={event.imgSrc || ""} 
                             imgAltText={event.imgAltText || ""} 
                         />
