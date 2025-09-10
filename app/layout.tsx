@@ -64,6 +64,8 @@ export default function RootLayout({
             {children}
           </main>
           {process.env.NODE_ENV === 'development' && <PerformanceMonitor />}
+          {/* 100% privacy-first analytics */}
+        <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
         </body>
       </html>
     </HeaderProvider>
