@@ -7,6 +7,7 @@
     "build": "NODE_ENV=production next build",
     "start": "next start",
     "start:ci": "PORT=3001 next start",
+    "start:ci-robust": "node scripts/start-server-ci.js",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
     "test": "jest",
@@ -15,8 +16,8 @@
     "test:ci": "jest --ci --coverage --watchAll=false",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf .next out dist",
-    "build:analyze": "ANALYZE=true npm run build",
-    "get-refresh-token": "node scripts/get-refresh-token.js"
+    "build:analyze": "ANALYZE=true npm run build"
+
   },
   "dependencies": {
     "@googleapis/calendar": "^11.0.1",

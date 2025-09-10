@@ -121,8 +121,16 @@ jobs:
         env:
           NODE_ENV: production
 
+      - name: Clean up ports before test
+        run: |
+          # Clean up any existing processes on port 3001
+          ./scripts/cleanup-ports.sh 3001 || true
+
       - name: Test production build
-        run: pnpm start:ci &
+        run: |
+          pnpm start:ci &
+          SERVER_PID=$!
+          echo "SERVER_PID=$SERVER_PID" >> $GITHUB_ENV
         env:
           NODE_ENV: production
 
@@ -132,6 +140,14 @@ jobs:
       - name: Test production build health
         run: |
           curl -f http://localhost:3001 || exit 1
+
+      - name: Stop test server
+        run: |
+          if [ ! -z "$SERVER_PID" ]; then
+            kill $SERVER_PID || true
+          fi
+          # Clean up any remaining processes on port 3001
+          ./scripts/cleanup-ports.sh 3001 || true
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -272,17 +288,40 @@ jobs:
       - name: Build application
         run: pnpm build
 
+      - name: Clean up ports
+        run: |
+          # Clean up any existing processes on port 3002
+          ./scripts/cleanup-ports.sh 3002 || true
+
       - name: Start application
-        run: pnpm start:ci &
+        run: |
+          # Start server on port 3002 to avoid conflicts with build job
+          PORT=3002 pnpm start:ci &
+          SERVER_PID=$!
+          echo "SERVER_PID=$SERVER_PID" >> $GITHUB_ENV
         env:
           NODE_ENV: production
 
       - name: Wait for server
-        run: sleep 10
+        run: sleep 15
+
+      - name: Verify server is running
+        run: |
+          curl -f http://localhost:3002 || exit 1
+          echo "Server is running on port 3002"
 
       - name: Run Lighthouse CI
         uses: treosh/lighthouse-ci-action@v10
         with:
-          configPath: './lighthouse.config.js'
+          configPath: './lighthouse.config.performance.js'
           uploadArtifacts: true
           temporaryPublicStorage: true
+
+      - name: Stop server
+        if: always()
+        run: |
+          if [ ! -z "$SERVER_PID" ]; then
+            kill $SERVER_PID || true
+          fi
+          # Clean up any remaining processes on port 3002
+          ./scripts/cleanup-ports.sh 3002 || true

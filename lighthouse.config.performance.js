@@ -1,8 +1,8 @@
 module.exports = {
   ci: {
     collect: {
-      url: ['http://localhost:3001'],
-      startServerCommand: 'pnpm start:ci',
+      url: ['http://localhost:3002'],
+      startServerCommand: 'PORT=3002 pnpm start:ci',
       startServerReadyPattern: 'ready on',
       startServerReadyTimeout: 60000,
       numberOfRuns: 3,
