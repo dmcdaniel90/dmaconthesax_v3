@@ -29,6 +29,9 @@ interface SwiperVideoPlayerProps {
   showControls?: boolean;
   isGridView?: boolean;
   onGridViewToggle?: () => void;
+  cacheStatus?: { isFromCache: boolean; cacheAge: number };
+  onCacheRefresh?: () => void;
+  onCacheClear?: () => void;
 }
 
 export default function SwiperVideoPlayer({
@@ -39,7 +42,9 @@ export default function SwiperVideoPlayer({
   loop: _loop = true,
   showControls = true,
   isGridView = false,
-  onGridViewToggle
+  onGridViewToggle,
+  cacheStatus,
+  onCacheRefresh,
 }: SwiperVideoPlayerProps) {
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement }>({});
   const [videoAspectRatios, setVideoAspectRatios] = useState<{ [key: string]: number }>({});
@@ -245,16 +250,10 @@ export default function SwiperVideoPlayer({
   const getOptimizedVideoUrl = (video: any) => {
     if (video.videoUrl) return video.videoUrl;
     
-    // Use Cloudinary transformations for optimal video delivery
+    // Use simple transformations that are valid for Cloudinary videos
     const transformations = [
-      'w_auto', // Auto width
-      'h_auto', // Auto height
-      'c_fill', // Crop to fill
       'q_auto', // Auto quality
-      'f_mp4', // MP4 format
-      'vc_h264', // H.264 codec for better compatibility
-      'ac_none', // No audio codec optimization
-      'so_0' // Start at 0 seconds
+      'f_mp4' // MP4 format
     ].join(',');
     
     return `https://res.cloudinary.com/${cloudName}/video/upload/${transformations}/${video.publicId}.mp4`;
@@ -505,6 +504,16 @@ export default function SwiperVideoPlayer({
         <div>
           <h2 className="px-8 sm:px-0 text-xl sm:text-2xl md:text-3xl text-white mb-2 font-bold">Videos</h2>
           <p className="px-8 sm:px-0 text-gray-400">Watch live performances and behind-the-scenes content</p>
+          {/* Cache Status Indicator */}
+                   <p className="px-8 sm:px-0 text-sm text-gray-400 mt-2">
+                     {cacheStatus?.isFromCache ? `📦 Videos last updated (${cacheStatus.cacheAge} min ago)` : '📦 Videos are up to date'} •
+                     <button
+                       onClick={onCacheRefresh}
+                       className="text-gray-400 hover:text-gray-300 ml-1 underline cursor-pointer"
+                     >
+                       Refresh
+                     </button>
+                   </p>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -533,10 +542,10 @@ export default function SwiperVideoPlayer({
       </div>
       
       {isGridView ? (
-        // Grid View
-        <>
-          <div 
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-full overflow-hidden" 
+          // Grid View
+          <>
+            <div 
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-full overflow-hidden min-h-[400px]" 
             tabIndex={0}
             onFocus={(e) => {
               // Center the grid when it receives focus
@@ -624,7 +633,7 @@ export default function SwiperVideoPlayer({
         <>
           {/* Main Video Swiper */}
           <div 
-            className="relative overflow-hidden"
+            className="relative overflow-hidden min-h-[400px]"
             tabIndex={0}
             onFocus={(e) => {
               // Center the swiper when it receives focus

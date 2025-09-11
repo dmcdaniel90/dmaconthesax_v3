@@ -5,7 +5,7 @@ import SwiperPhotoGallery from "../../components/SwiperPhotoGallery"
 import Footer from "../layout/Footer"
 import AnimatedPageTitle from "@/components/AnimatedPageTitle"
 import { FadeInUp } from "@/components/ScrollReveal"
-import { useCloudinaryVideoCollection } from "../../hooks/useCloudinaryVideoCollection"
+import { useCachedCloudinaryVideoCollection } from "../../hooks/useCachedCloudinaryVideoCollection"
 import { useState, useEffect } from "react"
 
 export default function Gallery() {
@@ -13,8 +13,15 @@ export default function Gallery() {
     const [isVideoGridView, setIsVideoGridView] = useState(false);
     const [isPhotoGridView, setIsPhotoGridView] = useState(false);
 
-    // Get videos from Cloudinary
-    const { videos: cloudinaryVideos, isLoading: videosLoading } = useCloudinaryVideoCollection({
+    // Get videos from Cloudinary with caching
+    const { 
+        videos: cloudinaryVideos, 
+        isLoading: videosLoading, 
+        isFromCache,
+        cacheAge,
+        refetch: refetchVideos,
+        clearCache: clearVideoCache
+    } = useCachedCloudinaryVideoCollection({
         cloudName: 'dllh8yqz8',
         tag: 'video-gallery',
         maxResults: 10
@@ -80,6 +87,9 @@ export default function Gallery() {
                                         className="z-10 min-h-[400px] sm:min-h-[500px] lg:min-h-[600px] h-auto"
                                         isGridView={isVideoGridView}
                                         onGridViewToggle={() => setIsVideoGridView(!isVideoGridView)}
+                                        cacheStatus={{ isFromCache, cacheAge }}
+                                        onCacheRefresh={refetchVideos}
+                                        onCacheClear={clearVideoCache}
                                     />
                                 ) : (
                                     <div className="text-center py-12">

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Thumbs, FreeMode, EffectCoverflow, Autoplay } from 'swiper/modules';
 import Image from 'next/image';
-import { useCloudinaryCollection, getCloudinaryUrl, getImageAlt } from '../hooks/useCloudinaryCollection';
+import { useCachedCloudinaryCollection, getCloudinaryUrl, getImageAlt } from '../hooks/useCachedCloudinaryCollection';
 import { getPhotoSwipeImageUrl } from '@/lib/cloudinary';
 import PhotoSwipe from 'photoswipe';
 import 'photoswipe/style.css';
@@ -60,12 +60,15 @@ export default function SwiperPhotoGallery({
   const [mainSwiper, setMainSwiper] = useState<any>(null);
   const photoSwipeRef = useRef<PhotoSwipe | null>(null);
 
-  // Use the Cloudinary collection hook
+  // Use the cached Cloudinary collection hook
   const { 
     images: cloudinaryImages, 
     isLoading: isCloudinaryLoading, 
-    error: cloudinaryError 
-  } = useCloudinaryCollection({
+    error: cloudinaryError,
+    isFromCache,
+    cacheAge,
+    refetch: refetchImages,
+  } = useCachedCloudinaryCollection({
     cloudName,
     tag: cloudinaryTag,
     resourceType: 'image',
@@ -77,6 +80,7 @@ export default function SwiperPhotoGallery({
   // Determine the actual images to use
   const actualImages = useCloudinary ? cloudinaryImages : images;
   const isLoadingState = useCloudinary ? isCloudinaryLoading : false;
+  
 
   // Detect device sizes and set items per page
   useEffect(() => {
@@ -472,7 +476,8 @@ export default function SwiperPhotoGallery({
     );
   }
 
-  if (actualImages.length === 0) {
+  
+      if (actualImages.length === 0) {
     return (
       <div className={`swiper-photo-gallery ${className}`}>
         <div className="text-center py-12">
@@ -489,6 +494,16 @@ export default function SwiperPhotoGallery({
         <div>
           <h2 className="px-8 sm:px-0 text-xl sm:text-2xl md:text-3xl text-white mb-2 font-bold">Photos</h2>
           <p className="px-8 sm:px-0 text-gray-400">View photos from our performances and events</p>
+          {/* Cache Status Indicator */}
+                   <p className="px-8 sm:px-0 text-sm text-gray-400 mt-2">
+                     {isFromCache ? `📦 Photos last updated (${cacheAge} min ago)` : '📦 Photos are up to date'} • 
+                     <button 
+                       onClick={refetchImages}
+                       className="text-gray-400 hover:text-gray-300 ml-1 underline cursor-pointer"
+                     >
+                       Refresh
+                     </button>
+                   </p>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -516,22 +531,34 @@ export default function SwiperPhotoGallery({
         </div>
       </div>
 
-      {isGridView ? (
-        // Grid View
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="relative">
+        {/* Loading overlay */}
+        {isLoadingState && (
+          <div className="absolute inset-0 bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center min-h-[400px]">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#02ACAC]"></div>
+              <p className="text-white text-lg">Loading photos...</p>
+            </div>
+          </div>
+        )}
+
+        {isGridView ? (
+          // Grid View
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[400px]">
             {paginatedImages.map((image, index) => {
               const imageSrc = useCloudinary 
-                ? getCloudinaryUrl(image as any, 800, 800)
+                ? getCloudinaryUrl((image as any).public_id || (image as any).publicId || '', cloudName, { width: 800, height: 800 })
                 : image as string;
               const imageAlt = useCloudinary 
-                ? getImageAlt(image as any, `Photo ${startIndex + index + 1}`)
+                ? getImageAlt(image as any)
                 : `Photo ${startIndex + index + 1}`;
               
+              
               // Skip rendering if imageSrc is empty or invalid
-              if (!imageSrc || imageSrc === '') {
-                return null;
-              }
+          if (!imageSrc || imageSrc === '' || imageSrc.includes('undefined')) {
+            return null;
+          }
               
               return (
                 <div 
@@ -631,7 +658,7 @@ export default function SwiperPhotoGallery({
       ) : (
         <>
           {/* Main Swiper */}
-          <div className="relative">
+          <div className="relative min-h-[400px]">
         <Swiper
           modules={[Navigation, Pagination, Thumbs, FreeMode, EffectCoverflow, Autoplay]}
           spaceBetween={20}
@@ -668,11 +695,17 @@ export default function SwiperPhotoGallery({
           {paginatedImages.map((image, index) => {
             const globalIndex = startIndex + index;
             const imageSrc = useCloudinary 
-              ? getCloudinaryUrl(image as any, 800, 800)
+              ? getCloudinaryUrl((image as any).public_id || (image as any).publicId || '', cloudName, { width: 800, height: 800 })
               : image as string;
             const imageAlt = useCloudinary 
-              ? getImageAlt(image as any, `Photo ${globalIndex + 1}`)
+              ? getImageAlt(image as any)
               : `Photo ${globalIndex + 1}`;
+            
+            
+            // Skip rendering if imageSrc is empty or invalid
+          if (!imageSrc || imageSrc === '' || imageSrc.includes('undefined')) {
+            return null;
+          }
             
             return (
               <SwiperSlide key={globalIndex} className="swiper-slide">
@@ -750,11 +783,16 @@ export default function SwiperPhotoGallery({
             {paginatedImages.map((image, index) => {
               const globalIndex = startIndex + index;
               const imageSrc = useCloudinary 
-                ? getCloudinaryUrl(image as any, 200, 200)
+                ? getCloudinaryUrl((image as any).public_id || (image as any).publicId || '', cloudName, { width: 200, height: 200 })
                 : image as string;
               const imageAlt = useCloudinary 
-                ? getImageAlt(image as any, `Thumbnail ${globalIndex + 1}`)
+                ? getImageAlt(image as any)
                 : `Thumbnail ${globalIndex + 1}`;
+              
+              // Skip rendering if imageSrc is empty or invalid
+              if (!imageSrc || imageSrc === '' || imageSrc.includes('undefined')) {
+                return null;
+              }
               
               return (
                 <SwiperSlide key={globalIndex} className="swiper-slide">
@@ -847,6 +885,7 @@ export default function SwiperPhotoGallery({
       )}
         </>
       )}
+      </div>
     </div>
   );
 }

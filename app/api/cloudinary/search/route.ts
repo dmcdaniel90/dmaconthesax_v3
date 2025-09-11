@@ -8,18 +8,15 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function POST(request: NextRequest) {
+async function handleCloudinarySearch(request: NextRequest, searchParams: any) {
     try {
-        const body = await request.json();
-        const { expression, maxResults = 50, nextCursor } = body;
-
-        console.log('Cloudinary search request:', { expression, maxResults, nextCursor });
+        console.log('Cloudinary search request:', searchParams);
 
         // Use Cloudinary SDK to search for resources
         const result = await cloudinary.search
-            .expression(expression || 'tags:production')
-            .max_results(maxResults)
-            .next_cursor(nextCursor)
+            .expression(searchParams.expression || `tags:${searchParams.tag}`)
+            .max_results(searchParams.maxResults || 50)
+            .next_cursor(searchParams.nextCursor)
             .execute();
 
         console.log('Cloudinary search result:', {
@@ -44,21 +41,62 @@ export async function POST(request: NextRequest) {
             url: resource.url,
             secureUrl: resource.secure_url,
             status: resource.status,
-            tags: resource.tags
+            tags: resource.tags,
+            duration: resource.duration
         })) || [];
 
-        return NextResponse.json({
+        // Create response with appropriate cache headers
+        const nextResponse = NextResponse.json({
             totalCount: result.total_count || transformedResources.length,
             time: result.time || 0,
             resources: transformedResources,
             nextCursor: result.next_cursor || null
         });
 
+        // Set cache headers based on resource type
+        const isVideoSearch = searchParams.resourceType === 'video' || searchParams.expression?.includes('resource_type:video');
+        const cacheMaxAge = isVideoSearch ? 7200 : 3600; // 2 hours for videos, 1 hour for images
+        const staleWhileRevalidate = isVideoSearch ? 14400 : 7200; // 4 hours for videos, 2 hours for images
+
+        nextResponse.headers.set('Cache-Control', `public, max-age=${cacheMaxAge}, stale-while-revalidate=${staleWhileRevalidate}`);
+        nextResponse.headers.set('Vary', 'Accept-Encoding');
+        
+        // Generate ETag based on content hash for cache validation
+        const contentHash = Buffer.from(JSON.stringify(transformedResources)).toString('base64').slice(0, 16);
+        nextResponse.headers.set('ETag', `"${contentHash}"`);
+        
+        // Set Last-Modified header
+        nextResponse.headers.set('Last-Modified', new Date().toUTCString());
+
+        return nextResponse;
+
     } catch (error) {
         console.error('Error in Cloudinary search API:', error);
         return NextResponse.json(
-            { error: 'Failed to fetch images' },
+            { error: 'Failed to fetch resources' },
             { status: 500 }
         );
     }
+}
+
+export async function GET(request: NextRequest) {
+    const { searchParams } = new URL(request.url);
+    const params = {
+        tag: searchParams.get('tag') || 'production',
+        resourceType: searchParams.get('resourceType') || 'image',
+        maxResults: parseInt(searchParams.get('maxResults') || '50'),
+        cloudName: searchParams.get('cloudName') || 'dllh8yqz8',
+        expression: searchParams.get('expression'),
+        nextCursor: searchParams.get('nextCursor'),
+        forceRefresh: searchParams.get('forceRefresh') === 'true'
+    };
+    
+    return handleCloudinarySearch(request, params);
+}
+
+export async function POST(request: NextRequest) {
+    const body = await request.json();
+    const { expression, maxResults = 50, nextCursor } = body;
+    
+    return handleCloudinarySearch(request, { expression, maxResults, nextCursor });
 }

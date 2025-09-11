@@ -5,7 +5,7 @@ import { Pagination, PaginationContent, PaginationNext, PaginationPrevious, Pagi
 import { useState, useMemo, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Loading, Skeleton } from "@/components/ui/loading";
-import { useGoogleCalendar } from "@/hooks/useGoogleCalendar";
+import { useCachedEvents } from "@/hooks/useCachedEvents";
 
 type MusicEvents = {
     eventName: string;
@@ -25,8 +25,8 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
     const [isSmallDevice, setIsSmallDevice] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     
-    // Use the Google Calendar hook
-    const { events, isLoading, error, refetch } = useGoogleCalendar();
+    // Use the cached events hook
+    const { events, isLoading, error, refetch, isFromCache, cacheAge, clearCache } = useCachedEvents();
 
     // Detect small devices and set view to list
     useEffect(() => {
@@ -91,7 +91,7 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
 
     if (isLoading) {
         return (
-            <div className="bg-gray-900/50 px-4 sm:px-8 md:px-16 lg:px-32 py-8 sm:py-12">
+            <div className="bg-gray-900/50 px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12">
                 <div className="flex items-center gap-3 mb-6">
                     <Skeleton className="h-8 w-48" />
                     <Skeleton className="h-8 w-32" />
@@ -107,20 +107,31 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
 
     if (error) {
         return (
-            <div className="bg-gray-900/50 px-4 sm:px-8 md:px-16 lg:px-32 py-8 sm:py-12">
+            <div className="bg-gray-900/50 px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12">
                 <div className="text-center">
                     <h2 className="text-2xl sm:text-3xl text-white mb-4">Upcoming Events</h2>
                     <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-4 mb-6">
-                        <p className="text-red-300 mb-2">⚠️ Unable to load events from Google Calendar</p>
+                        <p className="text-red-300 mb-2">⚠️ Unable to load events from API</p>
                         <p className="text-gray-300 text-sm">{error}</p>
-                        <p className="text-gray-400 text-xs mt-2">Showing sample events instead</p>
-                        <Button 
-                            onClick={refetch}
-                            className="mt-4 bg-[#02ACAC] hover:bg-[#02ACAC]/80 text-white"
-                            disabled={isLoading}
-                        >
-                            {isLoading ? 'Retrying...' : 'Retry'}
-                        </Button>
+                        {isFromCache && (
+                            <p className="text-yellow-300 text-xs mt-2">📦 Showing cached data (cache age: {cacheAge} minutes)</p>
+                        )}
+                        <div className="flex gap-2 justify-center mt-4">
+                            <Button 
+                                onClick={refetch}
+                                className="bg-[#02ACAC] hover:bg-[#02ACAC]/80 text-white"
+                                disabled={isLoading}
+                            >
+                                {isLoading ? 'Retrying...' : 'Retry'}
+                            </Button>
+                            <Button 
+                                onClick={clearCache}
+                                className="bg-gray-600 hover:bg-gray-700 text-white"
+                                disabled={isLoading}
+                            >
+                                Refresh Events
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -130,9 +141,22 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
     return (
         <div ref={containerRef} className={`bg-gray-900/50 px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12`}>
             <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl sm:text-3xl text-white">Upcoming Events</h2>
+                <div>
+                    <h2 className="text-2xl sm:text-3xl text-white">Upcoming Events</h2>
+                    {isFromCache && (
+                        <p className="text-sm text-gray-400 mt-1">
+                            📦 Last updated ({cacheAge} min ago) • 
+                            <button 
+                                onClick={refetch}
+                                className="text-gray-400 hover:text-gray-300 ml-1 underline cursor-pointer"
+                            >
+                                Refresh
+                            </button>
+                        </p>
+                    )}
+                </div>
                 <Button 
-                    className="w-[200px] h-[48px] hidden lg:block bg-[#02ACAC] mt-4 mb-8 cursor-pointer hover:bg-background hover:text-foreground transition-colors text-base px-8 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+                    className="w-[200px] h-[48px] hidden lg:block bg-[#02ACAC] cursor-pointer hover:bg-background hover:text-foreground transition-colors text-base px-8 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
                     onClick={handleViewChange}
                     disabled={isViewChanging}
                     aria-label={`Switch to ${view === "grid" ? "List" : "Grid"} View`}
