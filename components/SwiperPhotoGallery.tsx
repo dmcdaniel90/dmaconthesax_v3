@@ -490,21 +490,7 @@ export default function SwiperPhotoGallery({
 
   return (
     <div className={`swiper-photo-gallery ${className}`}>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="px-8 sm:px-0 text-xl sm:text-2xl md:text-3xl text-white mb-2 font-bold">Photos</h2>
-          <p className="px-8 sm:px-0 text-gray-400">View photos from our performances and events</p>
-          {/* Cache Status Indicator */}
-                   <p className="px-8 sm:px-0 text-sm text-gray-400 mt-2">
-                     {isFromCache ? `📦 Photos last updated (${cacheAge} min ago)` : '📦 Photos are up to date'} • 
-                     <button 
-                       onClick={refetchImages}
-                       className="text-gray-400 hover:text-gray-300 ml-1 underline cursor-pointer"
-                     >
-                       Refresh
-                     </button>
-                   </p>
-        </div>
+      <div className="flex flex-col gap-4 mb-6">
         <div className="flex items-center gap-2">
           <Button
             className="w-[200px] h-[48px] hidden md:block bg-[#02ACAC] cursor-pointer hover:bg-background hover:text-foreground transition-colors text-base px-8 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
@@ -528,6 +514,18 @@ export default function SwiperPhotoGallery({
               </div>
             )}
           </Button>
+        </div>
+        <div>
+          {/* Cache Status Indicator */}
+          <p className="px-8 sm:px-0 text-sm text-gray-400">
+            {isFromCache ? `📦 Photos last updated (${cacheAge} min ago)` : '📦 Photos are up to date'} • 
+            <button 
+              onClick={refetchImages}
+              className="text-gray-400 hover:text-gray-300 ml-1 underline cursor-pointer"
+            >
+              Refresh
+            </button>
+          </p>
         </div>
       </div>
 

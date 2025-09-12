@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useHeaderContext } from '@/app/contexts/HeaderContext'
-import { Phone } from 'lucide-react'
+import { Phone, ChevronDown } from 'lucide-react'
+import { useState } from 'react'
 
 interface MobileNavProps {
     isOpen: boolean
@@ -20,8 +21,14 @@ const navItems = [
     { href: '/contact', label: 'Contact', id: 'contact' }
 ]
 
+const gallerySubItems = [
+    { href: '/gallery/photos', label: 'Photos', id: 'gallery/photos' },
+    { href: '/gallery/videos', label: 'Videos', id: 'gallery/videos' }
+]
+
 export default function MobileNav({ isOpen, onToggle }: MobileNavProps) {
     const { state, dispatch } = useHeaderContext()
+    const [isGalleryDropdownOpen, setIsGalleryDropdownOpen] = useState(false)
 
     const handleNavClick = (link: string) => {
         dispatch({ type: 'SET_ACTIVE_LINK', payload: link })
@@ -102,17 +109,64 @@ export default function MobileNav({ isOpen, onToggle }: MobileNavProps) {
                                                 delay: 0.3 + (index * 0.1) 
                                             }}
                                         >
-                                            <Link
-                                                href={item.href}
-                                                onClick={() => handleNavClick(item.id)}
-                                                className={`block w-full text-center py-4 px-6 rounded-xl text-xl font-semibold transition-all duration-300 cursor-pointer ${
-                                                    state.activeLink === item.id
-                                                        ? 'bg-[#02ACAC] text-white shadow-lg'
-                                                        : 'text-white hover:bg-white/10 hover:text-[#02ACAC]'
-                                                }`}
-                                            >
-                                                {item.label}
-                                            </Link>
+                                            {item.id === 'gallery' ? (
+                                                <div>
+                                                    <button
+                                                        onClick={() => setIsGalleryDropdownOpen(!isGalleryDropdownOpen)}
+                                                        className={`block w-full text-center py-4 px-6 rounded-xl text-xl font-semibold transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 ${
+                                                            state.activeLink === item.id ||
+                                                            state.activeLink === 'gallery/photos' ||
+                                                            state.activeLink === 'gallery/videos'
+                                                                ? 'bg-[#02ACAC] text-white shadow-lg'
+                                                                : 'text-white hover:bg-white/10 hover:text-[#02ACAC]'
+                                                        }`}
+                                                    >
+                                                        {item.label}
+                                                        <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${isGalleryDropdownOpen ? 'rotate-180' : ''}`} />
+                                                    </button>
+                                                    <AnimatePresence>
+                                                        {isGalleryDropdownOpen && (
+                                                            <motion.div
+                                                                initial={{ opacity: 0, height: 0 }}
+                                                                animate={{ opacity: 1, height: 'auto' }}
+                                                                exit={{ opacity: 0, height: 0 }}
+                                                                transition={{ duration: 0.2 }}
+                                                                className="mt-2 space-y-2"
+                                                            >
+                                                                {gallerySubItems.map((subItem, subIndex) => (
+                                                                    <Link
+                                                                        key={subItem.id}
+                                                                        href={subItem.href}
+                                                                        onClick={() => {
+                                                                            handleNavClick('gallery');
+                                                                            setIsGalleryDropdownOpen(false);
+                                                                        }}
+                                                                        className={`block w-full text-center py-3 px-6 rounded-xl text-lg font-medium transition-all duration-300 cursor-pointer ml-4 ${
+                                                                            state.activeLink === subItem.id
+                                                                                ? 'bg-[#02ACAC]/80 text-white shadow-lg'
+                                                                                : 'text-gray-300 hover:bg-white/10 hover:text-[#02ACAC]'
+                                                                        }`}
+                                                                    >
+                                                                        {subItem.label}
+                                                                    </Link>
+                                                                ))}
+                                                            </motion.div>
+                                                        )}
+                                                    </AnimatePresence>
+                                                </div>
+                                            ) : (
+                                                <Link
+                                                    href={item.href}
+                                                    onClick={() => handleNavClick(item.id)}
+                                                    className={`block w-full text-center py-4 px-6 rounded-xl text-xl font-semibold transition-all duration-300 cursor-pointer ${
+                                                        state.activeLink === item.id
+                                                            ? 'bg-[#02ACAC] text-white shadow-lg'
+                                                            : 'text-white hover:bg-white/10 hover:text-[#02ACAC]'
+                                                    }`}
+                                                >
+                                                    {item.label}
+                                                </Link>
+                                            )}
                                         </motion.div>
                                     ))}
                                 </div>

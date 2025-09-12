@@ -506,21 +506,7 @@ export default function SwiperVideoPlayer({
 
   return (
     <div className={`swiper-video-player ${className} pb-8 sm:pb-12 w-full max-w-full overflow-hidden`}>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="px-8 sm:px-0 text-xl sm:text-2xl md:text-3xl text-white mb-2 font-bold">Videos</h2>
-          <p className="px-8 sm:px-0 text-gray-400">Watch live performances and behind-the-scenes content</p>
-          {/* Cache Status Indicator */}
-                   <p className="px-8 sm:px-0 text-sm text-gray-400 mt-2">
-                     {cacheStatus?.isFromCache ? `📦 Videos last updated (${cacheStatus.cacheAge} min ago)` : '📦 Videos are up to date'} •
-                     <button
-                       onClick={onCacheRefresh}
-                       className="text-gray-400 hover:text-gray-300 ml-1 underline cursor-pointer"
-                     >
-                       Refresh
-                     </button>
-                   </p>
-        </div>
+      <div className="flex flex-col gap-4 mb-6">
         <div className="flex items-center gap-2">
           <Button
             className="w-[200px] h-[48px] hidden md:block bg-[#02ACAC] cursor-pointer hover:bg-background hover:text-foreground transition-colors text-base px-8 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
@@ -544,6 +530,18 @@ export default function SwiperVideoPlayer({
               </div>
             )}
           </Button>
+        </div>
+        <div>
+          {/* Cache Status Indicator */}
+          <p className="px-8 sm:px-0 text-sm text-gray-400">
+            {cacheStatus?.isFromCache ? `📦 Videos last updated (${cacheStatus.cacheAge} min ago)` : '📦 Videos are up to date'} •
+            <button
+              onClick={onCacheRefresh}
+              className="text-gray-400 hover:text-gray-300 ml-1 underline cursor-pointer"
+            >
+              Refresh
+            </button>
+          </p>
         </div>
       </div>
       
