@@ -126,7 +126,9 @@ export function getOptimizedVideoUrl(options: {
   
   // Bitrate control for bandwidth optimization
   if (bitrate) {
-    transformations.push(`br_${bitrate}`);
+    // Remove any existing 'k' suffix to avoid double 'k' in URL
+    const cleanBitrate = bitrate.replace(/k$/, '');
+    transformations.push(`br_${cleanBitrate}k`);
   }
   
   // Frame rate control
@@ -332,7 +334,9 @@ export function getVideoUrl(videoName: string, options: {
   
   // Bitrate control for bandwidth optimization
   if (bitrate) {
-    transformations.push(`br_${bitrate}`);
+    // Remove any existing 'k' suffix to avoid double 'k' in URL
+    const cleanBitrate = bitrate.replace(/k$/, '');
+    transformations.push(`br_${cleanBitrate}k`);
   }
   
   // Frame rate control

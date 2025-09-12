@@ -3,6 +3,7 @@ import { lato } from "@/lib/fonts";
 import Header from "@/app/layout/Header";
 import VideoBackground from "@/components/VideoBackground";
 import PerformanceMonitor from "@/components/PerformanceMonitor";
+import PerformanceTest from "@/components/PerformanceTest";
 import StickyNavSpacer from "@/components/StickyNavSpacer";
 import "./globals.css";
 import { HeaderProvider } from "./contexts/HeaderContext";
@@ -45,9 +46,7 @@ export default function RootLayout({
           <link rel="preload" href="/logo_white.svg" as="image" type="image/svg+xml" />
           <link rel="preload" href="/logo_colored.svg" as="image" type="image/svg+xml" />
           
-          {/* Preload critical images to prevent CLS */}
-          <link rel="preload" href="https://res.cloudinary.com/dllh8yqz8/image/upload/w_400,h_500,q_auto,f_auto/cruises_001_x335rh" as="image" />
-          <link rel="preload" href="https://res.cloudinary.com/dllh8yqz8/image/upload/w_400,h_500,q_auto,f_auto/sticker_007_wcvnkt" as="image" />
+          {/* Preload critical images to prevent CLS - moved to specific pages that use them */}
           
           {/* Performance meta tags */}
           <meta name="theme-color" content="#02ACAC" />
@@ -64,8 +63,30 @@ export default function RootLayout({
             {children}
           </main>
           {process.env.NODE_ENV === 'development' && <PerformanceMonitor />}
+          {process.env.NODE_ENV === 'development' && <PerformanceTest />}
           {/* 100% privacy-first analytics */}
-        <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                var script = document.createElement('script');
+                script.async = true;
+                script.src = 'https://scripts.simpleanalyticscdn.com/latest.js';
+                script.onerror = function() {
+                  if (typeof console !== 'undefined' && console.warn) {
+                    console.warn('Simple Analytics script blocked by ad blocker - this is expected behavior');
+                  }
+                };
+                script.onload = function() {
+                  if (typeof console !== 'undefined' && console.log && ${process.env.NODE_ENV === 'development' ? 'true' : 'false'}) {
+                    console.log('Simple Analytics loaded successfully');
+                  }
+                };
+                document.head.appendChild(script);
+              })();
+            `
+          }}
+        />
         </body>
       </html>
     </HeaderProvider>

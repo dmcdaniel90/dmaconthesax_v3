@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
-    console.log('📅 Fetching calendar events from N8N webhook...');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📅 Fetching calendar events from N8N webhook...');
+    }
     
     // Get the N8N webhook URL from environment variables
     const webhookUrl = process.env.N8N_GOOGLE_CALENDAR_URL;
@@ -74,7 +76,9 @@ export async function GET(request: NextRequest) {
       nextResponse.headers.set('Last-Modified', lastModified);
     }
 
-    console.log(`✅ Successfully fetched ${events.length} events from webhook`);
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`✅ Successfully fetched ${events.length} events from webhook`);
+    }
     return nextResponse;
 
   } catch (error) {

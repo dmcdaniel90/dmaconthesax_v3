@@ -137,22 +137,32 @@ export default function AdvancedVideoPlayer({
     const initialQuality = selectOptimalQuality();
     setCurrentQuality(initialQuality);
 
-    // Handle resize events
+    // Handle resize events with debouncing
+    let resizeTimeout: NodeJS.Timeout;
     const handleResize = () => {
-      const newQuality = selectOptimalQuality();
-      if (newQuality && newQuality.url !== currentQuality?.url) {
-        setCurrentQuality(newQuality);
-        if (videoRef.current) {
-          videoRef.current.src = newQuality.url;
-          videoRef.current.load();
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        try {
+          const newQuality = selectOptimalQuality();
+          if (newQuality && newQuality.url !== currentQuality?.url) {
+            setCurrentQuality(newQuality);
+            if (videoRef.current) {
+              videoRef.current.src = newQuality.url;
+              videoRef.current.load();
+            }
+          }
+        } catch (error) {
+          // Silently handle resize errors to prevent console spam
+          console.warn('Resize handler error (handled gracefully):', error);
         }
-      }
+      }, 250); // Debounce resize events
     };
 
     window.addEventListener('resize', handleResize);
     
     return () => {
       window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimeout);
     };
   }, []);
 
@@ -176,19 +186,29 @@ export default function AdvancedVideoPlayer({
 
     const handleError = (e: Event) => {
       setIsLoading(false);
-      setError('Failed to load video');
-      console.error('Video error:', e);
       
+      // Only log error if we're not already using fallback
+      if (currentQuality && !currentQuality.label.includes('Fallback')) {
+        console.warn('Video quality failed, falling back to default:', currentQuality.label);
+      }
+
       // Fallback to working URL if current quality fails
       if (currentQuality && currentQuality.url !== fallbackUrl) {
         const fallbackQuality = availableQualities.find(q => q.label.includes('Fallback'));
         if (fallbackQuality) {
           setCurrentQuality(fallbackQuality);
+          setError(null); // Clear any previous errors when falling back
           if (videoRef.current) {
             videoRef.current.src = fallbackQuality.url;
             videoRef.current.load();
           }
+        } else {
+          setError('Failed to load video');
+          console.error('Video error - no fallback available:', e);
         }
+      } else {
+        setError('Failed to load video');
+        console.error('Video error:', e);
       }
     };
 

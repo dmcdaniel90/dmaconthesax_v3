@@ -90,7 +90,9 @@ const setCachedEvents = (events: MusicEvents[], etag?: string): void => {
       etag,
     };
     localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
-    console.log(`✅ Cached ${events.length} events to localStorage`);
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`✅ Cached ${events.length} events to localStorage`);
+    }
   } catch (error) {
     console.error('Error writing to cache:', error);
   }
@@ -99,8 +101,10 @@ const setCachedEvents = (events: MusicEvents[], etag?: string): void => {
 const clearCachedEvents = (): void => {
   if (!isLocalStorageAvailable()) return;
   try {
-    localStorage.removeItem(CACHE_KEY);
+  localStorage.removeItem(CACHE_KEY);
+  if (process.env.NODE_ENV === 'development') {
     console.log('🗑️ Cleared events cache');
+  }
   } catch (error) {
     console.error('Error clearing cache:', error);
   }
@@ -131,7 +135,9 @@ export function useCachedEvents(): UseCachedEventsReturn {
       if (!forceRefresh) {
         const cachedData = getCachedEvents();
         if (cachedData && isCacheValid(cachedData)) {
-          console.log(`📦 Loading ${cachedData.events.length} events from cache`);
+          if (process.env.NODE_ENV === 'development') {
+            console.log(`📦 Loading ${cachedData.events.length} events from cache`);
+          }
           setEvents(cachedData.events);
           setIsFromCache(true);
           setCacheAge(getCacheAge(cachedData));
@@ -141,7 +147,9 @@ export function useCachedEvents(): UseCachedEventsReturn {
       }
 
       // Fetch from API
-      console.log('🌐 Fetching events from API...');
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🌐 Fetching events from API...');
+      }
       setIsFromCache(false);
       
       const response = await fetch('/api/calendar', {
@@ -172,7 +180,9 @@ export function useCachedEvents(): UseCachedEventsReturn {
       const etag = response.headers.get('etag') || undefined;
       setCachedEvents(data, etag);
       
-      console.log(`✅ Loaded ${data.length} events from API`);
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`✅ Loaded ${data.length} events from API`);
+      }
 
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
@@ -182,7 +192,9 @@ export function useCachedEvents(): UseCachedEventsReturn {
       // Try to fallback to stale cache if available
       const cachedData = getCachedEvents();
       if (cachedData && cachedData.events.length > 0) {
-        console.log('🔄 Falling back to stale cache due to API error');
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🔄 Falling back to stale cache due to API error');
+        }
         setEvents(cachedData.events);
         setIsFromCache(true);
         setCacheAge(getCacheAge(cachedData));

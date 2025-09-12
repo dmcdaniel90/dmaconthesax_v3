@@ -10,7 +10,9 @@ cloudinary.config({
 
 async function handleCloudinarySearch(request: NextRequest, searchParams: any) {
     try {
-        console.log('Cloudinary search request:', searchParams);
+        if (process.env.NODE_ENV === 'development') {
+            console.log('Cloudinary search request:', searchParams);
+        }
 
         // Use Cloudinary SDK to search for resources
         const result = await cloudinary.search
@@ -19,11 +21,13 @@ async function handleCloudinarySearch(request: NextRequest, searchParams: any) {
             .next_cursor(searchParams.nextCursor)
             .execute();
 
-        console.log('Cloudinary search result:', {
-            totalCount: result.total_count,
-            resourcesCount: result.resources?.length,
-            nextCursor: result.next_cursor
-        });
+        if (process.env.NODE_ENV === 'development') {
+            console.log('Cloudinary search result:', {
+                totalCount: result.total_count,
+                resourcesCount: result.resources?.length,
+                nextCursor: result.next_cursor
+            });
+        }
 
         // Transform the response to match our expected format
         const transformedResources = result.resources?.map((resource: any) => ({

@@ -16,6 +16,7 @@ interface ResponsiveImageProps {
   style?: React.CSSProperties;
   onLoad?: () => void;
   onError?: () => void;
+  priority?: boolean;
 }
 
 export default function ResponsiveImage({
@@ -29,7 +30,8 @@ export default function ResponsiveImage({
   fallbackSrc,
   style,
   onLoad,
-  onError
+  onError,
+  priority = false
 }: ResponsiveImageProps) {
   const [currentSrc, setCurrentSrc] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
@@ -146,6 +148,7 @@ export default function ResponsiveImage({
         height={shouldUseFill ? undefined : height}
         fill={shouldUseFill}
         sizes={shouldUseFill ? (sizes || "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw") : undefined}
+        priority={priority}
         style={style}
         onLoad={handleImageLoad}
         onError={handleImageError}

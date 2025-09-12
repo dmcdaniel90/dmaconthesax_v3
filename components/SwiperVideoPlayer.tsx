@@ -391,14 +391,18 @@ export default function SwiperVideoPlayer({
                   const videoElement = videoRefs.current[video.id];
                   if (videoElement) {
                     videoElement.play().catch(error => {
-                      console.log('Play failed:', error);
+                      if (process.env.NODE_ENV === 'development') {
+                        console.log('Play failed:', error);
+                      }
                     });
                     
                     // Request fullscreen on mobile and tablet devices
                     if (isSmallDevice || isMediumDevice) {
                       if (videoElement.requestFullscreen) {
                         videoElement.requestFullscreen().catch((error) => {
-                          console.log('Fullscreen request failed:', error);
+                          if (process.env.NODE_ENV === 'development') {
+                            console.log('Fullscreen request failed:', error);
+                          }
                         });
                       } else if ((videoElement as any).webkitRequestFullscreen) {
                         (videoElement as any).webkitRequestFullscreen();
@@ -459,7 +463,9 @@ export default function SwiperVideoPlayer({
                 const videoElement = e.currentTarget;
                 if (videoElement.requestFullscreen) {
                   videoElement.requestFullscreen().catch((error) => {
-                    console.log('Fullscreen request failed:', error);
+                    if (process.env.NODE_ENV === 'development') {
+                      console.log('Fullscreen request failed:', error);
+                    }
                   });
                 } else if ((videoElement as any).webkitRequestFullscreen) {
                   (videoElement as any).webkitRequestFullscreen();

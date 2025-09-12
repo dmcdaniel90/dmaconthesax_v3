@@ -63,7 +63,7 @@ export default function Contact() {
                                             <p className="text-sm text-gray-400 mb-1">Email</p>
                                             <a
                                                 href="mailto:contact@devinmcdaniel.com"
-                                                className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-white hover:text-[#02ACAC] transition-colors duration-300 underline decoration-2 underline-offset-4 whitespace-nowrap"
+                                                className="text-sm sm:text-base md:text-lg xl:text-2xl text-white hover:text-[#02ACAC] transition-colors duration-300 underline decoration-2 underline-offset-4 whitespace-nowrap"
                                             >
                                                 contact@devinmcdaniel.com
                                             </a>
@@ -103,8 +103,8 @@ export default function Contact() {
                                             loop={true}
                                             muted={true}
                                             showControls={false}
-                                            showQualitySelector={false}
-                                            showPerformanceMetrics={true}
+                                            showQualitySelector={process.env.NODE_ENV === "development"}
+                                            showPerformanceMetrics={process.env.NODE_ENV === "development"}
                                             className="w-full h-full"
                                         />
                                     </div>
@@ -162,6 +162,8 @@ export default function Contact() {
                                         alt="Saxophone Performance"
                                         className="w-full h-full rounded-2xl object-cover"
                                         fill={true}
+                                        priority={false}
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
                                     />
                                 </div>
                             </div>

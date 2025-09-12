@@ -188,7 +188,9 @@ export function useCachedCloudinaryCollection({
         setImages([]);
         setIsFromCache(false);
         setCacheAge(0);
-        console.log(`🗑️ Cleared cache for images (tag: ${tag})`);
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`🗑️ Cleared cache for images (tag: ${tag})`);
+        }
     }, [cacheKey, tag]);
 
     // Load data on mount and when dependencies change

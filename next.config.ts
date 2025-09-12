@@ -20,6 +20,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "n8n.devsdev.space",
       },
+      {
+        protocol: "https",
+        hostname: "scripts.simpleanalyticscdn.com"
+      }
     ],
   },
   // Enable experimental features for better video performance

@@ -134,7 +134,9 @@ export function useCachedCloudinaryVideoCollection({
             };
             localStorage.setItem(cacheKey, JSON.stringify(cachedData));
 
-            console.log(`✅ Loaded ${transformedVideos.length} Cloudinary videos from API (tag: ${tag})`);
+            if (process.env.NODE_ENV === 'development') {
+              console.log(`✅ Loaded ${transformedVideos.length} Cloudinary videos from API (tag: ${tag})`);
+            }
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'Failed to fetch videos';
             setError(errorMessage);
@@ -161,14 +163,18 @@ export function useCachedCloudinaryVideoCollection({
                     setVideos(cachedData.videos);
                     setIsFromCache(true);
                     setCacheAge(Math.floor(age / (60 * 1000))); // Convert to minutes
-                    console.log(`📦 Loading ${cachedData.videos.length} Cloudinary videos from cache (tag: ${tag})`);
+                    if (process.env.NODE_ENV === 'development') {
+                      console.log(`📦 Loading ${cachedData.videos.length} Cloudinary videos from cache (tag: ${tag})`);
+                    }
                     return;
                 }
 
                 // Check if cache is too old (stale)
                 if (age > MAX_CACHE_AGE) {
                     localStorage.removeItem(cacheKey);
-                    console.log(`🗑️ Removed stale cache for videos (tag: ${tag})`);
+                    if (process.env.NODE_ENV === 'development') {
+                      console.log(`🗑️ Removed stale cache for videos (tag: ${tag})`);
+                    }
                 }
             }
 
@@ -191,7 +197,9 @@ export function useCachedCloudinaryVideoCollection({
         setVideos([]);
         setIsFromCache(false);
         setCacheAge(0);
-        console.log(`🗑️ Cleared cache for videos (tag: ${tag})`);
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`🗑️ Cleared cache for videos (tag: ${tag})`);
+        }
     }, [cacheKey, tag]);
 
     // Load data on mount and when dependencies change

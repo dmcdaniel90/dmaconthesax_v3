@@ -6,6 +6,7 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Loading, Skeleton } from "@/components/ui/loading";
 import { useCachedEvents } from "@/hooks/useCachedEvents";
+import { FadeInUp, StaggerContainer, StaggerItem } from "@/components/ScrollReveal";
 
 type MusicEvents = {
     eventName: string;
@@ -18,7 +19,7 @@ type MusicEvents = {
     imgAltText?: string;
 }
 
-export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPerPage?: number, type?: "grid" | "list" }) {
+export default function EventList({ itemsPerPage = 4, type = "grid" }: { itemsPerPage?: number, type?: "grid" | "list" }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [view, setView] = useState<"grid" | "list">(type);
     const [isViewChanging, setIsViewChanging] = useState(false);
@@ -139,35 +140,39 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
     }
 
     return (
-        <div ref={containerRef} className={`bg-gray-900/50 px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12`}>
-            <div className="flex items-center justify-between mb-6">
-                <div>
-                    <h2 className="text-2xl sm:text-3xl text-white">Upcoming Events</h2>
-                    {isFromCache && (
-                        <p className="text-sm text-gray-400 mt-1">
-                            📦 Last updated ({cacheAge} min ago) • 
-                            <button 
-                                onClick={refetch}
-                                className="text-gray-400 hover:text-gray-300 ml-1 underline cursor-pointer"
-                            >
-                                Refresh
-                            </button>
-                        </p>
-                    )}
-                </div>
-                <Button 
-                    className="w-[200px] h-[48px] hidden lg:block bg-[#02ACAC] cursor-pointer hover:bg-background hover:text-foreground transition-colors text-base px-8 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
-                    onClick={handleViewChange}
-                    disabled={isViewChanging}
-                    aria-label={`Switch to ${view === "grid" ? "List" : "Grid"} View`}
-                    tabIndex={0}
-                >
-                    {isViewChanging ? (
-                        <Loading variant="dots" size="sm" className="text-white" />
-                    ) : (
-                        view === "grid" ? "Switch to List View" : "Switch to Grid View"
-                    )}
-                </Button>
+        <StaggerContainer staggerDelay={0.15} className={`bg-gray-900/50 px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12`}>
+            <div ref={containerRef} className="flex items-center justify-between mb-6">
+                <FadeInUp delay={0.1} duration={0.6}>
+                    <div>
+                        <h2 className="text-2xl sm:text-3xl text-white">Upcoming Events</h2>
+                        {isFromCache && (
+                            <p className="text-sm text-gray-400 mt-1">
+                                📦 Last updated ({cacheAge} min ago) • 
+                                <button 
+                                    onClick={refetch}
+                                    className="text-gray-400 hover:text-gray-300 ml-1 underline cursor-pointer"
+                                >
+                                    Refresh
+                                </button>
+                            </p>
+                        )}
+                    </div>
+                </FadeInUp>
+                <FadeInUp delay={0.2} duration={0.6}>
+                    <Button 
+                        className="w-[200px] h-[48px] hidden lg:block bg-[#02ACAC] cursor-pointer hover:bg-background hover:text-foreground transition-colors text-base px-8 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+                        onClick={handleViewChange}
+                        disabled={isViewChanging}
+                        aria-label={`Switch to ${view === "grid" ? "List" : "Grid"} View`}
+                        tabIndex={0}
+                    >
+                        {isViewChanging ? (
+                            <Loading variant="dots" size="sm" className="text-white" />
+                        ) : (
+                            view === "grid" ? "Switch to List View" : "Switch to Grid View"
+                        )}
+                    </Button>
+                </FadeInUp>
             </div>
             
             <div className={`grid ${view === "grid" ? "grid-cols-1 lg:grid-cols-2" : "grid-cols-1"} gap-4 sm:gap-6 transition-all duration-300`}>
@@ -177,18 +182,19 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
                         <EventSkeleton key={i} />
                     ))
                 ) : (
-                    paginatedEvents.map((event: MusicEvents) => (
-                        <Event 
-                            key={event.eventName + Math.random()} 
-                            eventName={event.eventName} 
-                            monthNumber={event.monthNumber} 
-                            day={event.day} 
-                            year={event.year} 
-                            time={event.time || "TBA"} 
-                            location={event.location || "TBA"} 
-                            imgSrc={event.imgSrc || ""} 
-                            imgAltText={event.imgAltText || ""} 
-                        />
+                    paginatedEvents.map((event: MusicEvents, index: number) => (
+                        <StaggerItem key={event.eventName + Math.random()} direction="up" delay={index * 0.1}>
+                            <Event 
+                                eventName={event.eventName} 
+                                monthNumber={event.monthNumber} 
+                                day={event.day} 
+                                year={event.year} 
+                                time={event.time || "TBA"} 
+                                location={event.location || "TBA"} 
+                                imgSrc={event.imgSrc || ""} 
+                                imgAltText={event.imgAltText || ""} 
+                            />
+                        </StaggerItem>
                     ))
                 )}
             </div>
@@ -221,7 +227,7 @@ export default function EventList({ itemsPerPage = 3, type = "grid" }: { itemsPe
                     </PaginationItem>
                 </PaginationContent>
             </Pagination>
-        </div>
+        </StaggerContainer>
     )
 }
 

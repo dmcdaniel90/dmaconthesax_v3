@@ -77,27 +77,41 @@ const VideoBackground = () => {
           maxHeight: '100vh'
         }}
         onLoadStart={() => {
-          console.log('Video load started:', videoUrl);
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Video load started:', videoUrl);
+          }
         }}
         onLoadedData={() => {
-          console.log('Video data loaded:', videoUrl);
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Video data loaded:', videoUrl);
+          }
         }}
         onCanPlay={() => {
-          console.log('Video can play:', videoUrl);
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Video can play:', videoUrl);
+          }
         }}
         onCanPlayThrough={() => {
-          console.log('Video can play through:', videoUrl);
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Video can play through:', videoUrl);
+          }
         }}
         onError={(e) => {
-          console.error('Video error:', e, 'URL:', videoUrl);
+          if (process.env.NODE_ENV === 'development') {
+            console.error('Video error:', e, 'URL:', videoUrl);
+          }
           // Fallback to basic URL if responsive URL fails
           if (videoUrl !== fallbackUrl) {
-            console.log('Falling back to:', fallbackUrl);
+            if (process.env.NODE_ENV === 'development') {
+              console.log('Falling back to:', fallbackUrl);
+            }
             setCurrentVideoUrl(fallbackUrl);
           }
         }}
         onStalled={() => {
-          console.log('Video stalled, retrying...');
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Video stalled, retrying...');
+          }
         }}
       >
         <source src={videoUrl} type="video/mp4" />
