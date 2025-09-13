@@ -2,6 +2,22 @@ import FAQ from "@/app/faq/FAQ"
 import Footer from "@/app/layout/Footer"
 import AnimatedPageTitle from "@/components/AnimatedPageTitle"
 import { FadeInUp } from "@/components/ScrollReveal"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Frequently Asked Questions",
+  description: "Find answers to common questions about DMAC on the Sax services, booking process, pricing, and what to expect. Professional saxophonist FAQ for weddings, events, and festivals.",
+  keywords: ["saxophonist FAQ", "booking questions", "event music FAQ", "wedding music questions", "hire musician FAQ", "music services FAQ"],
+  openGraph: {
+    title: "Frequently Asked Questions | DMAC on the Sax",
+    description: "Find answers to common questions about DMAC on the Sax services, booking process, pricing, and what to expect.",
+    type: "website",
+  },
+  twitter: {
+    title: "Frequently Asked Questions | DMAC on the Sax",
+    description: "Find answers to common questions about DMAC on the Sax services, booking process, pricing, and what to expect.",
+  },
+}
 
 export default function FAQPage() {
     return (

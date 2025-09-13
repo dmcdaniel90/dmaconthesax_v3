@@ -2,6 +2,22 @@ import EventList from "@/components/EventList"
 import Footer from "@/app/layout/Footer"
 import AnimatedPageTitle from "@/components/AnimatedPageTitle"
 import { FadeInUp } from "@/components/ScrollReveal"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Events & Performances",
+  description: "Discover upcoming shows and past performances by DMAC on the Sax. See where the professional saxophonist will be performing next at weddings, festivals, and events.",
+  keywords: ["saxophonist events", "upcoming shows", "live performances", "wedding music events", "festival performances", "event calendar"],
+  openGraph: {
+    title: "Events & Performances | DMAC on the Sax",
+    description: "Discover upcoming shows and past performances by DMAC on the Sax. See where the professional saxophonist will be performing next.",
+    type: "website",
+  },
+  twitter: {
+    title: "Events & Performances | DMAC on the Sax",
+    description: "Discover upcoming shows and past performances by DMAC on the Sax. See where the professional saxophonist will be performing next.",
+  },
+}
 
 export default function Events() {
     return (
