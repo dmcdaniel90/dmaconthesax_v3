@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useHeaderContext } from '@/app/contexts/HeaderContext'
 import { Phone, ChevronDown } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface MobileNavProps {
     isOpen: boolean
@@ -30,6 +30,40 @@ export default function MobileNav({ isOpen, onToggle }: MobileNavProps) {
     const { state, dispatch } = useHeaderContext()
     const [isGalleryDropdownOpen, setIsGalleryDropdownOpen] = useState(false)
 
+    // Prevent body scroll when mobile nav is open
+    useEffect(() => {
+        if (isOpen) {
+            // Store the current scroll position
+            const scrollY = window.scrollY
+            // Prevent body scroll
+            document.body.style.position = 'fixed'
+            document.body.style.top = `-${scrollY}px`
+            document.body.style.width = '100%'
+            document.body.style.overflow = 'hidden'
+        } else {
+            // Restore body scroll
+            const scrollY = document.body.style.top
+            document.body.style.position = ''
+            document.body.style.top = ''
+            document.body.style.width = ''
+            document.body.style.overflow = ''
+            // Restore scroll position
+            if (scrollY) {
+                window.scrollTo(0, parseInt(scrollY || '0') * -1)
+            }
+        }
+
+        // Cleanup function
+        return () => {
+            if (isOpen) {
+                document.body.style.position = ''
+                document.body.style.top = ''
+                document.body.style.width = ''
+                document.body.style.overflow = ''
+            }
+        }
+    }, [isOpen])
+
     const handleNavClick = (link: string) => {
         dispatch({ type: 'SET_ACTIVE_LINK', payload: link })
         onToggle()
@@ -41,7 +75,7 @@ export default function MobileNav({ isOpen, onToggle }: MobileNavProps) {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        className="lg:hidden fixed inset-0 bg-gray-900/95 backdrop-blur-xl z-50"
+                        className="lg:hidden fixed inset-0 bg-gray-900/95 backdrop-blur-xl z-50 overflow-y-auto"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -62,7 +96,7 @@ export default function MobileNav({ isOpen, onToggle }: MobileNavProps) {
 
                         {/* Navigation Items */}
                         <motion.nav
-                            className="container mx-auto px-4 sm:px-6 lg:px-8 pt-32"
+                            className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24"
                             initial={{ y: -20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             exit={{ y: -20, opacity: 0 }}
@@ -71,33 +105,33 @@ export default function MobileNav({ isOpen, onToggle }: MobileNavProps) {
                             <div className="max-w-md mx-auto">
                                 {/* Logo */}
                                 <motion.div
-                                    className="text-center mb-12"
+                                    className="text-center mb-8"
                                     initial={{ scale: 0.8, opacity: 0 }}
                                     animate={{ scale: 1, opacity: 1 }}
                                     transition={{ duration: 0.4, ease: "easeOut", delay: 0.2 }}
                                 >
-                                    <div className="relative w-full max-w-[200px] mx-auto h-auto">
+                                    <div className="relative w-full max-w-[180px] mx-auto h-auto">
                                         <Image 
                                             priority 
                                             className="w-full" 
                                             src="/logo_white.svg" 
-                                            width={200} 
-                                            height={100} 
+                                            width={180} 
+                                            height={90} 
                                             alt="DMAC on the Sax Logo" 
                                         />
                                         <Image
                                             priority
                                             className="absolute inset-0 w-full h-auto mask-animation"
                                             src="/logo_colored.svg"
-                                            width={200}
-                                            height={100}
+                                            width={180}
+                                            height={90}
                                             alt="DMAC on the Sax Logo"
                                         />
                                     </div>
                                 </motion.div>
 
                                 {/* Navigation Links */}
-                                <div className="space-y-2">
+                                <div className="space-y-1">
                                     {navItems.map((item, index) => (
                                         <motion.div
                                             key={item.id}
@@ -110,10 +144,10 @@ export default function MobileNav({ isOpen, onToggle }: MobileNavProps) {
                                             }}
                                         >
                                             {item.id === 'gallery' ? (
-                                                <div>
+                                                <div className="w-full">
                                                     <button
                                                         onClick={() => setIsGalleryDropdownOpen(!isGalleryDropdownOpen)}
-                                                        className={`block w-full text-center py-4 px-6 rounded-xl text-xl font-semibold transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 ${
+                                                        className={`block w-full text-center py-3 px-6 rounded-xl text-lg font-semibold transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 ${
                                                             state.activeLink === item.id ||
                                                             state.activeLink === 'gallery/photos' ||
                                                             state.activeLink === 'gallery/videos'
@@ -122,7 +156,7 @@ export default function MobileNav({ isOpen, onToggle }: MobileNavProps) {
                                                         }`}
                                                     >
                                                         {item.label}
-                                                        <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${isGalleryDropdownOpen ? 'rotate-180' : ''}`} />
+                                                        <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isGalleryDropdownOpen ? 'rotate-180' : ''}`} />
                                                     </button>
                                                     <AnimatePresence>
                                                         {isGalleryDropdownOpen && (
@@ -131,7 +165,7 @@ export default function MobileNav({ isOpen, onToggle }: MobileNavProps) {
                                                                 animate={{ opacity: 1, height: 'auto' }}
                                                                 exit={{ opacity: 0, height: 0 }}
                                                                 transition={{ duration: 0.2 }}
-                                                                className="mt-2 space-y-2"
+                                                                className="mt-2 space-y-2 w-full"
                                                             >
                                                                 {gallerySubItems.map((subItem, subIndex) => (
                                                                     <Link
@@ -141,7 +175,7 @@ export default function MobileNav({ isOpen, onToggle }: MobileNavProps) {
                                                                             handleNavClick('gallery');
                                                                             setIsGalleryDropdownOpen(false);
                                                                         }}
-                                                                        className={`block w-full text-center py-3 px-6 rounded-xl text-lg font-medium transition-all duration-300 cursor-pointer ml-4 ${
+                                                                        className={`block w-full text-center py-3 px-6 rounded-xl text-lg font-medium transition-all duration-300 cursor-pointer ${
                                                                             state.activeLink === subItem.id
                                                                                 ? 'bg-[#02ACAC]/80 text-white shadow-lg'
                                                                                 : 'text-gray-300 hover:bg-white/10 hover:text-[#02ACAC]'
@@ -173,18 +207,18 @@ export default function MobileNav({ isOpen, onToggle }: MobileNavProps) {
 
                                 {/* CTA Buttons */}
                                 <motion.div
-                                    className="mt-12 space-y-4 pb-[72px]"
+                                    className="mt-8 space-y-3 pb-24"
                                     initial={{ y: 20, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
                                     transition={{ duration: 0.4, ease: "easeOut", delay: 0.6 }}
                                 >
                                     <Link href="/booking" onClick={onToggle}>
-                                        <button className="w-full bg-[#02ACAC] hover:bg-[#02ACAC]/90 text-white py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                                        <button className="w-full bg-[#02ACAC] hover:bg-[#02ACAC]/90 text-white py-3 px-6 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 cursor-pointer">
                                             Book Now
                                         </button>
                                     </Link>
                                     
-                                    <Link href="tel:+447359142634" className="flex items-center justify-center space-x-3 text-white hover:text-[#02ACAC] transition-colors duration-300 py-4 cursor-pointer">
+                                    <Link href="tel:+447359142634" className="flex items-center justify-center space-x-3 text-white hover:text-[#02ACAC] transition-colors duration-300 py-3 cursor-pointer">
                                         <Phone className="w-5 h-5" />
                                         <span className="text-lg">+44 7359 142634</span>
                                     </Link>
@@ -192,12 +226,12 @@ export default function MobileNav({ isOpen, onToggle }: MobileNavProps) {
 
                                 {/* Social Links */}
                                 <motion.div
-                                    className="mt-8 text-center"
+                                    className="mt-4 text-center"
                                     initial={{ y: 20, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
                                     transition={{ duration: 0.4, ease: "easeOut", delay: 0.7 }}
                                 >
-                                    <p className="text-gray-400 text-sm mb-4">Follow us</p>
+                                    <p className="text-gray-400 text-sm mb-3">Follow us</p>
                                     <div className="flex justify-center space-x-6">
                                         <a href="https://www.facebook.com/dmaconthesax" className="text-gray-400 hover:text-[#02ACAC] transition-colors duration-300 cursor-pointer">
                                             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">

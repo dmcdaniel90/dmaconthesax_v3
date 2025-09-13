@@ -3,7 +3,6 @@ import { lato } from "@/lib/fonts";
 import Header from "@/app/layout/Header";
 import VideoBackground from "@/components/VideoBackground";
 import PerformanceMonitor from "@/components/PerformanceMonitor";
-import PerformanceTest from "@/components/PerformanceTest";
 import StickyNavSpacer from "@/components/StickyNavSpacer";
 import "./globals.css";
 import { HeaderProvider } from "./contexts/HeaderContext";
@@ -63,7 +62,6 @@ export default function RootLayout({
             {children}
           </main>
           {process.env.NODE_ENV === 'development' && <PerformanceMonitor />}
-          {process.env.NODE_ENV === 'development' && <PerformanceTest />}
           {/* 100% privacy-first analytics */}
         <script
           dangerouslySetInnerHTML={{
