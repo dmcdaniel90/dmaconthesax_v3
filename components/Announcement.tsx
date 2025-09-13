@@ -1,6 +1,6 @@
 'use client'
 import { Playfair_Display } from "next/font/google"
-import { FadeInUp, StaggerContainer, StaggerItem } from "@/components/ScrollReveal";
+import { StaggerContainer, StaggerItem } from "@/components/ScrollReveal";
 
 type AnnouncementProps = {
     text?: string,
