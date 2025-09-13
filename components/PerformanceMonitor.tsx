@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { onFCP, onLCP, onINP, onCLS, onTTFB, type Metric } from 'web-vitals'
+import { measurePerformance as measureCustomPerformance, formatMetrics, PerformanceMetrics as CustomPerformanceMetrics } from '@/lib/performance-test'
 
-interface PerformanceMetrics {
+interface WebVitalsMetrics {
     fcp: number | null
     lcp: number | null
     fid: number | null
@@ -15,20 +16,37 @@ interface PerformanceMetrics {
     windowLoad: number | null
 }
 
-export default function PerformanceMonitor() {
-    const [isVisible, setIsVisible] = useState(false)
-    const [metrics, setMetrics] = useState<PerformanceMetrics>({
-        fcp: null,
-        lcp: null,
-        fid: null,
-        cls: null,
-        ttfb: null,
-        domLoad: null,
-        windowLoad: null
-    })
-    const [isMonitoring, setIsMonitoring] = useState(false)
+interface PerformanceMonitorState {
+    webVitals: WebVitalsMetrics
+    customMetrics: CustomPerformanceMetrics | null
+    isMonitoring: boolean
+    isVisible: boolean
+    isDragging: boolean
+    position: { x: number; y: number }
+}
 
-    // Auto-start monitoring on component mount using web-vitals library
+export default function PerformanceMonitor() {
+    const [state, setState] = useState<PerformanceMonitorState>({
+        webVitals: {
+            fcp: null,
+            lcp: null,
+            fid: null,
+            cls: null,
+            ttfb: null,
+            domLoad: null,
+            windowLoad: null
+        },
+        customMetrics: null,
+        isMonitoring: false,
+        isVisible: false,
+        isDragging: false,
+        position: { x: 16, y: 80 } // Default position (bottom-20 right-4)
+    })
+    
+    const dragRef = useRef<HTMLDivElement>(null)
+    const dragStartRef = useRef({ x: 0, y: 0 })
+
+    // Auto-start monitoring on component mount
     useEffect(() => {
         // Only run in development mode
         if (process.env.NODE_ENV === 'production') {
@@ -38,29 +56,17 @@ export default function PerformanceMonitor() {
             // Handle metric updates from web-vitals
             const handleMetric = (metric: Metric) => {
                 console.log(`Web Vitals: ${metric.name} = ${metric.value}ms`)
-                setMetrics(prev => {
-                    const newMetrics = { ...prev }
-                    
-                    switch (metric.name) {
-                        case 'FCP':
-                            newMetrics.fcp = Math.round(metric.value)
-                            break
-                        case 'LCP':
-                            newMetrics.lcp = Math.round(metric.value)
-                            break
-                        case 'INP':
-                            newMetrics.fid = Math.round(metric.value)
-                            break
-                        case 'CLS':
-                            newMetrics.cls = Math.round(metric.value * 1000) / 1000
-                            break
-                        case 'TTFB':
-                            newMetrics.ttfb = Math.round(metric.value)
-                            break
+                setState(prev => ({
+                    ...prev,
+                    webVitals: {
+                        ...prev.webVitals,
+                        ...(metric.name === 'FCP' && { fcp: Math.round(metric.value) }),
+                        ...(metric.name === 'LCP' && { lcp: Math.round(metric.value) }),
+                        ...(metric.name === 'INP' && { fid: Math.round(metric.value) }),
+                        ...(metric.name === 'CLS' && { cls: Math.round(metric.value * 1000) / 1000 }),
+                        ...(metric.name === 'TTFB' && { ttfb: Math.round(metric.value) })
                     }
-                    
-                    return newMetrics
-                })
+                }))
             }
 
             // Set up web-vitals listeners with better configuration
@@ -75,12 +81,65 @@ export default function PerformanceMonitor() {
             
             onTTFB(handleMetric)
 
-            // Cleanup function (web-vitals doesn't provide cleanup, but we can track state)
+            // Load custom performance metrics after page load
+            const timer = setTimeout(() => {
+                const customMetrics = measureCustomPerformance()
+                setState(prev => ({ ...prev, customMetrics }))
+            }, 2000)
+
             return () => {
+                clearTimeout(timer)
                 // Web-vitals listeners are automatically cleaned up
             }
         }
     }, [])
+
+    // Drag functionality
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            if (!state.isDragging) return
+            
+            const newX = e.clientX - dragStartRef.current.x
+            const newY = e.clientY - dragStartRef.current.y
+            
+            // Constrain to viewport bounds
+            const maxX = window.innerWidth - 320 // Card width is 320px (w-80)
+            const maxY = window.innerHeight - 500 // Increased height for expanded content
+            
+            setState(prev => ({
+                ...prev,
+                position: {
+                    x: Math.max(0, Math.min(newX, maxX)),
+                    y: Math.max(0, Math.min(newY, maxY))
+                }
+            }))
+        }
+
+        const handleMouseUp = () => {
+            setState(prev => ({ ...prev, isDragging: false }))
+        }
+
+        if (state.isDragging) {
+            document.addEventListener('mousemove', handleMouseMove)
+            document.addEventListener('mouseup', handleMouseUp)
+        }
+
+        return () => {
+            document.removeEventListener('mousemove', handleMouseMove)
+            document.removeEventListener('mouseup', handleMouseUp)
+        }
+    }, [state.isDragging])
+
+    const handleMouseDown = (e: React.MouseEvent) => {
+        if (dragRef.current) {
+            const rect = dragRef.current.getBoundingClientRect()
+            dragStartRef.current = {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            }
+            setState(prev => ({ ...prev, isDragging: true }))
+        }
+    }
 
     // Only render in development mode
     if (process.env.NODE_ENV === 'production') {
@@ -93,46 +152,32 @@ export default function PerformanceMonitor() {
             return
         }
 
-        setIsMonitoring(true)
+        setState(prev => ({ ...prev, isMonitoring: true }))
 
-        // Web-vitals automatically handles measurement, but we can trigger a refresh
-        // by re-setting up the listeners to catch any metrics that might have been missed
+        // Measure custom performance metrics
+        const customMetrics = measureCustomPerformance()
+        setState(prev => ({ ...prev, customMetrics }))
+
+        // Re-measure web-vitals metrics
         const handleMetric = (metric: Metric) => {
-            setMetrics(prev => {
-                const newMetrics = { ...prev }
-                
-                switch (metric.name) {
-                    case 'FCP':
-                        newMetrics.fcp = Math.round(metric.value)
-                        break
-                    case 'LCP':
-                        newMetrics.lcp = Math.round(metric.value)
-                        break
-                    case 'INP':
-                        newMetrics.fid = Math.round(metric.value)
-                        break
-                    case 'CLS':
-                        newMetrics.cls = Math.round(metric.value * 1000) / 1000
-                        break
-                    case 'TTFB':
-                        newMetrics.ttfb = Math.round(metric.value)
-                        break
+            setState(prev => ({
+                ...prev,
+                webVitals: {
+                    ...prev.webVitals,
+                    ...(metric.name === 'FCP' && { fcp: Math.round(metric.value) }),
+                    ...(metric.name === 'LCP' && { lcp: Math.round(metric.value) }),
+                    ...(metric.name === 'INP' && { fid: Math.round(metric.value) }),
+                    ...(metric.name === 'CLS' && { cls: Math.round(metric.value * 1000) / 1000 }),
+                    ...(metric.name === 'TTFB' && { ttfb: Math.round(metric.value) })
                 }
-                
-                return newMetrics
-            })
+            }))
         }
 
-        // Re-setup listeners to catch any missed metrics with better configuration
+        // Re-setup listeners to catch any missed metrics
         onFCP(handleMetric)
         onLCP(handleMetric)
-        
-        // INP with more aggressive reporting
         onINP(handleMetric, { reportAllChanges: true })
-        
-        // CLS with more aggressive reporting
         onCLS(handleMetric, { reportAllChanges: true })
-        
         onTTFB(handleMetric)
 
         // Also measure DOM and Window load times using navigation timing
@@ -142,24 +187,33 @@ export default function PerformanceMonitor() {
                 const navigationEntry = navigationEntries[0] as PerformanceNavigationTiming
                 
                 if (document.readyState === 'complete') {
-                    setMetrics(prev => ({ 
+                    setState(prev => ({ 
                         ...prev, 
-                        domLoad: Math.round(navigationEntry.domContentLoadedEventEnd - navigationEntry.fetchStart),
-                        windowLoad: Math.round(navigationEntry.loadEventEnd - navigationEntry.fetchStart)
+                        webVitals: {
+                            ...prev.webVitals,
+                            domLoad: Math.round(navigationEntry.domContentLoadedEventEnd - navigationEntry.fetchStart),
+                            windowLoad: Math.round(navigationEntry.loadEventEnd - navigationEntry.fetchStart)
+                        }
                     }))
                 } else {
                     // Set up listeners for when page finishes loading
                     const handleDOMContentLoaded = () => {
-                        setMetrics(prev => ({ 
+                        setState(prev => ({ 
                             ...prev, 
-                            domLoad: Math.round(performance.now()) 
+                            webVitals: {
+                                ...prev.webVitals,
+                                domLoad: Math.round(performance.now()) 
+                            }
                         }))
                     }
 
                     const handleWindowLoad = () => {
-                        setMetrics(prev => ({ 
+                        setState(prev => ({ 
                             ...prev, 
-                            windowLoad: Math.round(performance.now()) 
+                            webVitals: {
+                                ...prev.webVitals,
+                                windowLoad: Math.round(performance.now()) 
+                            }
                         }))
                     }
 
@@ -171,14 +225,14 @@ export default function PerformanceMonitor() {
             console.warn('Error measuring load times:', error)
         }
 
-        // Stop monitoring after 5 seconds (shorter since web-vitals is more efficient)
+        // Stop monitoring after 5 seconds
         setTimeout(() => {
-            setIsMonitoring(false)
+            setState(prev => ({ ...prev, isMonitoring: false }))
         }, 5000)
     }
 
-    const getPerformanceGrade = (metric: keyof PerformanceMetrics): string => {
-        const value = metrics[metric]
+    const getPerformanceGrade = (metric: keyof WebVitalsMetrics): string => {
+        const value = state.webVitals[metric]
         if (value === null) return 'N/A'
 
         switch (metric) {
@@ -198,23 +252,27 @@ export default function PerformanceMonitor() {
     }
 
     const resetMetrics = () => {
-        setMetrics({
-            fcp: null,
-            lcp: null,
-            fid: null,
-            cls: null,
-            ttfb: null,
-            domLoad: null,
-            windowLoad: null
-        })
-        setIsMonitoring(false)
+        setState(prev => ({
+            ...prev,
+            webVitals: {
+                fcp: null,
+                lcp: null,
+                fid: null,
+                cls: null,
+                ttfb: null,
+                domLoad: null,
+                windowLoad: null
+            },
+            customMetrics: null,
+            isMonitoring: false
+        }))
     }
 
     return (
         <>
             {/* Floating button */}
             <Button
-                onClick={() => setIsVisible(!isVisible)}
+                onClick={() => setState(prev => ({ ...prev, isVisible: !prev.isVisible }))}
                 className="fixed bottom-4 right-4 z-50 bg-[#02ACAC] hover:bg-[#02ACAC]/90 text-white rounded-full w-12 h-12 p-0 shadow-lg"
                 aria-label="Toggle performance monitor"
             >
@@ -222,11 +280,25 @@ export default function PerformanceMonitor() {
             </Button>
 
             {/* Performance panel */}
-            {isVisible && (
-                <Card className="fixed bottom-20 right-4 z-50 w-80 bg-gray-900/95 border-gray-700/50 shadow-2xl">
-                    <CardHeader className="pb-3">
+            {state.isVisible && (
+                <Card 
+                    ref={dragRef}
+                    className="fixed z-50 w-80 bg-gray-900/95 border-gray-700/50 shadow-2xl select-none"
+                    style={{
+                        left: `${state.position.x}px`,
+                        top: `${state.position.y}px`,
+                        cursor: state.isDragging ? 'grabbing' : 'grab'
+                    }}
+                >
+                    <CardHeader 
+                        className="pb-3 cursor-grab active:cursor-grabbing"
+                        onMouseDown={handleMouseDown}
+                    >
                         <CardTitle className="text-lg text-white flex items-center justify-between">
-                            Performance Monitor
+                            <span className="flex items-center gap-2">
+                                📊 Performance Monitor
+                                <span className="text-xs text-gray-400">(drag to move)</span>
+                            </span>
                             <Button
                                 onClick={resetMetrics}
                                 size="sm"
@@ -238,73 +310,100 @@ export default function PerformanceMonitor() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
+                        {/* Web Vitals Section */}
                         <div className="space-y-2">
-                            <div className="flex justify-between text-sm">
-                                <span className="text-gray-300">First Contentful Paint:</span>
-                                <span className="text-white">
-                                    {metrics.fcp ? `${metrics.fcp}ms` : 'N/A'}
-                                </span>
+                            <h4 className="text-sm font-semibold text-[#02ACAC] border-b border-gray-700/50 pb-1">
+                                Web Vitals
+                            </h4>
+                            
+                            <div className="space-y-2">
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-gray-300">First Contentful Paint:</span>
+                                    <span className="text-white">
+                                        {state.webVitals.fcp ? `${state.webVitals.fcp}ms` : 'N/A'}
+                                    </span>
+                                </div>
+                                <div className="text-xs text-gray-400">
+                                    {getPerformanceGrade('fcp')}
+                                </div>
                             </div>
-                            <div className="text-xs text-gray-400">
-                                {getPerformanceGrade('fcp')}
+
+                            <div className="space-y-2">
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-gray-300">Largest Contentful Paint:</span>
+                                    <span className="text-white">
+                                        {state.webVitals.lcp ? `${state.webVitals.lcp}ms` : 'N/A'}
+                                    </span>
+                                </div>
+                                <div className="text-xs text-gray-400">
+                                    {getPerformanceGrade('lcp')}
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-gray-300">Interaction to Next Paint:</span>
+                                    <span className="text-white">
+                                        {state.webVitals.fid ? `${state.webVitals.fid}ms` : 'N/A'}
+                                    </span>
+                                </div>
+                                <div className="text-xs text-gray-400">
+                                    {getPerformanceGrade('fid')}
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-gray-300">Cumulative Layout Shift:</span>
+                                    <span className="text-white">
+                                        {state.webVitals.cls ? state.webVitals.cls : 'N/A'}
+                                    </span>
+                                </div>
+                                <div className="text-xs text-gray-400">
+                                    {getPerformanceGrade('cls')}
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-gray-300">Time to First Byte:</span>
+                                    <span className="text-white">
+                                        {state.webVitals.ttfb ? `${state.webVitals.ttfb}ms` : 'N/A'}
+                                    </span>
+                                </div>
+                                <div className="text-xs text-gray-400">
+                                    {getPerformanceGrade('ttfb')}
+                                </div>
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <div className="flex justify-between text-sm">
-                                <span className="text-gray-300">Largest Contentful Paint:</span>
-                                <span className="text-white">
-                                    {metrics.lcp ? `${metrics.lcp}ms` : 'N/A'}
-                                </span>
+                        {/* Custom Performance Metrics Section */}
+                        {state.customMetrics && (
+                            <div className="space-y-2">
+                                <h4 className="text-sm font-semibold text-[#02ACAC] border-b border-gray-700/50 pb-1">
+                                    Custom Metrics
+                                </h4>
+                                <div className="text-xs space-y-1">
+                                    {Object.entries(formatMetrics(state.customMetrics)).map(([key, value]) => (
+                                        <div key={key} className="flex justify-between">
+                                            <span className="text-gray-300">{key}:</span>
+                                            <span className="font-mono text-white">{value}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="text-xs text-green-400 mt-2">
+                                    Cloudinary Video: Active ✅
+                                </div>
                             </div>
-                            <div className="text-xs text-gray-400">
-                                {getPerformanceGrade('lcp')}
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <div className="flex justify-between text-sm">
-                                <span className="text-gray-300">Interaction to Next Paint:</span>
-                                <span className="text-white">
-                                    {metrics.fid ? `${metrics.fid}ms` : 'N/A'}
-                                </span>
-                            </div>
-                            <div className="text-xs text-gray-400">
-                                {getPerformanceGrade('fid')}
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <div className="flex justify-between text-sm">
-                                <span className="text-gray-300">Cumulative Layout Shift:</span>
-                                <span className="text-white">
-                                    {metrics.cls ? metrics.cls : 'N/A'}
-                                </span>
-                            </div>
-                            <div className="text-xs text-gray-400">
-                                {getPerformanceGrade('cls')}
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <div className="flex justify-between text-sm">
-                                <span className="text-gray-300">Time to First Byte:</span>
-                                <span className="text-white">
-                                    {metrics.ttfb ? `${metrics.ttfb}ms` : 'N/A'}
-                                </span>
-                            </div>
-                            <div className="text-xs text-gray-400">
-                                {getPerformanceGrade('ttfb')}
-                            </div>
-                        </div>
+                        )}
 
                         <div className="pt-2 border-t border-gray-700/50 space-y-2">
                             <Button
                                 onClick={measurePerformance}
-                                disabled={isMonitoring}
+                                disabled={state.isMonitoring}
                                 className="w-full bg-[#02ACAC] hover:bg-[#02ACAC]/90 text-white"
                             >
-                                {isMonitoring ? 'Measuring...' : 'Measure Performance'}
+                                {state.isMonitoring ? 'Measuring...' : 'Measure Performance'}
                             </Button>
                             
                             <Button

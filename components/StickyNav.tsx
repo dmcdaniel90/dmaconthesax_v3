@@ -5,6 +5,8 @@ import Image from "next/image";
 import { splitWordsAndCapitalize } from "@/lib/utils";
 import Socials from "@/components/Socials";
 import { useHeaderContext } from "@/app/contexts/HeaderContext";
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 
 const SOCIAL_LINKS = {
     facebook: `https://www.facebook.com/dmaconthesax`,
@@ -14,8 +16,14 @@ const SOCIAL_LINKS = {
 
 const LINKS = ["home", "about", "events", "gallery", "booking", "faq", "contact"]
 
+const GALLERY_SUBLINKS = [
+    { href: "/gallery/photos", label: "Photos" },
+    { href: "/gallery/videos", label: "Videos" }
+]
+
 export default function StickyNav() {
     const HeaderContext = useHeaderContext();
+    const [isGalleryDropdownOpen, setIsGalleryDropdownOpen] = useState(false);
 
     const handleClick = (link: string) => {
         HeaderContext.dispatch({ type: "SET_ACTIVE_LINK", payload: link })
@@ -52,18 +60,57 @@ export default function StickyNav() {
                     {/* Navigation links in the middle */}
                     <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
                         {LINKS.map((link) => (
-                            <Link 
-                                key={link} 
-                                href={`/${link}`} 
-                                onClick={() => handleClick(link)} 
-                                className={`relative text-sm lg:text-base font-semibold px-3 py-2 lg:px-4 lg:py-3 rounded-lg transition-all duration-300 cursor-pointer ${
-                                    HeaderContext.state.activeLink === link 
-                                        ? "text-[#02ACAC] bg-[#02ACAC]/10" 
-                                        : "text-white hover:text-[#02ACAC]/80 hover:bg-[#02ACAC]/5"
-                                }`}
-                            >
-                                {link !== "faq" ? splitWordsAndCapitalize(link) : "FAQ"}
-                            </Link>
+                            <div key={link}>
+                                {link === "gallery" ? (
+                                    <div className="relative">
+                                        <button
+                                            onClick={() => setIsGalleryDropdownOpen(!isGalleryDropdownOpen)}
+                                            className={`relative text-sm lg:text-base font-semibold px-3 py-2 lg:px-4 lg:py-3 rounded-lg transition-all duration-300 cursor-pointer flex items-center gap-1 ${
+                                                HeaderContext.state.activeLink === link || 
+                                                HeaderContext.state.activeLink === "gallery/photos" ||
+                                                HeaderContext.state.activeLink === "gallery/videos"
+                                                    ? "text-[#02ACAC] bg-[#02ACAC]/10" 
+                                                    : "text-white hover:text-[#02ACAC]/80 hover:bg-[#02ACAC]/5"
+                                            }`}
+                                        >
+                                            Gallery
+                                            <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isGalleryDropdownOpen ? 'rotate-180' : ''}`} />
+                                        </button>
+                                        {isGalleryDropdownOpen && (
+                                            <div 
+                                                className="absolute top-full left-0 mt-1 bg-gray-900/95 backdrop-blur-xl border border-gray-700/20 rounded-lg shadow-lg py-2 min-w-[120px] z-50"
+                                                onMouseLeave={() => setIsGalleryDropdownOpen(false)}
+                                            >
+                                                {GALLERY_SUBLINKS.map((sublink) => (
+                                                    <Link
+                                                        key={sublink.href}
+                                                        href={sublink.href}
+                                                        onClick={() => {
+                                                            handleClick("gallery");
+                                                            setIsGalleryDropdownOpen(false);
+                                                        }}
+                                                        className="block px-4 py-2 text-sm text-white hover:text-[#02ACAC] hover:bg-[#02ACAC]/10 transition-colors duration-200"
+                                                    >
+                                                        {sublink.label}
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <Link 
+                                        href={`/${link}`} 
+                                        onClick={() => handleClick(link)} 
+                                        className={`relative text-sm lg:text-base font-semibold px-3 py-2 lg:px-4 lg:py-3 rounded-lg transition-all duration-300 cursor-pointer ${
+                                            HeaderContext.state.activeLink === link 
+                                                ? "text-[#02ACAC] bg-[#02ACAC]/10" 
+                                                : "text-white hover:text-[#02ACAC]/80 hover:bg-[#02ACAC]/5"
+                                        }`}
+                                    >
+                                        {link !== "faq" ? splitWordsAndCapitalize(link) : "FAQ"}
+                                    </Link>
+                                )}
+                            </div>
                         ))}
                     </div>
 

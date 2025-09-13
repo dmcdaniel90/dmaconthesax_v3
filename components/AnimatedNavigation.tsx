@@ -7,6 +7,7 @@ import Socials from "@/components/Socials";
 import { useHeaderContext } from "@/app/contexts/HeaderContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import { ChevronDown } from "lucide-react";
 
 const SOCIAL_LINKS = {
     facebook: `https://www.facebook.com/dmaconthesax`,
@@ -16,11 +17,17 @@ const SOCIAL_LINKS = {
 
 const LINKS = ["home", "about", "events", "gallery", "booking", "faq", "contact"]
 
+const GALLERY_SUBLINKS = [
+    { href: "/gallery/photos", label: "Photos" },
+    { href: "/gallery/videos", label: "Videos" }
+]
+
 export default function AnimatedNavigation() {
     const HeaderContext = useHeaderContext();
     const isHomePage = HeaderContext.state.activeLink === "home";
     const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
     const [isClient, setIsClient] = useState(false);
+    const [isGalleryDropdownOpen, setIsGalleryDropdownOpen] = useState(false);
 
     // Prevent hydration mismatch by only setting motion preference after client mount
     useEffect(() => {
@@ -111,17 +118,61 @@ export default function AnimatedNavigation() {
                                                 ease: "easeOut"
                                             }}
                                         >
-                                            <Link 
-                                                href={`/${link}`} 
-                                                onClick={() => handleClick(link)} 
-                                                className={`relative text-sm lg:text-base font-semibold px-3 py-2 lg:px-4 lg:py-3 rounded-lg transition-all duration-300 cursor-pointer ${
-                                                    HeaderContext.state.activeLink === link 
-                                                        ? "text-[#02ACAC] bg-[#02ACAC]/10" 
-                                                        : "text-white hover:text-[#02ACAC]/80 hover:bg-[#02ACAC]/5"
-                                                }`}
-                                            >
-                                                {link !== "faq" ? splitWordsAndCapitalize(link) : "FAQ"}
-                                            </Link>
+                                            {link === "gallery" ? (
+                                                <div className="relative">
+                                                    <button
+                                                        onClick={() => setIsGalleryDropdownOpen(!isGalleryDropdownOpen)}
+                                                        className={`relative text-sm lg:text-base font-semibold px-3 py-2 lg:px-4 lg:py-3 rounded-lg transition-all duration-300 cursor-pointer ${
+                                                            HeaderContext.state.activeLink === link || 
+                                                            HeaderContext.state.activeLink === "gallery/photos" ||
+                                                            HeaderContext.state.activeLink === "gallery/videos"
+                                                                ? "text-[#02ACAC] bg-[#02ACAC]/10" 
+                                                                : "text-white hover:text-[#02ACAC]/80 hover:bg-[#02ACAC]/5"
+                                                        }`}
+                                                    >
+                                                        Gallery
+                                                        <ChevronDown className={`inline-block w-4 h-4 ml-1 transition-transform duration-200 ${isGalleryDropdownOpen ? 'rotate-180' : ''}`} />
+                                                    </button>
+                                                    <AnimatePresence>
+                                                        {isGalleryDropdownOpen && (
+                                                            <motion.div
+                                                                initial={{ opacity: 0, y: -10 }}
+                                                                animate={{ opacity: 1, y: 0 }}
+                                                                exit={{ opacity: 0, y: -10 }}
+                                                                transition={{ duration: 0.2 }}
+                                                                className="absolute top-full left-0 mt-2 bg-gradient-to-br from-gray-900/95 via-gray-800/90 to-gray-900/95 backdrop-blur-xl border border-[#02ACAC]/20 rounded-xl shadow-2xl shadow-[#02ACAC]/10 py-3 min-w-[140px] z-50"
+                                                                onMouseLeave={() => setIsGalleryDropdownOpen(false)}
+                                                            >
+                                                                {GALLERY_SUBLINKS.map((sublink, subIndex) => (
+                                                                    <Link
+                                                                        key={sublink.href}
+                                                                        href={sublink.href}
+                                                                        onClick={() => {
+                                                                            handleClick("gallery");
+                                                                            setIsGalleryDropdownOpen(false);
+                                                                        }}
+                                                                        className="block px-5 py-3 text-sm font-medium text-white hover:text-[#02ACAC] hover:bg-[#02ACAC]/10 transition-all duration-300 first:rounded-t-lg last:rounded-b-lg hover:shadow-sm hover:shadow-[#02ACAC]/20"
+                                                                    >
+                                                                        {sublink.label}
+                                                                    </Link>
+                                                                ))}
+                                                            </motion.div>
+                                                        )}
+                                                    </AnimatePresence>
+                                                </div>
+                                            ) : (
+                                                <Link 
+                                                    href={`/${link}`} 
+                                                    onClick={() => handleClick(link)} 
+                                                    className={`relative text-sm lg:text-base font-semibold px-3 py-2 lg:px-4 lg:py-3 rounded-lg transition-all duration-300 cursor-pointer ${
+                                                        HeaderContext.state.activeLink === link 
+                                                            ? "text-[#02ACAC] bg-[#02ACAC]/10" 
+                                                            : "text-white hover:text-[#02ACAC]/80 hover:bg-[#02ACAC]/5"
+                                                    }`}
+                                                >
+                                                    {link !== "faq" ? splitWordsAndCapitalize(link) : "FAQ"}
+                                                </Link>
+                                            )}
                                         </motion.div>
                                     ))}
                                 </motion.div>
@@ -202,7 +253,7 @@ export default function AnimatedNavigation() {
 
                         {/* Navigation */}
                         <motion.nav 
-                            className="flex flex-wrap justify-center gap-2 sm:gap-4 md:gap-6 px-2 sm:px-4"
+                            className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 md:gap-6 px-2 sm:px-4"
                             initial={!isClient || prefersReducedMotion ? { opacity: 0 } : { y: 20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ duration: !isClient || prefersReducedMotion ? 0 : 0.5, delay: !isClient || prefersReducedMotion ? 0 : 0.3 }}
@@ -218,17 +269,61 @@ export default function AnimatedNavigation() {
                                         ease: "easeOut"
                                     }}
                                 >
-                                    <Link 
-                                        href={`/${link}`} 
-                                        onClick={() => handleClick(link)} 
-                                        className={`relative text-sm sm:text-lg md:text-xl font-semibold px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer ${
-                                            HeaderContext.state.activeLink === link 
-                                                ? "text-[#02ACAC] bg-[#02ACAC]/10" 
-                                                : "text-white hover:text-[#02ACAC]/80 hover:bg-[#02ACAC]/5"
-                                        }`}
-                                    >
-                                        {link !== "faq" ? splitWordsAndCapitalize(link) : "FAQ"}
-                                    </Link>
+                                    {link === "gallery" ? (
+                                        <div className="relative">
+                                            <button
+                                                onClick={() => setIsGalleryDropdownOpen(!isGalleryDropdownOpen)}
+                                                className={`relative text-sm sm:text-lg md:text-xl font-semibold px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer flex items-center gap-2 ${
+                                                    HeaderContext.state.activeLink === link || 
+                                                    HeaderContext.state.activeLink === "gallery/photos" ||
+                                                    HeaderContext.state.activeLink === "gallery/videos"
+                                                        ? "text-[#02ACAC] bg-[#02ACAC]/10" 
+                                                        : "text-white hover:text-[#02ACAC]/80 hover:bg-[#02ACAC]/5"
+                                                }`}
+                                            >
+                                                Gallery
+                                                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isGalleryDropdownOpen ? 'rotate-180' : ''}`} />
+                                            </button>
+                                            <AnimatePresence>
+                                                {isGalleryDropdownOpen && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, y: -10 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        exit={{ opacity: 0, y: -10 }}
+                                                        transition={{ duration: 0.2 }}
+                                                        className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gradient-to-br from-gray-900/95 via-gray-800/90 to-gray-900/95 backdrop-blur-xl border border-[#02ACAC]/20 rounded-xl shadow-2xl shadow-[#02ACAC]/10 py-3 min-w-[160px] z-50"
+                                                        onMouseLeave={() => setIsGalleryDropdownOpen(false)}
+                                                    >
+                                                        {GALLERY_SUBLINKS.map((sublink, subIndex) => (
+                                                            <Link
+                                                                key={sublink.href}
+                                                                href={sublink.href}
+                                                                onClick={() => {
+                                                                    handleClick("gallery");
+                                                                    setIsGalleryDropdownOpen(false);
+                                                                }}
+                                                                className="block px-5 py-3 text-sm font-medium text-white hover:text-[#02ACAC] hover:bg-[#02ACAC]/10 transition-all duration-300 first:rounded-t-lg last:rounded-b-lg hover:shadow-sm hover:shadow-[#02ACAC]/20"
+                                                            >
+                                                                {sublink.label}
+                                                            </Link>
+                                                        ))}
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
+                                    ) : (
+                                        <Link 
+                                            href={`/${link}`} 
+                                            onClick={() => handleClick(link)} 
+                                            className={`relative text-sm sm:text-lg md:text-xl font-semibold px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer ${
+                                                HeaderContext.state.activeLink === link 
+                                                    ? "text-[#02ACAC] bg-[#02ACAC]/10" 
+                                                    : "text-white hover:text-[#02ACAC]/80 hover:bg-[#02ACAC]/5"
+                                            }`}
+                                        >
+                                            {link !== "faq" ? splitWordsAndCapitalize(link) : "FAQ"}
+                                        </Link>
+                                    )}
                                 </motion.div>
                             ))}
                         </motion.nav>
