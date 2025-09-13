@@ -126,9 +126,10 @@ export default function RootLayout({
                 "url": "https://devinmcdaniel.com",
                 "image": "https://devinmcdaniel.com/sax_portrait_1.jpg",
                 "sameAs": [
-                  "https://www.instagram.com/dmaconthesax",
+                  "https://www.instagram.com/devinmcdanielsax",
                   "https://www.youtube.com/@dmcdaniel9",
-                  "https://www.facebook.com/dmaconthesax"
+                  "https://www.facebook.com/dmaconthesax",
+                  "https://www.linkedin.com/in/devinmcdaniel"
                 ],
                 "jobTitle": "Professional Saxophonist",
                 "worksFor": {
