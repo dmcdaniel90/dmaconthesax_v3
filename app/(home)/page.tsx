@@ -2,8 +2,8 @@
 import Announcement from "@/components/Announcement";
 import EventList from "@/components/EventList";
 import CallToAction from "@/components/CallToAction";
-import Footer from "./layout/Footer";
-import { useHeaderContext } from "./contexts/HeaderContext";
+import Footer from "../layout/Footer";
+import { useHeaderContext } from "../contexts/HeaderContext";
 import { FadeInUp } from "@/components/ScrollReveal";
 
 export default function Home() {

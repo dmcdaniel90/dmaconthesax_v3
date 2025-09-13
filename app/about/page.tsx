@@ -1,6 +1,22 @@
 import AnimatedPageTitle from "@/components/AnimatedPageTitle"
 import ResponsiveImage from "@/components/ResponsiveImage"
 import { FadeInUp, FadeInLeft, FadeInRight, ScaleIn, StaggerContainer, StaggerItem } from "@/components/ScrollReveal"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "About DMAC on the Sax",
+  description: "Learn about Devin McDaniel, a professional saxophonist with over 20 years of experience. From jazz studies to worldwide performances, discover the story behind DMAC on the Sax.",
+  keywords: ["about saxophonist", "Devin McDaniel", "professional musician", "jazz studies", "music experience", "saxophone biography"],
+  openGraph: {
+    title: "About DMAC on the Sax | Professional Saxophonist",
+    description: "Learn about Devin McDaniel, a professional saxophonist with over 20 years of experience. From jazz studies to worldwide performances.",
+    type: "website",
+  },
+  twitter: {
+    title: "About DMAC on the Sax | Professional Saxophonist",
+    description: "Learn about Devin McDaniel, a professional saxophonist with over 20 years of experience. From jazz studies to worldwide performances.",
+  },
+}
 export default function About() {
     return (
         <>

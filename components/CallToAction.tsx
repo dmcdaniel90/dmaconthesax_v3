@@ -2,8 +2,8 @@
 import Link from "next/link";
 import { TypeAnimation } from "react-type-animation";
 import ResponsiveImage from "./ResponsiveImage";
-import { FadeInUp, FadeInLeft, FadeInRight, ScaleIn, StaggerContainer, StaggerItem } from "@/components/ScrollReveal";
-import { motion } from "framer-motion";
+import { FadeInLeft, FadeInRight, StaggerContainer, StaggerItem } from "@/components/ScrollReveal";
+
 
 type CallToActionProps = {
     width?: string | number | undefined

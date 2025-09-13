@@ -8,12 +8,74 @@ import "./globals.css";
 import { HeaderProvider } from "./contexts/HeaderContext";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://devinmcdaniel.com';
+  
   return {
-    title: "DMAC on the Sax - Professional Saxophonist for Events",
-    description: "Professional saxophonist for weddings, events, and festivals. Over 20 years of experience delivering unforgettable musical experiences.",
+    title: {
+      default: "DMAC on the Sax - Professional Saxophonist for Events",
+      template: "%s | DMAC on the Sax"
+    },
+    description: "Professional saxophonist for weddings, events, and festivals. Over 20 years of experience delivering unforgettable musical experiences. Based in the UK, available worldwide.",
+    keywords: [
+      "saxophonist",
+      "wedding music",
+      "event entertainment",
+      "live music",
+      "jazz saxophone",
+      "corporate events",
+      "festival music",
+      "UK saxophonist",
+      "professional musician",
+      "DMAC on the Sax"
+    ],
+    authors: [{ name: "Devin McDaniel" }],
+    creator: "Devin McDaniel",
+    publisher: "DMAC on the Sax",
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
+    openGraph: {
+      type: 'website',
+      locale: 'en_GB',
+      url: baseUrl,
+      siteName: 'DMAC on the Sax',
+      title: 'DMAC on the Sax - Professional Saxophonist for Events',
+      description: 'Professional saxophonist for weddings, events, and festivals. Over 20 years of experience delivering unforgettable musical experiences.',
+      images: [
+        {
+          url: `${baseUrl}/sax_portrait_1.jpg`,
+          width: 1200,
+          height: 630,
+          alt: 'DMAC on the Sax - Professional Saxophonist',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'DMAC on the Sax - Professional Saxophonist for Events',
+      description: 'Professional saxophonist for weddings, events, and festivals. Over 20 years of experience delivering unforgettable musical experiences.',
+      images: [`${baseUrl}/sax_portrait_1.jpg`],
+      creator: '@dmcdaniel9',
+    },
+    alternates: {
+      canonical: baseUrl,
+    },
     other: {
       // Performance optimizations
       "X-DNS-Prefetch-Control": "on",
+      // Additional SEO
+      "geo.region": "GB",
+      "geo.placename": "Swindon, Wiltshire",
+      "geo.position": "51.5558;-1.7797",
+      "ICBM": "51.5558, -1.7797",
     },
   };
 }
@@ -50,6 +112,53 @@ export default function RootLayout({
           {/* Performance meta tags */}
           <meta name="theme-color" content="#02ACAC" />
           <meta name="color-scheme" content="dark" />
+          
+          {/* Structured Data - JSON-LD */}
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Person",
+                "name": "Devin McDaniel",
+                "alternateName": "DMAC on the Sax",
+                "description": "Professional saxophonist for weddings, events, and festivals with over 20 years of experience",
+                "url": "https://devinmcdaniel.com",
+                "image": "https://devinmcdaniel.com/sax_portrait_1.jpg",
+                "sameAs": [
+                  "https://www.instagram.com/devinmcdanielsax",
+                  "https://www.youtube.com/@dmcdaniel9",
+                  "https://www.facebook.com/dmaconthesax",
+                  "https://www.linkedin.com/in/devinmcdaniel"
+                ],
+                "jobTitle": "Professional Saxophonist",
+                "worksFor": {
+                  "@type": "Organization",
+                  "name": "DMAC on the Sax"
+                },
+                "address": {
+                  "@type": "PostalAddress",
+                  "addressLocality": "Swindon",
+                  "addressRegion": "Wiltshire",
+                  "addressCountry": "GB"
+                },
+                "telephone": "+447359142634",
+                "email": "dmcdaniel9@gmail.com",
+                "knowsAbout": [
+                  "Saxophone Performance",
+                  "Wedding Music",
+                  "Event Entertainment",
+                  "Jazz Music",
+                  "Live Music Performance"
+                ],
+                "hasOccupation": {
+                  "@type": "Occupation",
+                  "name": "Professional Saxophonist",
+                  "description": "Live saxophone performance for weddings, corporate events, festivals, and private parties"
+                }
+              })
+            }}
+          />
         </head>
         <body
           className={`${lato.variable} antialiased bg-gradient-to-br from-gray-900/90 via-gray-800/80 to-gray-900/95 min-h-screen flex flex-col`}

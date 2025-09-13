@@ -5,6 +5,22 @@ import ResponsiveImage from "@/components/ResponsiveImage"
 import AdvancedVideoPlayer from "@/components/AdvancedVideoPlayer"
 import AnimatedPageTitle from "@/components/AnimatedPageTitle"
 import { FadeInUp, FadeInLeft, FadeInRight } from "@/components/ScrollReveal"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Contact DMAC on the Sax",
+  description: "Get in touch with DMAC on the Sax for booking inquiries, questions about services, or to discuss your event. Professional saxophonist based in the UK, available worldwide.",
+  keywords: ["contact saxophonist", "booking inquiry", "event consultation", "music services", "hire musician", "contact DMAC"],
+  openGraph: {
+    title: "Contact DMAC on the Sax | Professional Saxophonist",
+    description: "Get in touch with DMAC on the Sax for booking inquiries, questions about services, or to discuss your event.",
+    type: "website",
+  },
+  twitter: {
+    title: "Contact DMAC on the Sax | Professional Saxophonist",
+    description: "Get in touch with DMAC on the Sax for booking inquiries, questions about services, or to discuss your event.",
+  },
+}
 
 export default function Contact() {
     return (

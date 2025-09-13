@@ -2,8 +2,9 @@ import Socials from "@/components/Socials"
 
 const SOCIAL_LINKS = {
     facebook: `https://www.facebook.com/dmaconthesax`,
-    instagram: `https://www.instagram.com/dmaconthesax`,
+    instagram: `https://www.instagram.com/devinmcdanielsax`,
     youtube: `https://www.youtube.com/@dmcdaniel9`,
+    linkedin: `https://www.linkedin.com/in/devinmcdaniel`,
 }
 
 export default function Footer() {
